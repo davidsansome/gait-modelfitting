@@ -2,6 +2,7 @@
 SET(IMGPROCESSTEST-SOURCES
 	main.cpp
 	engine.cpp
+	shaderpair.cpp
 )
 
 # Header files that have Q_OBJECT in
