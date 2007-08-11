@@ -18,19 +18,18 @@ ShaderPair::~ShaderPair()
 bool ShaderPair::loadVertexProgram(const QString& sourceFileName, CGprofile profile)
 {
 	m_vert = loadShader(sourceFileName, profile);
-	return cgIsProgram(m_vert);
 }
 
 bool ShaderPair::loadFragmentProgram(const QString& sourceFileName, CGprofile profile)
 {
 	m_frag = loadShader(sourceFileName, profile);
-	return cgIsProgram(m_frag);
 }
 
 CGprogram ShaderPair::loadShader(const QString& fileName, CGprofile profile)
 {
 	QFile file(fileName);
-	file.open(QIODevice::ReadOnly);
+	if (!file.open(QIODevice::ReadOnly))
+		throw "Could not open file " + fileName;
 	
 	// Load and null terminate the program source
 	char* source = new char[file.size() + 1];
@@ -40,6 +39,8 @@ CGprogram ShaderPair::loadShader(const QString& fileName, CGprofile profile)
 	CGprogram program = cgCreateProgram(m_context, CG_SOURCE, source, profile, NULL, NULL);
 	if (program)
 		cgGLLoadProgram(program);
+	else
+		throw "Error loading Cg program " + fileName;
 
 	delete[] source;
 	return program;

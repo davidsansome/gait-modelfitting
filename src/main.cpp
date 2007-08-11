@@ -8,7 +8,7 @@ int main(int argc, char** argv)
 
 	Engine engine;
 	engine.show();
-	engine.setImage("/home/david/grid.png");
+	engine.setImage("/home/david/Dog-Fluffy_Destroyer_of_worlds.png");
 	engine.loadShaders("/home/david/vert.cg", "/home/david/frag.cg");
 	engine.setShadersEnabled(true);
 

@@ -49,9 +49,19 @@ void Engine::loadShaders(const QString& vert, const QString& frag)
 	delete m_shaders;
 	m_shaders = new ShaderPair(m_cgContext);
 
-	// TODO: Handle errors here
-	m_shaders->loadVertexProgram(vert, m_vertProfile);
-	m_shaders->loadFragmentProgram(frag, m_fragProfile);
+	try
+	{
+		m_shaders->loadVertexProgram(vert, m_vertProfile);
+		m_shaders->loadFragmentProgram(frag, m_fragProfile);
+	}
+	catch (QString e)
+	{
+		QMessageBox::critical(this, "Error loading shaders", e);
+		
+		delete m_shaders;
+		m_shaders = NULL;
+		setShadersEnabled(false);
+	}
 }
 
 void Engine::setShadersEnabled(bool enabled)
