@@ -1,12 +1,12 @@
 # Source files
 SET(IMGPROCESSTEST-SOURCES
 	main.cpp
-	mainwindow.cpp
+	engine.cpp
 )
 
 # Header files that have Q_OBJECT in
 SET(IMGPROCESSTEST-MOC-HEADERS
-	mainwindow.h
+	engine.h
 )
 
 # UI files
