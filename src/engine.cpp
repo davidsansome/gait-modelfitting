@@ -1,5 +1,5 @@
 #include "engine.h"
-#include "shaderpair.h"
+#include "filterset.h"
 
 #include <QImage>
 #include <QMessageBox>
@@ -9,9 +9,10 @@
 
 Engine::Engine()
 	: QGLWidget(),
-	  m_texture(0),
-	  m_shadersEnabled(false),
-	  m_shaders(NULL)
+	  m_imageTexture(0),
+	  m_filterSet(NULL),
+	  m_pbuffer(NULL),
+	  m_pbufferTexture(0)
 {
 	m_redrawTimer = new QTimer(this);
 	connect(m_redrawTimer, SIGNAL(timeout()), SLOT(update()));
@@ -20,70 +21,34 @@ Engine::Engine()
 
 Engine::~Engine()
 {
-	glDeleteTextures(1, &m_texture);
+	if (m_pbuffer)
+		m_pbuffer->releaseFromDynamicTexture();
+	glDeleteTextures(1, &m_pbufferTexture);
+	glDeleteTextures(1, &m_imageTexture);
+
+	delete m_pbuffer;
+	delete m_filterSet;
 }
 
 void Engine::setImage(const QString& fileName)
 {
-	glDeleteTextures(1, &m_texture);
-	glGenTextures(1, &m_texture);
-	glBindTexture(GL_TEXTURE_2D, m_texture);
-
 	QImage image(fileName);
-	m_textureSize = image.size();
-	int numBytes = image.numBytes();
-	uchar* bits = image.bits();
+	m_imageSize = image.size();
+
+	delete m_pbuffer;
+	m_pbuffer = new QGLPixelBuffer(m_imageSize, format(), this);
+	initPbuffer();
 	
-	// Convert ARGB to RGBA
-	for (uchar* p=bits ; p<bits+numBytes ; p+=4)
-	{
-		QRgb color = *((QRgb*)p);
-		*(p+0) = qRed(color);
-		*(p+1) = qGreen(color);
-		*(p+2) = qBlue(color);
-		*(p+3) = qAlpha(color);
-	}
-
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA8, image.width(), image.height(), GL_RGBA, GL_UNSIGNED_BYTE, image.bits());
+	glDeleteTextures(1, &m_imageTexture);
+	m_imageTexture = bindTexture(image);
 	resize(image.width(), image.height());
-	setPixelStep();
 }
 
-void Engine::loadShaders(const QString& vert, const QString& frag)
+void Engine::setFilterSet(FilterSet* filterSet)
 {
-	delete m_shaders;
-	m_shaders = new ShaderPair(m_cgContext);
-
-	try
-	{
-		m_shaders->loadVertexProgram(vert, m_vertProfile);
-		m_shaders->loadFragmentProgram(frag, m_fragProfile);
-	}
-	catch (QString e)
-	{
-		QMessageBox::critical(this, "Error loading shaders", e);
-		
-		delete m_shaders;
-		m_shaders = NULL;
-		setShadersEnabled(false);
-	}
-
-	setPixelStep();
-}
-
-void Engine::setShadersEnabled(bool enabled)
-{
-	if (enabled && m_shaders)
-	{
-		m_shaders->bind();
-		cgGLEnableProfile(m_fragProfile);
-		cgGLEnableProfile(m_vertProfile);
-	}
-	else
-	{
-		cgGLDisableProfile(m_fragProfile);
-		cgGLDisableProfile(m_vertProfile);
-	}
+	delete m_filterSet;
+	m_filterSet = filterSet;
+	m_filterSet->init(m_cgContext, m_vertProfile, m_fragProfile, m_imageSize);
 }
 
 void errorHandler(CGcontext context, CGerror error, void*)
@@ -93,9 +58,8 @@ void errorHandler(CGcontext context, CGerror error, void*)
 
 void Engine::initializeGL()
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glEnable(GL_TEXTURE_2D);
-
+	initCommon();
+	
 	// Initialise cg
 	cgSetErrorHandler(errorHandler, NULL);
 	m_cgContext = cgCreateContext();
@@ -117,7 +81,11 @@ void Engine::initializeGL()
 void Engine::resizeGL(int w, int h)
 {
 	glViewport(0, 0, width(), height());
+	initMatrices();
+}
 
+void Engine::initMatrices()
+{
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
@@ -125,30 +93,87 @@ void Engine::resizeGL(int w, int h)
 	glLoadIdentity();
 }
 
+void Engine::initCommon()
+{
+	glEnable(GL_TEXTURE_2D);
+}
+
+void Engine::initPbuffer()
+{
+	// set up the pbuffer context
+	m_pbuffer->makeCurrent();
+	initCommon();
+
+	glViewport(0, 0, m_pbuffer->size().width(), m_pbuffer->size().height());
+	initMatrices();
+
+	// generate a texture that has the same size/format as the pbuffer
+	m_pbufferTexture = m_pbuffer->generateDynamicTexture();
+
+	// bind the dynamic texture to the pbuffer - this is a no-op under X11
+	m_pbuffer->bindToDynamicTexture(m_pbufferTexture);
+	makeCurrent();
+}
+
+void Engine::setShadersEnabled(bool enabled)
+{
+	if (enabled)
+	{
+		cgGLEnableProfile(m_fragProfile);
+		cgGLEnableProfile(m_vertProfile);
+	}
+	else
+	{
+		cgGLDisableProfile(m_fragProfile);
+		cgGLDisableProfile(m_vertProfile);
+	}
+}
+
 void Engine::paintGL()
 {
-	glBegin(GL_QUADS);
-		glTexCoord2f(0.0f, 0.0f);
-		glVertex2f(-1.0f, 1.0f);
+	if (!m_filterSet)
+		return;
+	
+	m_pbuffer->makeCurrent();
+	setShadersEnabled(true);
 
-		glTexCoord2f(1.0f, 0.0f);
-		glVertex2f(1.0f, 1.0f);
+	uint texture = m_imageTexture;
+	for (int i=0 ; i<m_filterSet->passCount() ; ++i)
+	{
+		m_filterSet->bindShaders(i);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		drawRect();
+		glFlush();
 
-		glTexCoord2f(1.0f, 1.0f);
-		glVertex2f(1.0f, -1.0f);
+#if  defined(Q_WS_X11)
+		// rendering directly to a texture is not supported on X11, unfortunately
+		m_pbuffer->updateDynamicTexture(m_pbufferTexture);
+#endif
+		texture = m_pbufferTexture;
+	}
 
-		glTexCoord2f(0.0f, 1.0f);
-		glVertex2f(-1.0f, -1.0f);
-	glEnd();
+	makeCurrent();
+	setShadersEnabled(false);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	drawRect();
 
 	m_redrawTimer->start(0);
 }
 
-void Engine::setPixelStep()
+void Engine::drawRect()
 {
-	if (!m_shaders || !m_textureSize.isValid())
-		return;
+	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex2f(-1.0f, 1.0f);
 
-	cgGLSetParameter1f(cgGetNamedParameter(m_shaders->frag(), "pixelStep"), 1.0f / float(m_textureSize.width()));
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex2f(1.0f, 1.0f);
+
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex2f(1.0f, -1.0f);
+
+		glTexCoord2f(0.0f, 0.0f);
+		glVertex2f(-1.0f, -1.0f);
+	glEnd();
 }
 

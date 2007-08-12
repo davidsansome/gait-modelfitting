@@ -3,12 +3,13 @@
 
 #include <QGLWidget>
 #include <QSize>
+#include <QGLPixelBuffer>
 
 #include <Cg/cg.h>
 #include <Cg/cgGL.h>
 
-class ShaderPair;
 class QTimer;
+class FilterSet;
 
 class Engine : public QGLWidget
 {
@@ -19,27 +20,33 @@ public:
 
 public slots:
 	void setImage(const QString& image);
-	void loadShaders(const QString& vert, const QString& frag);
-	void setShadersEnabled(bool enabled);
+	void setFilterSet(FilterSet* filterSet);
 
 private:
 	void initializeGL();
 	void resizeGL(int w, int h);
 	void paintGL();
 
-	void setPixelStep();
+	void initMatrices();
+	void initCommon();
+	void initPbuffer();
+
+	void setShadersEnabled(bool enabled);
+	void drawRect();
 
 	QTimer* m_redrawTimer;
 
-	uint m_texture;
-	QSize m_textureSize;
+	uint m_imageTexture;
+	QSize m_imageSize;
+	QGLPixelBuffer* m_pbuffer;
+	uint m_pbufferTexture;
 
 	bool m_shadersEnabled;
 
 	CGcontext m_cgContext;
 	CGprofile m_vertProfile;
 	CGprofile m_fragProfile;
-	ShaderPair* m_shaders;
+	FilterSet* m_filterSet;
 };
 
 #endif

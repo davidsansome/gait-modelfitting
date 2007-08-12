@@ -15,7 +15,6 @@ public:
 
 private slots:
 	void openFile();
-	void filterChanged(int filter);
 
 private:
 	Ui_Controller m_ui;

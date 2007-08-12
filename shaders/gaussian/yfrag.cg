@@ -1,0 +1,18 @@
+void main(in float2 texCoord : TEXCOORD0,
+          out float4 colorOut : COLOR0,
+          uniform sampler2D texture : TEXUNIT0,
+          uniform float pixelStep)
+{
+	const int KERNEL_SIZE = 7;
+	const float[7] KERNEL = {0.006, 0.061, 0.242, 0.383, 0.242, 0.061, 0.006};
+
+	float4 color = float4(0.0f, 0.0f, 0.0f, 1.0f);
+
+	for (int i=0 ; i<KERNEL_SIZE ; ++i)
+	{
+		float2 coord = float2(texCoord.x, texCoord.y + pixelStep*(i - KERNEL_SIZE/2));
+		color.rgb += KERNEL[i] * tex2D(texture, coord).rgb;
+	}
+	
+	colorOut = color;
+}
