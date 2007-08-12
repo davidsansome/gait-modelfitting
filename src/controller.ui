@@ -1,0 +1,102 @@
+<ui version="4.0" >
+ <class>Controller</class>
+ <widget class="QDialog" name="Controller" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>203</width>
+    <height>128</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Controller</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <widget class="QPushButton" name="openFileButton" >
+     <property name="text" >
+      <string>Open file...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="filterBox" >
+     <item>
+      <property name="text" >
+       <string>No filter</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Gaussian filter</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="Line" name="line" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="quitButton" >
+       <property name="text" >
+        <string>Quit</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>openFileButton</tabstop>
+  <tabstop>filterBox</tabstop>
+  <tabstop>quitButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

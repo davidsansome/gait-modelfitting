@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 #include <QDebug>
+#include <QTimer>
 
 Engine::Engine()
 	: QGLWidget(),
@@ -12,6 +13,9 @@ Engine::Engine()
 	  m_shadersEnabled(false),
 	  m_shaders(NULL)
 {
+	m_redrawTimer = new QTimer(this);
+	connect(m_redrawTimer, SIGNAL(timeout()), SLOT(update()));
+	m_redrawTimer->setSingleShot(true);
 }
 
 Engine::~Engine()
@@ -26,6 +30,7 @@ void Engine::setImage(const QString& fileName)
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 
 	QImage image(fileName);
+	m_textureSize = image.size();
 	int numBytes = image.numBytes();
 	uchar* bits = image.bits();
 	
@@ -40,8 +45,8 @@ void Engine::setImage(const QString& fileName)
 	}
 
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA8, image.width(), image.height(), GL_RGBA, GL_UNSIGNED_BYTE, image.bits());
-
 	resize(image.width(), image.height());
+	setPixelStep();
 }
 
 void Engine::loadShaders(const QString& vert, const QString& frag)
@@ -62,6 +67,8 @@ void Engine::loadShaders(const QString& vert, const QString& frag)
 		m_shaders = NULL;
 		setShadersEnabled(false);
 	}
+
+	setPixelStep();
 }
 
 void Engine::setShadersEnabled(bool enabled)
@@ -133,5 +140,15 @@ void Engine::paintGL()
 		glTexCoord2f(0.0f, 1.0f);
 		glVertex2f(-1.0f, -1.0f);
 	glEnd();
+
+	m_redrawTimer->start(0);
+}
+
+void Engine::setPixelStep()
+{
+	if (!m_shaders || !m_textureSize.isValid())
+		return;
+
+	cgGLSetParameter1f(cgGetNamedParameter(m_shaders->frag(), "pixelStep"), 1.0f / float(m_textureSize.width()));
 }
 

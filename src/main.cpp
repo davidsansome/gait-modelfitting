@@ -1,16 +1,17 @@
 #include <QApplication>
 
 #include "engine.h"
+#include "controller.h"
 
 int main(int argc, char** argv)
 {
 	QApplication app(argc, argv);
 
 	Engine engine;
+	Controller controller(&engine);
+	
 	engine.show();
-	engine.setImage("/home/david/Dog-Fluffy_Destroyer_of_worlds.png");
-	engine.loadShaders("/home/david/vert.cg", "/home/david/frag.cg");
-	engine.setShadersEnabled(true);
+	controller.show();
 
 	return app.exec();
 }

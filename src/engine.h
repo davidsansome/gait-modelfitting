@@ -2,11 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QGLWidget>
+#include <QSize>
 
 #include <Cg/cg.h>
 #include <Cg/cgGL.h>
 
 class ShaderPair;
+class QTimer;
 
 class Engine : public QGLWidget
 {
@@ -25,7 +27,12 @@ private:
 	void resizeGL(int w, int h);
 	void paintGL();
 
+	void setPixelStep();
+
+	QTimer* m_redrawTimer;
+
 	uint m_texture;
+	QSize m_textureSize;
 
 	bool m_shadersEnabled;
 

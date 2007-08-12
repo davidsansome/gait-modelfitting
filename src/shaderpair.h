@@ -15,6 +15,9 @@ public:
 	bool loadVertexProgram(const QString& sourceFileName, CGprofile profile);
 	bool loadFragmentProgram(const QString& sourceFileName, CGprofile profile);
 
+	CGprogram vert() { return m_vert; }
+	CGprogram frag() { return m_frag; }
+
 	void bind();
 
 private:

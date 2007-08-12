@@ -3,15 +3,18 @@ SET(IMGPROCESSTEST-SOURCES
 	main.cpp
 	engine.cpp
 	shaderpair.cpp
+	controller.cpp
 )
 
 # Header files that have Q_OBJECT in
 SET(IMGPROCESSTEST-MOC-HEADERS
 	engine.h
+	controller.h
 )
 
 # UI files
 SET(IMGPROCESSTEST-UI
+	controller.ui
 )
 
 # Resource files
