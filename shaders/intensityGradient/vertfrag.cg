@@ -1,0 +1,18 @@
+void main(in float2 texCoord : TEXCOORD0,
+          out float4 colorOut : COLOR0,
+          uniform sampler2D texture : TEXUNIT0,
+          uniform float2 pixelStep)
+{
+	float3 color = float3(0.0f, 0.0f, 0.0f);
+
+	color +=  1.0 * tex2D(texture, float2(texCoord.x - pixelStep.x, texCoord.y - pixelStep.y)).rgb;
+	color +=  2.0 * tex2D(texture, float2(texCoord.x,               texCoord.y - pixelStep.y)).rgb;
+	color +=  1.0 * tex2D(texture, float2(texCoord.x + pixelStep.x, texCoord.y - pixelStep.y)).rgb;
+	color += -1.0 * tex2D(texture, float2(texCoord.x - pixelStep.x, texCoord.y + pixelStep.y)).rgb;
+	color += -2.0 * tex2D(texture, float2(texCoord.x,               texCoord.y + pixelStep.y)).rgb;
+	color += -1.0 * tex2D(texture, float2(texCoord.x + pixelStep.x, texCoord.y + pixelStep.y)).rgb;
+
+	color = clamp(color/2.0f + 0.5f, 0, 1);
+	
+	colorOut = float4(color, 1.0f);
+}
