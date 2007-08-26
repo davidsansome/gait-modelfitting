@@ -11,6 +11,10 @@ IntensityGradient::IntensityGradient()
 
 IntensityGradient::~IntensityGradient()
 {
+	delete m_horizontalShaders;
+	delete m_verticalShaders;
+	delete m_intensityShaders;
+	
 	delete m_horizontalOutput;
 	delete m_verticalOutput;
 }

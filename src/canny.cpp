@@ -6,7 +6,8 @@
 #include <QGLFramebufferObject>
 
 Canny::Canny()
-	: ChainFilterSet()
+	: ChainFilterSet(),
+	  m_temp(NULL)
 {
 	m_gaussian = new Gaussian();
 	m_intensityGradient = new IntensityGradient();
@@ -17,6 +18,9 @@ Canny::Canny()
 
 Canny::~Canny()
 {
+	delete m_gaussian;
+	delete m_intensityGradient;
+	delete m_temp;
 }
 
 void Canny::init(CGcontext context, CGprofile vertProfile, CGprofile fragProfile, const QSize& imageSize)
