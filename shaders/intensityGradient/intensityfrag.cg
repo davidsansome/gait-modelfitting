@@ -1,8 +1,7 @@
 void main(in float2 texCoord : TEXCOORD0,
           out float4 colorOut : COLOR0,
           uniform sampler2D horiz : TEXUNIT0,
-          uniform sampler2D vert : TEXUNIT1,
-          uniform float2 pixelStep)
+          uniform sampler2D vert : TEXUNIT1)
 {
 	float3 horizSample = abs(tex2D(horiz, texCoord).rgb - 0.5);
 	float3 vertSample = abs(tex2D(vert, texCoord).rgb - 0.5);
