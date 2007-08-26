@@ -3,7 +3,7 @@
 
 #include <QGLWidget>
 #include <QSize>
-#include <QGLPixelBuffer>
+#include <QGLFramebufferObject>
 
 #include <Cg/cg.h>
 #include <Cg/cgGL.h>
@@ -27,10 +27,6 @@ private:
 	void resizeGL(int w, int h);
 	void paintGL();
 
-	void initMatrices();
-	void initCommon();
-	void initPbuffer();
-
 	void setShadersEnabled(bool enabled);
 	void drawRect();
 
@@ -38,8 +34,7 @@ private:
 
 	uint m_imageTexture;
 	QSize m_imageSize;
-	QGLPixelBuffer* m_pbuffer;
-	uint m_pbufferTexture;
+	QGLFramebufferObject* m_fbo;
 
 	bool m_shadersEnabled;
 
