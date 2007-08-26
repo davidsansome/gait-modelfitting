@@ -10,6 +10,7 @@
 
 class QTimer;
 class FilterSet;
+class DataUnit;
 
 class Engine : public QGLWidget
 {
@@ -32,9 +33,9 @@ private:
 
 	QTimer* m_redrawTimer;
 
-	uint m_imageTexture;
+	DataUnit* m_image;
+	DataUnit* m_framebuffer;
 	QSize m_imageSize;
-	QGLFramebufferObject* m_fbo;
 
 	bool m_shadersEnabled;
 

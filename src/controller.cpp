@@ -26,7 +26,7 @@ void Controller::openFile()
 	QString fileName = QFileDialog::getOpenFileName(this, "Open image", QDir::homePath(), "Images (*.png *.jpg *.jpeg *.bmp *.mng *.gif *.pbm *.pgm *.ppm *.xbm *.xpm");
 
 	m_engine->setImage(fileName);
-	m_engine->setFilterSet(new IntensityGradient());
+	m_engine->setFilterSet(new Gaussian());
 }
 
 

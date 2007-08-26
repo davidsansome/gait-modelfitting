@@ -1,5 +1,6 @@
 #include "engine.h"
 #include "filterset.h"
+#include "dataunit.h"
 
 #include <QImage>
 #include <QMessageBox>
@@ -9,21 +10,21 @@
 
 Engine::Engine()
 	: QGLWidget(),
-	  m_imageTexture(0),
 	  m_filterSet(NULL),
-	  m_fbo(NULL)
+	  m_image(NULL)
 {
 	m_redrawTimer = new QTimer(this);
 	connect(m_redrawTimer, SIGNAL(timeout()), SLOT(update()));
 	m_redrawTimer->setSingleShot(true);
+
+	m_framebuffer = new DataUnit();
 }
 
 Engine::~Engine()
 {
-	glDeleteTextures(1, &m_imageTexture);
-
-	delete m_fbo;
 	delete m_filterSet;
+	delete m_image;
+	delete m_framebuffer;
 }
 
 void Engine::setImage(const QString& fileName)
@@ -31,11 +32,9 @@ void Engine::setImage(const QString& fileName)
 	QImage image(fileName);
 	m_imageSize = image.size();
 
-	delete m_fbo;
-	m_fbo = new QGLFramebufferObject(m_imageSize);
+	delete m_image;
+	m_image = new DataUnit(bindTexture(image));
 	
-	glDeleteTextures(1, &m_imageTexture);
-	m_imageTexture = bindTexture(image);
 	resize(image.width(), image.height());
 }
 
@@ -44,6 +43,8 @@ void Engine::setFilterSet(FilterSet* filterSet)
 	delete m_filterSet;
 	m_filterSet = filterSet;
 	m_filterSet->init(m_cgContext, m_vertProfile, m_fragProfile, m_imageSize);
+	m_filterSet->setDataUnit(0, m_image);
+	m_filterSet->setDataUnit(1, m_framebuffer);
 }
 
 void errorHandler(CGcontext context, CGerror error, void*)
@@ -103,24 +104,15 @@ void Engine::paintGL()
 	if (!m_filterSet)
 		return;
 
-	m_fbo->bind();
 	setShadersEnabled(true);
 
-	uint texture = m_imageTexture;
 	for (int i=0 ; i<m_filterSet->passCount() ; ++i)
 	{
-		m_filterSet->bindShaders(i);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		m_filterSet->bind(i);
 		drawRect();
 		glFlush();
-
-		texture = m_fbo->texture();
+		m_filterSet->release(i);
 	}
-
-	m_fbo->release();
-	setShadersEnabled(false);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	drawRect();
 
 	m_redrawTimer->start(0);
 }
