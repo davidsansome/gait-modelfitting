@@ -23,10 +23,10 @@ public:
 	int isInput() { return m_type & Input; }
 	int isOutput() { return m_type & Output; }
 	
-	void bindInput();
+	void bindInput(int texUnit = 0);
 	void bindOutput();
 
-	void releaseInput();
+	void releaseInput(int texUnit = 0);
 	void releaseOutput();
 
 private:

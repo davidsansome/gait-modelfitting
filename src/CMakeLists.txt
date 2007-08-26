@@ -5,8 +5,10 @@ SET(IMGPROCESSTEST-SOURCES
 	shaderpair.cpp
 	controller.cpp
 	gaussian.cpp
-	#intensitygradient.cpp
+	intensitygradient.cpp
 	dataunit.cpp
+	chainfilterset.cpp
+	canny.cpp
 )
 
 # Header files that have Q_OBJECT in

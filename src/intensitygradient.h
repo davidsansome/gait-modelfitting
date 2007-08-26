@@ -12,13 +12,21 @@ public:
 	~IntensityGradient();
 
 	void init(CGcontext context, CGprofile vertProfile, CGprofile fragProfile, const QSize& imageSize);
+	void setDataUnit(int index, DataUnit* du);
 
-	int passCount() { return 1; }
-	void bindShaders(int pass);
+	int passCount() const { return 3; }
+	void bind(int pass);
+	void release(int pass);
 
 private:
-	ShaderPair* m_horizontal;
-	ShaderPair* m_vertical;
+	ShaderPair* m_horizontalShaders;
+	ShaderPair* m_verticalShaders;
+	ShaderPair* m_intensityShaders;
+
+	DataUnit* m_input;
+	DataUnit* m_horizontalOutput;
+	DataUnit* m_verticalOutput;
+	DataUnit* m_intensityOutput;
 };
 
 #endif

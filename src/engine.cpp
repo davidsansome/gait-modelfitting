@@ -1,3 +1,5 @@
+#define GL_GLEXT_PROTOTYPES 1
+
 #include "engine.h"
 #include "filterset.h"
 #include "dataunit.h"
@@ -49,11 +51,15 @@ void Engine::setFilterSet(FilterSet* filterSet)
 
 void errorHandler(CGcontext context, CGerror error, void*)
 {
-	QMessageBox::warning(NULL, "Cg Error", QString(cgGetErrorString(error)));
+	qFatal("Cg Error: %s", cgGetErrorString(error));
+	//QMessageBox::warning(NULL, "Cg Error", QString(cgGetErrorString(error)));
 }
 
 void Engine::initializeGL()
 {
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 	
 	// Initialise cg

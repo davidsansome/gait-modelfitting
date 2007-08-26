@@ -1,7 +1,10 @@
+#define GL_GLEXT_PROTOTYPES 1
+
 #include "dataunit.h"
 
 #include <QGLFramebufferObject>
 #include <GL/gl.h>
+#include <GL/glext.h>
 
 DataUnit::DataUnit(uint textureId)
 	: m_type(Input),
@@ -32,11 +35,12 @@ DataUnit::~DataUnit()
 		glDeleteTextures(1, &m_textureId);
 }
 
-void DataUnit::bindInput()
+void DataUnit::bindInput(int texUnit)
 {
 	if (!(m_type & Input))
 		qFatal("Tried to bind an output-only DataUnit as input");
 
+	glActiveTexture(GL_TEXTURE0 + texUnit);
 	glBindTexture(GL_TEXTURE_2D, m_textureId);
 }
 
@@ -49,7 +53,7 @@ void DataUnit::bindOutput()
 		m_fbo->bind();
 }
 
-void DataUnit::releaseInput()
+void DataUnit::releaseInput(int texUnit)
 {
 }
 
