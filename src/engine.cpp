@@ -13,11 +13,16 @@
 Engine::Engine()
 	: QGLWidget(),
 	  m_filterSet(NULL),
-	  m_image(NULL)
+	  m_image(NULL),
+	  m_frameCounter(0)
 {
 	m_redrawTimer = new QTimer(this);
 	connect(m_redrawTimer, SIGNAL(timeout()), SLOT(update()));
 	m_redrawTimer->setSingleShot(true);
+
+	QTimer* fpsTimer = new QTimer(this);
+	connect(fpsTimer, SIGNAL(timeout()), SLOT(updateFps()));
+	fpsTimer->start(5000);
 
 	m_framebuffer = new DataUnit();
 }
@@ -121,6 +126,7 @@ void Engine::paintGL()
 	}
 
 	m_redrawTimer->start(0);
+	m_frameCounter++;
 }
 
 void Engine::drawRect()
@@ -138,5 +144,14 @@ void Engine::drawRect()
 		glTexCoord2f(0.0f, 0.0f);
 		glVertex2f(-1.0f, -1.0f);
 	glEnd();
+}
+
+void Engine::updateFps()
+{
+	if (m_frameCounter == 0)
+		return;
+	
+	qDebug() << float(m_frameCounter)/5.0f << "FPS";
+	m_frameCounter = 0;
 }
 

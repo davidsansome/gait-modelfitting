@@ -23,6 +23,9 @@ public slots:
 	void setImage(const QString& image);
 	void setFilterSet(FilterSet* filterSet);
 
+private slots:
+	void updateFps();
+
 private:
 	void initializeGL();
 	void resizeGL(int w, int h);
@@ -43,6 +46,8 @@ private:
 	CGprofile m_vertProfile;
 	CGprofile m_fragProfile;
 	FilterSet* m_filterSet;
+
+	int m_frameCounter;
 };
 
 #endif
