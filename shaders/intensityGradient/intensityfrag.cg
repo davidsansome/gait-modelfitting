@@ -3,8 +3,16 @@ void main(in float2 texCoord : TEXCOORD0,
           uniform sampler2D horiz : TEXUNIT0,
           uniform sampler2D vert : TEXUNIT1)
 {
-	float3 horizSample = abs(tex2D(horiz, texCoord).rgb - 0.5);
-	float3 vertSample = abs(tex2D(vert, texCoord).rgb - 0.5);
+	const float pi =  3.14159265;
+	
+	float3 horizSample = (tex2D(horiz, texCoord).rgb - 0.5);
+	float3 vertSample = (tex2D(vert, texCoord).rgb - 0.5);
+	
+	float h = (horizSample.r + horizSample.g + horizSample.b) / 3;
+	float v = (vertSample.r + vertSample.g + vertSample.b) / 3;
+	
+	float o = (atan2(v, h) + pi) / (2*pi);
+	colorOut = float4(o, o, o, 1);
 
-	colorOut = float4(horizSample + vertSample, 1.0);
+//	colorOut = float4(horizSample + vertSample, 1.0);
 }
