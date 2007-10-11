@@ -3,8 +3,12 @@
 #include "dataunit.h"
 
 #include <QGLFramebufferObject>
-#include <GL/gl.h>
+
+#ifdef Q_OS_DARWIN
+#include <OpenGL/glext.h>
+#else
 #include <GL/glext.h>
+#endif
 
 DataUnit::DataUnit(uint textureId)
 	: m_type(Input),

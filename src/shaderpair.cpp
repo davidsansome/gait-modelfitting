@@ -29,7 +29,7 @@ CGprogram ShaderPair::loadShader(const QString& fileName, CGprofile profile)
 {
 	QFile file(fileName);
 	if (!file.open(QIODevice::ReadOnly))
-		throw "Could not open file " + fileName;
+		qFatal("Could not open file %s", fileName.toAscii().data());
 	
 	// Load and null terminate the program source
 	char* source = new char[file.size() + 1];
@@ -40,7 +40,7 @@ CGprogram ShaderPair::loadShader(const QString& fileName, CGprofile profile)
 	if (program)
 		cgGLLoadProgram(program);
 	else
-		throw "Error loading Cg program " + fileName;
+		qFatal("Error loading Cg program %s", fileName.toAscii().data());
 
 	delete[] source;
 	return program;

@@ -3,7 +3,13 @@
 
 class QGLFramebufferObject;
 
-typedef unsigned int uint;
+#include <QtGlobal>
+
+#ifdef Q_OS_DARWIN
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
 class DataUnit
 {
@@ -30,7 +36,7 @@ public:
 	void releaseOutput();
 
 private:
-	uint m_textureId;
+	GLuint m_textureId;
 	QGLFramebufferObject* m_fbo;
 	int m_type;
 };
