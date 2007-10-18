@@ -1,0 +1,60 @@
+\documentclass[a4paper,10pt]{article}
+
+\oddsidemargin  0.0in
+\evensidemargin 0.0in
+\textwidth      6.0in
+\headheight     0.0in
+\topmargin      0.0in
+\textheight     9.0in
+
+\title{An Investigation into the Generation of 3D Skeletal Models from Silhouettes, and their use in Gait Recognition and Computer Game Animation}
+\author{David Sansome \\
+Project Supervisor: Professor M. S. Nixon}
+
+
+\begin{document}
+
+\maketitle
+
+\noindent\textbf{Project Brief}
+
+\
+
+This project shall be split into two main parts: the automatic generation of a 3D model of a person's walk from a set of silhouettes,
+and research into the possible uses of these models in two application areas - gait recognition and computer game animation.
+
+The aim is to have the 3D models generated and displayed on a computer screen in realtime.
+In the case of the Southampton Gait Tunnel, a person walking through might be able to watch a generated
+model of himself being updated in realtime as he walked.
+For this to be possible, efficient algorithms and programming techniques must be selected and used.
+
+These skeletal models will be useful in improving gait recognition technologies.
+Charactistics of the models that differ between each person, and can be used to create a gait signature,
+should be identified and extracted.
+Comparison of these signatures should allow the system to differentiate between two people walking through
+the Southampton Gait Tunnel.
+
+Another possible application area is computer game animation.
+Creating animations for computer game characters is typically a long and highly manual process.
+It would be useful to be able to create animations for a character from data gathered from silhouettes of
+a real person walking, or performing other actions.
+
+\
+
+\noindent\textbf{Goals}
+
+\begin{enumerate}
+	\item Create an application that processes several silhouettes of a walking figure from different viewing angles,
+		and generates a simple 3D skeletal model.
+		This model should feature at least the most basic joints (ankle, knee, hip),
+		with the angles between the limbs being derived from the silhouettes.
+	\item Investigate ways to make the process above real-time,
+		or as close to real-time as is possible while analysing the motion of points over several frames.
+	\item Produce a low-dimensional data-set from the model containing information that may be used to uniquely
+		identify the person represented by the silhouette.
+	\item Investigate any benefit gained from including other joints in the skeletal model.
+	\item Investigate how this 3D model may be useful for creating more lifelike animations in computer games.
+\end{enumerate}
+
+
+\end{document}
