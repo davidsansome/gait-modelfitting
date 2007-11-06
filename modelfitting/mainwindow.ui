@@ -1,0 +1,43 @@
+<ui version="4.0" >
+ <class>MainWindow</class>
+ <widget class="QDialog" name="MainWindow" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1006</width>
+    <height>746</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Model Fitter</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="leftMargin" >
+    <number>0</number>
+   </property>
+   <property name="topMargin" >
+    <number>0</number>
+   </property>
+   <property name="rightMargin" >
+    <number>0</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="GLView" native="1" name="glview" />
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GLView</class>
+   <extends>QWidget</extends>
+   <header>glview.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
