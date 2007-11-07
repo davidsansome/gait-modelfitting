@@ -30,6 +30,7 @@ ENDIF (NOT V4D_LIBRARY OR NOT V4D_INCLUDE_DIR)
 
 # Source files
 SET(MODELFITTING-SOURCES
+	mesh_gl.cc
 	main.cpp
 	mainwindow.cpp
 	glview.cpp
