@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
-#include "mesh.hh"
+#include <mesh.hh>
+#include "analysis.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -8,7 +9,8 @@
 
 MainWindow::MainWindow()
 	: QDialog(NULL),
-	  m_mesh(NULL)
+	  m_mesh(NULL),
+	  m_voxelSpace(NULL)
 {
 	m_ui.setupUi(this);
 	
@@ -35,10 +37,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::clearMesh()
 {
-	if (!m_mesh)
-		return;
-	m_mesh->draw_destroy();
+	if (m_mesh)
+		m_mesh->draw_destroy();
 	delete m_mesh;
+	delete m_voxelSpace;
 }
 
 void MainWindow::openMesh()
@@ -53,9 +55,9 @@ void MainWindow::openMesh()
 	m_openDir = fileInfo.path();
 	m_settings.setValue("OpenDir", m_openDir);
 	
-	Voxel_Space spc(fileName.toAscii().data());
 	clearMesh();
-	m_mesh = new Mesh(spc);
+	m_voxelSpace = new Voxel_Space(fileName.toAscii().data());
+	m_mesh = new Mesh(*m_voxelSpace);
 	m_mesh->draw_init(true);
 	
 	m_ui.front->setMesh(m_mesh);
@@ -76,5 +78,7 @@ void MainWindow::updateViews()
 
 void MainWindow::findCenter()
 {
+	Analysis analysis(m_voxelSpace);
+	analysis.findCenter();
 }
 

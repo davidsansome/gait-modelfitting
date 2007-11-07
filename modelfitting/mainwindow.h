@@ -29,6 +29,7 @@ private:
 	QTimer* m_redrawTimer;
 	QSettings m_settings;
 	
+	Voxel_Space* m_voxelSpace;
 	Mesh* m_mesh;
 };
 

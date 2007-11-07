@@ -34,6 +34,7 @@ SET(MODELFITTING-SOURCES
 	main.cpp
 	mainwindow.cpp
 	glview.cpp
+	analysis.cpp
 )
 
 # Header files that have Q_OBJECT in

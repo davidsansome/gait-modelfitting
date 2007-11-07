@@ -26,6 +26,8 @@ private:
 	void initializeGL();
 	void resizeGL(int width, int height);
 	void paintGL();
+	
+	void drawTunnel();
 
 	ViewType m_viewType;
 	float m_zoom;
