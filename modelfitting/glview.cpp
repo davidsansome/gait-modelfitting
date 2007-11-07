@@ -28,7 +28,23 @@ void GLView::setViewType(ViewType type)
 
 void GLView::initializeGL()
 {
+	static GLfloat pos1[4] = {500.0, -1000.0, 300.0, 1.0};
+	static GLfloat amb[4] = { 0.2, 0.2, 0.2, 1.0 };
+	static GLfloat diff[4] = { 0.7, 0.7, 0.7, 1.0 };
+	static GLfloat spec[4] = { 1.0, 1.0, 1.0, 1.0 };
+	static GLfloat gamb[4] = { 0.5, 0.5, 0.5, 1.0 };
+	
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_CULL_FACE);
+	
+	glLightfv(GL_LIGHT0, GL_AMBIENT, amb);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, spec);
+	glLightfv(GL_LIGHT0, GL_POSITION, pos1);
+	glLightModelfv (GL_LIGHT_MODEL_AMBIENT, gamb);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
 }
 
 void GLView::resizeGL(int width, int height)
