@@ -79,6 +79,11 @@ void MainWindow::updateViews()
 void MainWindow::findCenter()
 {
 	Analysis analysis(m_voxelSpace);
-	analysis.findCenter();
+	float2 center(analysis.findCenter());
+	
+	m_ui.front->setCenter(center);
+	m_ui.side->setCenter(center);
+	m_ui.overhead->setCenter(center);
+	m_ui.angle->setCenter(center);
 }
 

@@ -4,6 +4,8 @@
 #include <QGLWidget>
 #include <mesh.hh>
 
+#include "types.h"
+
 class GLView : public QGLWidget
 {
 	Q_OBJECT
@@ -21,6 +23,7 @@ public:
 	
 	void setMesh(Mesh* mesh);
 	void setViewType(ViewType type);
+	void setCenter(float2 center) { m_center = center; }
 
 private:
 	void initializeGL();
@@ -28,10 +31,13 @@ private:
 	void paintGL();
 	
 	void drawTunnel();
+	void drawCenter();
 
 	ViewType m_viewType;
 	float m_zoom;
 	Mesh* m_mesh;
+	
+	float2 m_center;
 	
 	static QGLWidget* s_contextWidget;
 

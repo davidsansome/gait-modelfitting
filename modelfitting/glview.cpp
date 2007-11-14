@@ -8,7 +8,8 @@ GLView::GLView(QWidget* parent)
 	: QGLWidget(parent, s_contextWidget),
 	  m_mesh(NULL),
 	  m_viewType(Front),
-	  m_zoom(1.0)
+	  m_zoom(1.0),
+	  m_center(floatn<2>(-1.0, -1.0))
 {
 	if (!s_contextWidget)
 		s_contextWidget = this;
@@ -21,6 +22,7 @@ GLView::~GLView()
 void GLView::setMesh(Mesh* mesh)
 {
 	m_mesh = mesh;
+	setCenter(floatn<2>(-1.0, -1.0));
 }
 
 void GLView::setViewType(ViewType type)
@@ -30,7 +32,6 @@ void GLView::setViewType(ViewType type)
 
 void GLView::initializeGL()
 {
-	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_CULL_FACE);
 	
@@ -46,7 +47,6 @@ void GLView::initializeGL()
 	glLightfv(GL_LIGHT0, GL_SPECULAR, spec);
 	glLightfv(GL_LIGHT0, GL_POSITION, pos1);
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, gamb);
-	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 }
 
@@ -115,17 +115,25 @@ void GLView::paintGL()
 	if (!m_mesh)
 		return;
 	
-	drawTunnel();
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
 	m_mesh->draw();
+	glDisable(GL_LIGHTING);
+	
+	drawTunnel();
+	
+	glDisable(GL_DEPTH_TEST);
+	drawCenter();
 }
 
 void GLView::drawTunnel()
 {
+	// TODO: Use the #defines above
 	static const float xExtent = 38.0;
 	static const float yExtent = 183.0;
 	static const float zExtent = 200.0;
 	
-	glColor3f(0.0, 1.0, 0.0);
+	glColor4f(0.0, 1.0, 0.0, 1.0);
 	
 	// Left side
 	glBegin(GL_LINE_LOOP);
@@ -154,4 +162,26 @@ void GLView::drawTunnel()
 		glVertex3f(-xExtent, -yExtent, zExtent);
 		glVertex3f(xExtent, -yExtent, zExtent);
 	glEnd();
+}
+
+void GLView::drawCenter()
+{
+	if (m_center[0] < 0.0)
+		return;
+	
+	glColor4f(1.0, 1.0, 1.0, 1.0);
+	
+	if (m_viewType == Overhead)
+	{
+		glBegin(GL_POINTS);
+			glVertex3f(m_center[0] - MAXX, m_center[1] - MAXY, 0);
+		glEnd();
+	}
+	else
+	{
+		glBegin(GL_LINES);
+			glVertex3f(m_center[0] - MAXX, m_center[1] - MAXY, 0);
+			glVertex3f(m_center[0] - MAXX, m_center[1] - MAXY, MAXZ*2.0);
+		glEnd();
+	}
 }

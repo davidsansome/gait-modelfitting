@@ -8,6 +8,7 @@ class QTimer;
 class Mesh;
 
 #include "ui_mainwindow.h"
+#include "types.h"
 
 class MainWindow : public QDialog
 {
