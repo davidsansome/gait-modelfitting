@@ -23,7 +23,7 @@ public:
 	
 	void setMesh(Mesh* mesh);
 	void setViewType(ViewType type);
-	void setCenter(float2 center) { m_center = center; }
+	void setCenter(const float2& center) { m_center = center; }
 
 private:
 	void initializeGL();

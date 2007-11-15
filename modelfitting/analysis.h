@@ -11,10 +11,15 @@ public:
 	Analysis(Voxel_Space* vspace);
 	~Analysis();
 
-	float2 findCenter();
+	void doStuff();
+	
+	const float2& center() const { return m_center; }
 
 private:
 	Voxel_Space* m_vspace;
+	
+	int m_highest;
+	float2 m_center;
 };
 
 #endif
