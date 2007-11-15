@@ -85,6 +85,7 @@ void MainWindow::updateViews()
 
 void MainWindow::findCenter()
 {
+	delete info;
 	FrameInfo* info = new FrameInfo(m_voxelSpace);
 	info->analyse();
 	
