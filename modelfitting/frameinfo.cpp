@@ -1,20 +1,20 @@
-#include "analysis.h"
+#include "frameinfo.h"
 
 #include <QDebug>
 #include <QTime>
 
 #include <vspace.hh>
 
-Analysis::Analysis(Voxel_Space* vspace)
+FrameInfo::FrameInfo(Voxel_Space* vspace)
 	: m_vspace(vspace)
 {
 }
 
-Analysis::~Analysis()
+FrameInfo::~FrameInfo()
 {
 }
 
-void Analysis::doStuff()
+void FrameInfo::analyse()
 {
 	QTime t;
 	t.start();
@@ -47,7 +47,7 @@ void Analysis::doStuff()
 	m_highest = highest;
 	m_center = floatn<2>(float(xTotal)/i, float(yTotal)/i);
 	
-	qDebug() << "Analysis took" << t.elapsed() << "ms";
+	qDebug() << "FrameInfo took" << t.elapsed() << "ms";
 }
 
 

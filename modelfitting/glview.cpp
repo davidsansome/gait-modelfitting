@@ -1,4 +1,5 @@
 #include "glview.h"
+#include "frameinfo.h"
 
 #include <QDebug>
 
@@ -7,9 +8,9 @@ QGLWidget* GLView::s_contextWidget = NULL;
 GLView::GLView(QWidget* parent)
 	: QGLWidget(parent, s_contextWidget),
 	  m_mesh(NULL),
+	  m_frameInfo(NULL),
 	  m_viewType(Front),
-	  m_zoom(1.0),
-	  m_center(floatn<2>(-1.0, -1.0))
+	  m_zoom(1.0)
 {
 	if (!s_contextWidget)
 		s_contextWidget = this;
@@ -22,7 +23,7 @@ GLView::~GLView()
 void GLView::setMesh(Mesh* mesh)
 {
 	m_mesh = mesh;
-	setCenter(floatn<2>(-1.0, -1.0));
+	m_frameInfo = NULL;
 }
 
 void GLView::setViewType(ViewType type)
@@ -123,7 +124,7 @@ void GLView::paintGL()
 	drawTunnel();
 	
 	glDisable(GL_DEPTH_TEST);
-	drawCenter();
+	drawInfo();
 }
 
 void GLView::drawTunnel()
@@ -164,24 +165,27 @@ void GLView::drawTunnel()
 	glEnd();
 }
 
-void GLView::drawCenter()
+void GLView::drawInfo()
 {
-	if (m_center[0] < 0.0)
+	if (m_frameInfo == NULL)
 		return;
+	
+	const float2 center(m_frameInfo->center());
+	int highestPoint = m_frameInfo->highestPoint();
 	
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 	
 	if (m_viewType == Overhead)
 	{
 		glBegin(GL_POINTS);
-			glVertex3f(m_center[0] - MAXX, m_center[1] - MAXY, 0);
+			glVertex3f(center[0] - MAXX, center[1] - MAXY, 0);
 		glEnd();
 	}
 	else
 	{
 		glBegin(GL_LINES);
-			glVertex3f(m_center[0] - MAXX, m_center[1] - MAXY, 0);
-			glVertex3f(m_center[0] - MAXX, m_center[1] - MAXY, MAXZ*2.0);
+			glVertex3f(center[0] - MAXX, center[1] - MAXY, 0);
+			glVertex3f(center[0] - MAXX, center[1] - MAXY, highestPoint);
 		glEnd();
 	}
 }

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 #include <mesh.hh>
-#include "analysis.h"
+#include "frameinfo.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -10,7 +10,8 @@
 MainWindow::MainWindow()
 	: QDialog(NULL),
 	  m_mesh(NULL),
-	  m_voxelSpace(NULL)
+	  m_voxelSpace(NULL),
+	  m_frameInfo(NULL)
 {
 	m_ui.setupUi(this);
 	
@@ -39,8 +40,14 @@ void MainWindow::clearMesh()
 {
 	if (m_mesh)
 		m_mesh->draw_destroy();
+	
 	delete m_mesh;
 	delete m_voxelSpace;
+	delete m_frameInfo;
+	
+	m_mesh = NULL;
+	m_voxelSpace = NULL;
+	m_frameInfo = NULL;
 }
 
 void MainWindow::openMesh()
@@ -78,12 +85,12 @@ void MainWindow::updateViews()
 
 void MainWindow::findCenter()
 {
-	Analysis analysis(m_voxelSpace);
-	analysis.doStuff();
+	FrameInfo* info = new FrameInfo(m_voxelSpace);
+	info->analyse();
 	
-	m_ui.front->setCenter(analysis.center());
-	m_ui.side->setCenter(analysis.center());
-	m_ui.overhead->setCenter(analysis.center());
-	m_ui.angle->setCenter(analysis.center());
+	m_ui.front->setFrameInfo(info);
+	m_ui.side->setFrameInfo(info);
+	m_ui.overhead->setFrameInfo(info);
+	m_ui.angle->setFrameInfo(info);
 }
 

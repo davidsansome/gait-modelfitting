@@ -6,6 +6,8 @@
 
 #include "types.h"
 
+class FrameInfo;
+
 class GLView : public QGLWidget
 {
 	Q_OBJECT
@@ -23,7 +25,7 @@ public:
 	
 	void setMesh(Mesh* mesh);
 	void setViewType(ViewType type);
-	void setCenter(const float2& center) { m_center = center; }
+	void setFrameInfo(const FrameInfo* frameInfo) { m_frameInfo = frameInfo; }
 
 private:
 	void initializeGL();
@@ -31,13 +33,13 @@ private:
 	void paintGL();
 	
 	void drawTunnel();
-	void drawCenter();
+	void drawInfo();
 
 	ViewType m_viewType;
 	float m_zoom;
-	Mesh* m_mesh;
 	
-	float2 m_center;
+	Mesh* m_mesh;
+	const FrameInfo* m_frameInfo;
 	
 	static QGLWidget* s_contextWidget;
 

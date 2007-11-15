@@ -5,15 +5,16 @@
 
 class Voxel_Space;
 
-class Analysis
+class FrameInfo
 {
 public:
-	Analysis(Voxel_Space* vspace);
-	~Analysis();
+	FrameInfo(Voxel_Space* vspace);
+	~FrameInfo();
 
-	void doStuff();
+	void analyse();
 	
 	const float2& center() const { return m_center; }
+	int highestPoint() const { return m_highest; }
 
 private:
 	Voxel_Space* m_vspace;
