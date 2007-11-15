@@ -1,6 +1,7 @@
 #include "analysis.h"
 
 #include <QDebug>
+#include <QTime>
 
 #include <vspace.hh>
 
@@ -15,6 +16,9 @@ Analysis::~Analysis()
 
 void Analysis::doStuff()
 {
+	QTime t;
+	t.start();
+	
 	unsigned long long xTotal = 0;
 	unsigned long long yTotal = 0;
 	unsigned int i = 0;
@@ -42,6 +46,8 @@ void Analysis::doStuff()
 	
 	m_highest = highest;
 	m_center = floatn<2>(float(xTotal)/i, float(yTotal)/i);
+	
+	qDebug() << "Analysis took" << t.elapsed() << "ms";
 }
 
 
