@@ -2,6 +2,9 @@
 
 #include <mesh.hh>
 #include "frameinfo.h"
+#include "imgprocessing.h"
+#include "filter.h"
+#include "convolution.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -27,6 +30,10 @@ MainWindow::MainWindow()
 	m_redrawTimer->setSingleShot(true);
 	connect(m_redrawTimer, SIGNAL(timeout()), SLOT(updateViews()));
 	m_redrawTimer->start(0);
+	
+	m_imgProcessing = new ImgProcessing(NULL, m_ui.front);
+	connect(m_imgProcessing, SIGNAL(setupReady()), SLOT(initializeGL()));
+	m_imgProcessing->show();
 	
 	m_openDir = m_settings.value("OpenDir", QDir::homePath()).toString();
 }
@@ -93,5 +100,13 @@ void MainWindow::findCenter()
 	m_ui.side->setFrameInfo(m_frameInfo);
 	m_ui.overhead->setFrameInfo(m_frameInfo);
 	m_ui.angle->setFrameInfo(m_frameInfo);
+}
+
+void MainWindow::initializeGL()
+{
+	Filter* thigh = new Filter("filters/thigh.filter"); // TODO: Not cleaned up
+	m_imgProcessing->resize(640, 480);
+	m_imgProcessing->setFilterSet(new Convolution(thigh));
+	m_imgProcessing->update();
 }
 

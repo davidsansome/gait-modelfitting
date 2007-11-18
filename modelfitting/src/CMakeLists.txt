@@ -6,12 +6,17 @@ SET(MODELFITTING-SOURCES
 	glview.cpp
 	frameinfo.cpp
 	filter.cpp
+	shaderpair.cpp
+	convolution.cpp
+	dataunit.cpp
+	imgprocessing.cpp
 )
 
 # Header files that have Q_OBJECT in
 SET(MODELFITTING-MOC-HEADERS
 	mainwindow.h
 	glview.h
+	imgprocessing.h
 )
 
 # UI files

@@ -123,6 +123,12 @@ void GLView::paintGL()
 	
 	drawTunnel();
 	
+	glPushMatrix();
+		glTranslatef(0.0, 0.0, 100.0);
+		glScalef(50.0, 50.0, 50.0);
+		drawTestCube();
+	glPopMatrix();
+	
 	glDisable(GL_DEPTH_TEST);
 	drawInfo();
 }
@@ -162,6 +168,47 @@ void GLView::drawTunnel()
 		glVertex3f(xExtent, yExtent, zExtent);
 		glVertex3f(-xExtent, -yExtent, zExtent);
 		glVertex3f(xExtent, -yExtent, zExtent);
+	glEnd();
+}
+
+void GLView::drawTestCube()
+{
+	glBegin(GL_QUADS);
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(-0.5f, 0.5f, -0.5f);
+		glVertex3f(0.5f, 0.5f, -0.5f);
+		glVertex3f(0.5f, 0.5f, 0.5f);
+		glVertex3f(-0.5f, 0.5f, 0.5f);
+
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(-0.5f, 0.5f, 0.5f);
+		glVertex3f(0.5f, 0.5f, 0.5f);
+		glVertex3f(0.5f, -0.5f, 0.5f);
+		glVertex3f(-0.5f, -0.5f, 0.5f);
+
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(-0.5f, -0.5f, 0.5f);
+		glVertex3f(0.5f, -0.5f, 0.5f);
+		glVertex3f(0.5f, -0.5f, -0.5f);
+		glVertex3f(-0.5f, -0.5f, -0.5f);
+
+		glColor3f(1.0f, 1.0f, 0.0f);
+		glVertex3f(-0.5f, -0.5f, -0.5f);
+		glVertex3f(0.5f, -0.5f, -0.5f);
+		glVertex3f(0.5f, 0.5f, -0.5f);
+		glVertex3f(-0.5f, 0.5f, -0.5f);
+
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glVertex3f(-0.5f, 0.5f, -0.5f);
+		glVertex3f(-0.5f, 0.5f, 0.5f);
+		glVertex3f(-0.5f, -0.5f, 0.5f);
+		glVertex3f(-0.5f, -0.5f, -0.5f);
+
+		glColor3f(0.0f, 1.0f, 1.0f);
+		glVertex3f(0.5f, 0.5f, 0.5f);
+		glVertex3f(0.5f, 0.5f, -0.5f);
+		glVertex3f(0.5f, -0.5f, -0.5f);
+		glVertex3f(0.5f, -0.5f, 0.5f);
 	glEnd();
 }
 

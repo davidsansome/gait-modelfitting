@@ -26,6 +26,8 @@ public:
 	void setMesh(Mesh* mesh);
 	void setViewType(ViewType type);
 	void setFrameInfo(const FrameInfo* frameInfo) { m_frameInfo = frameInfo; }
+	
+	static QGLWidget* s_contextWidget;
 
 private:
 	void initializeGL();
@@ -34,15 +36,13 @@ private:
 	
 	void drawTunnel();
 	void drawInfo();
+	void drawTestCube();
 
 	ViewType m_viewType;
 	float m_zoom;
 	
 	Mesh* m_mesh;
 	const FrameInfo* m_frameInfo;
-	
-	static QGLWidget* s_contextWidget;
-
 };
 
 #endif
