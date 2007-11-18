@@ -5,6 +5,7 @@ SET(MODELFITTING-SOURCES
 	mainwindow.cpp
 	glview.cpp
 	frameinfo.cpp
+	filter.cpp
 )
 
 # Header files that have Q_OBJECT in
