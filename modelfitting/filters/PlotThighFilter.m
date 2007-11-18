@@ -6,7 +6,7 @@ cx = max(size(x));
 cy = max(size(y));
 cz = max(size(z));
 
-file = fopen('thigh.filter', 'w');
+[file, message] = fopen('thigh.filter', 'w', 'ieee-be');
 fwrite(file, cx, 'uint8');
 fwrite(file, cy, 'uint8');
 fwrite(file, cz, 'uint8');
