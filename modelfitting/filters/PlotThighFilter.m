@@ -13,12 +13,12 @@ fwrite(file, cz, 'uint8');
 
 total = 0;
 data = zeros(cx, cy, cz);
-for nx = 1:cx
+for nz = 1:cz
     for ny = 1:cy
-        for nz = 1:cz
+        for nx = 1:cx
             d = ThighFilter(x(nx), y(ny), nz/cz);
             total = total + d;
-            %data(nx, ny, nz) = d;
+            data(nx, ny, nz) = d;
             fwrite(file, d, 'float32');
         end
     end
@@ -27,6 +27,6 @@ end
 fwrite(file, total, 'float32');
 fclose(file);
 
-%contour(x,y,data(:,:,1))
+contour(x,y,data(:,:,1))
 
 'Done'
