@@ -5,11 +5,12 @@
 
 class Filter;
 class ShaderPair;
+class FrameInfo;
 
 class Convolution : public FilterSet
 {
 public:
-	Convolution(Filter* filter);
+	Convolution(Filter* filter, FrameInfo* info);
 	~Convolution();
 
 	void init(CGcontext context, CGprofile vertProfile, CGprofile fragProfile, const QSize& imageSize);
@@ -24,6 +25,7 @@ private:
 
 	DataUnit* m_output;
 	Filter* m_filter;
+	FrameInfo* m_info;
 
 	QSize m_imageSize;
 };

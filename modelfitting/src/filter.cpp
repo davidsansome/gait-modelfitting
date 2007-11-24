@@ -12,22 +12,30 @@ Filter::Filter(const QString& fileName)
 	if (!file.open(QIODevice::ReadOnly))
 		qFatal("Failed to open file %s\n", fileName.toAscii().data());
 	
-	QDataStream s(&file);
-	s.setByteOrder(QDataStream::BigEndian);
+	QDataStream stream(&file);
+	stream.setByteOrder(QDataStream::BigEndian);
 	
 	// Read the filter size
-	s >> m_xSize >> m_ySize >> m_zSize;
+	stream >> m_xSize >> m_ySize >> m_zSize;
+	qDebug() << m_xSize << m_ySize << m_zSize;
 	
 	// Read the data
-	m_data = new float[m_xSize * m_ySize * m_zSize];
+	float* data = new float[m_xSize * m_ySize * m_zSize];
 	for (int z=0 ; z<m_zSize ; ++z)
 		for (int y=0 ; y<m_ySize ; ++y)
 			for (int x=0 ; x<m_xSize ; ++x)
-				s >> m_data[z*m_zSize + y*m_ySize + x];
-	
+				stream >> data[z*m_ySize*m_xSize + y*m_xSize + x];
+
+	// Load it into an opengl texture
 	glGenTextures(1, &m_texture);
 	glBindTexture(GL_TEXTURE_3D, m_texture);
-	gluBuild3DMipmaps(GL_TEXTURE_3D, GL_RGBA, m_xSize, m_ySize, m_zSize, GL_RED, GL_FLOAT, m_data);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	gluBuild3DMipmaps(GL_TEXTURE_3D, GL_RGB, m_xSize, m_ySize, m_zSize, GL_RED, GL_FLOAT, data);
 }
 
 Filter::~Filter()

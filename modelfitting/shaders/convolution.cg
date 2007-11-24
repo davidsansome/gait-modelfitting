@@ -1,7 +1,70 @@
+const float PI = 3.14159265;
+const float maxSteps = 20;
+
+float4x4 rotateAbout(float theta, float3 point)
+{
+	float x = point.x;
+	float y = point.y;
+	float z = point.z;
+	
+	float c = cos(theta);
+	float s = sin(theta);
+	
+	/*float4x4 ret =
+	{
+		{1, 0, 0,  0},
+		{0, c, -s, y - c*y - (-s)*z},
+		{0, s, c,  z - s*y - c*z},
+		{0, 0, 0,  1}
+	};*/
+	
+	float4x4 ret =
+	{
+		{1, 0, 0,  0},
+		{0, c, -s, 0},
+		{0, s, c,  0},
+		{0, 0, 0,  1}
+	};
+	return ret;
+}
+
 void main(in float2 texCoord : TEXCOORD0,
           out float4 colorOut : COLOR0,
+          uniform float4x4 matrix,
+          uniform float3 rotPoint,
           uniform sampler3D filter : TEXUNIT0,
+          uniform sampler3D voxelSpace : TEXUNIT1,
           uniform float pixelStep)
 {
-	colorOut = float4(1,0,0,1);
+	float theta = texCoord.x * PI/4 - PI/8;
+	
+	float4x4 newMatrix = mul(rotateAbout(theta, rotPoint), matrix);
+	
+	float total = 0.0;
+	float filterTotal = 0.0;
+	
+	for (int x=0 ; x<maxSteps ; ++x)
+	{
+		for (int y=0 ; y<maxSteps ; ++y)
+		{
+			for (int z=0 ; z<maxSteps ; ++z)
+			{
+				float3 filterPos =
+				{
+					float(x) / float(maxSteps-1),
+					float(y) / float(maxSteps-1),
+					float(z) / float(maxSteps-1)
+				};
+				
+				float3 voxelPos = mul(newMatrix, float4(filterPos, 1.0)).xyz;
+				
+				float filterValue = tex3D(filter, filterPos).r;
+				float voxelValue = tex3D(voxelSpace, voxelPos).r;
+				total += filterValue * voxelValue;
+				filterTotal += filterValue;
+			}
+		}
+	}
+	
+	colorOut = float4(total/filterTotal,0,0,1);
 }

@@ -104,6 +104,7 @@ void ImgProcessing::paintGL()
 		glFlush();
 		m_filterSet->release(i);
 	}
+	qDebug() << "Drew frame";
 }
 
 void ImgProcessing::drawRect()
