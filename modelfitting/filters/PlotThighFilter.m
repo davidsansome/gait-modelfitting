@@ -16,7 +16,7 @@ data = zeros(cx, cy, cz);
 for nz = 1:cz
     for ny = 1:cy
         for nx = 1:cx
-            d = ThighFilter(x(nx), y(ny), nz/cz);
+            d = ThighFilter(x(nx), y(ny), 1 - nz/cz);
             total = total + d;
             data(nx, ny, nz) = d;
             fwrite(file, d, 'float32');

@@ -4,9 +4,9 @@ function v = ThighFilter(x,y,z)
 
 % Constants
 rT = 0.5;  % radius of thigh
-a = 1.5;   % ellipse y stretch
-b = 0.2;   % ellipse x stretch
-minAbMod = 0.3;
+a = 0.2;   % ellipse x stretch
+b = 1.5;   % ellipse y stretch
+minAbMod = 0.25;
 
 % Add thigh radius to ellipse
 abMod = (1.0-minAbMod)*(1.0-z) + minAbMod;
