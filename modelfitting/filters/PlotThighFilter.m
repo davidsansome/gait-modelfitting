@@ -27,6 +27,6 @@ end
 fwrite(file, total, 'float32');
 fclose(file);
 
-contour(x,y,data(:,:,1))
+contour(x,y,data(:,:,20))
 
 'Done'
