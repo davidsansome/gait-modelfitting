@@ -1,4 +1,5 @@
 #include "frameinfo.h"
+#include "convolution.h"
 
 #include <QDebug>
 #include <QTime>
@@ -86,6 +87,14 @@ void FrameInfo::bindTexture(int texUnit)
 	glActiveTexture(GL_TEXTURE0 + texUnit);
 	glEnable(GL_TEXTURE_3D);
 	glBindTexture(GL_TEXTURE_3D, m_texture);
+}
+
+void FrameInfo::setThighOrientation(Convolution* convolution)
+{
+	QPointF orientation(convolution->mean());
+	m_thighTheta = orientation.x();
+	//m_thighAlpha = orientation.y();
+	m_thighAlpha = 0.0;
 }
 
 

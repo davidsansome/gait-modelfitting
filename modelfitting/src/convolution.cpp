@@ -4,8 +4,10 @@
 #include "filter.h"
 #include "frameinfo.h"
 #include <vspace.hh>
+#include <math.h>
 
 #include <QGLFramebufferObject>
+#include <QDebug>
 
 #define THIGH_XEXTENT 30.0
 #define THIGH_YEXTENT 30.0
@@ -21,6 +23,7 @@ Convolution::Convolution(Filter* filter, FrameInfo* info)
 Convolution::~Convolution()
 {
 	delete m_shaders;
+	delete m_fboDU;
 }
 
 void Convolution::thighTransform(const FrameInfo* info, bool scale, bool offsetCenter)
@@ -78,6 +81,9 @@ void Convolution::init(CGcontext context, CGprofile vertProfile, CGprofile fragP
 		param = cgGetNamedParameter(m_shaders->frag(), "rotPoint");
 		cgGLSetParameter3fv(param, rotPoint);
 	glPopMatrix();
+	
+	m_fbo = new QGLFramebufferObject(imageSize);
+	m_fboDU = new DataUnit(m_fbo);
 }
 
 void Convolution::setDataUnit(int index, DataUnit* du)
@@ -98,6 +104,12 @@ void Convolution::bind(int pass)
 			m_output->bindOutput();
 			m_shaders->bind();
 			break;
+		case 1:
+			m_filter->bind(0);
+			m_info->bindTexture(1);
+			m_fboDU->bindOutput();
+			m_shaders->bind();
+			break;
 	}
 }
 
@@ -108,7 +120,41 @@ void Convolution::release(int pass)
 		case 0:
 			m_output->releaseOutput();
 			break;
+		case 1:
+			m_fboDU->releaseOutput();
+			break;
 	}
+}
+
+QPointF Convolution::mean() const
+{
+	QImage result = m_fbo->toImage();
+	result.save("/home/david/test.png", "PNG");
+	
+	float totalX = 0.0;
+	float totalY = 0.0;
+	float totalIntensity = 0.0;
+	
+	int w = result.width();
+	int h = result.height();
+	for (int x=0 ; x<w ; ++x)
+	{
+		for (int y=0 ; y<h ; ++y)
+		{
+			float p = float(qRed(result.pixel(x, y))) / 255.0;
+			totalX += float(x) * p;
+			totalY += float(y) * p;
+			totalIntensity += p;
+		}
+	}
+	
+	qDebug() << totalX/totalIntensity;
+	
+	return QPointF
+	(
+		totalX/(w*totalIntensity) * (M_PI/2.0) - (M_PI/4.0),
+		totalY/(h*totalIntensity) * (M_PI/4.0) - (M_PI/8.0)
+	);
 }
 
 

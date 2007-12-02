@@ -41,7 +41,7 @@ void main(in float2 texCoord : TEXCOORD0,
 	float alpha = texCoord.y * PI/4 - PI/8;
 	
 	float4x4 newMatrix = mul(rotateX(theta), matrix);
-	newMatrix = mul(rotateY(alpha), newMatrix);
+	//newMatrix = mul(rotateY(alpha), newMatrix);
 	
 	float total = 0.0;
 	float filterTotal = 0.0;

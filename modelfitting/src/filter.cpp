@@ -36,17 +36,12 @@ Filter::Filter(const QString& fileName)
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	gluBuild3DMipmaps(GL_TEXTURE_3D, GL_RGB, m_xSize, m_ySize, m_zSize, GL_RED, GL_FLOAT, data);
+	delete data;
 }
 
 Filter::~Filter()
 {
 	glDeleteTextures(1, &m_texture);
-	delete[] m_data;
-}
-
-float Filter::get(int x, int y, int z) const
-{
-	return m_data[z*m_zSize + y*m_ySize + x];
 }
 
 void Filter::bind(int texUnit)

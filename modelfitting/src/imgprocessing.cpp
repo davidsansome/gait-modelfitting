@@ -28,8 +28,12 @@ void ImgProcessing::setFilterSet(FilterSet* filterSet)
 {
 	delete m_filterSet;
 	m_filterSet = filterSet;
-	m_filterSet->init(m_cgContext, m_vertProfile, m_fragProfile, size());
-	m_filterSet->setDataUnit(1, m_framebuffer);
+	
+	if (filterSet != NULL)
+	{
+		m_filterSet->init(m_cgContext, m_vertProfile, m_fragProfile, size());
+		m_filterSet->setDataUnit(1, m_framebuffer);
+	}
 }
 
 void errorHandler(CGcontext context, CGerror error, void*)

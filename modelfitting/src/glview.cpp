@@ -252,7 +252,8 @@ void GLView::drawInfo()
 	glPushMatrix();
 		glTranslatef(MINX, MINY, 0.0);
 		Convolution::thighTransform(m_frameInfo, false, false);
-		glRotatef(-45.0, 1.0, 0.0, 0.0);
+		glRotatef(m_frameInfo->thighTheta() / M_PI * 180.0, 1.0, 0.0, 0.0);
+		glRotatef(m_frameInfo->thighAlpha() / M_PI * 180.0, 0.0, 1.0, 0.0);
 		gluCylinder(m_quadric, baseRadius, topRadius, 1.0, 10, 10);
 	glPopMatrix();
 }

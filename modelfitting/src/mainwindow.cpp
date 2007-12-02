@@ -102,9 +102,15 @@ void MainWindow::findCenter()
 	m_ui.overhead->setFrameInfo(m_frameInfo);
 	m_ui.angle->setFrameInfo(m_frameInfo);
 	
-	Filter* thigh = new Filter("filters/thigh.filter"); // TODO: Not cleaned up
-	m_imgProcessing->setFilterSet(new Convolution(thigh, m_frameInfo));
-	m_imgProcessing->update();
+	Filter* thigh = new Filter("filters/thigh.filter");
+	Convolution* convolution = new Convolution(thigh, m_frameInfo);
+	m_imgProcessing->resize(128, 128);
+	m_imgProcessing->setFilterSet(convolution);
+	m_imgProcessing->paintGL();
+	m_frameInfo->setThighOrientation(convolution);
+	m_imgProcessing->setFilterSet(NULL);
+	
+	delete thigh;
 }
 
 void MainWindow::initializeGL()

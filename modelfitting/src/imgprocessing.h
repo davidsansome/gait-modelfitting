@@ -18,6 +18,8 @@ class ImgProcessing : public QGLWidget
 public:
 	ImgProcessing(QWidget* parent, const QGLWidget* shareWidget);
 	~ImgProcessing();
+	
+	void paintGL();
 
 public slots:
 	void setFilterSet(FilterSet* filterSet);
@@ -28,7 +30,6 @@ signals:
 private:
 	void initializeGL();
 	void resizeGL(int w, int h);
-	void paintGL();
 
 	void setShadersEnabled(bool enabled);
 	void drawRect();
