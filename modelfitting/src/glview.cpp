@@ -1,5 +1,6 @@
 #include "glview.h"
 #include "frameinfo.h"
+#include "convolution.h"
 
 #include <QDebug>
 
@@ -34,7 +35,7 @@ void GLView::setViewType(ViewType type)
 void GLView::initializeGL()
 {
 	glEnable(GL_NORMALIZE);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	
 	// Lighting
 	static GLfloat pos1[4] = {500.0, -1000.0, 300.0, 1.0};
@@ -49,6 +50,8 @@ void GLView::initializeGL()
 	glLightfv(GL_LIGHT0, GL_POSITION, pos1);
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, gamb);
 	glEnable(GL_LIGHT0);
+	
+	m_quadric = gluNewQuadric();
 }
 
 #define MAXX 38.0
@@ -123,11 +126,11 @@ void GLView::paintGL()
 	
 	drawTunnel();
 	
-	glPushMatrix();
+	/*glPushMatrix();
 		glTranslatef(0.0, 0.0, 100.0);
 		glScalef(50.0, 50.0, 50.0);
 		drawTestCube();
-	glPopMatrix();
+	glPopMatrix();*/
 	
 	glDisable(GL_DEPTH_TEST);
 	drawInfo();
@@ -235,4 +238,21 @@ void GLView::drawInfo()
 			glVertex3f(center[0] - MAXX, center[1] - MAXY, highestPoint);
 		glEnd();
 	}
+	
+	// These match the values in ThighFilter.m
+	float rT = 1.0;
+	float a = 0.2;
+	float b = 0.5;
+	float minAbMod = 0.25;
+	float extent = 4.0;
+	
+	float baseRadius = (minAbMod * a + rT) / extent;
+	float topRadius = (a + rT) / extent;
+	
+	glPushMatrix();
+		glTranslatef(MINX, MINY, 0.0);
+		Convolution::thighTransform(m_frameInfo, false, false);
+		glRotatef(-45.0, 1.0, 0.0, 0.0);
+		gluCylinder(m_quadric, baseRadius, topRadius, 1.0, 10, 10);
+	glPopMatrix();
 }

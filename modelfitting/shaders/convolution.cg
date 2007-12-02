@@ -1,29 +1,30 @@
 const float PI = 3.14159265;
-const float maxSteps = 20;
+const float maxSteps = 10;
 
-float4x4 rotateAbout(float theta, float3 point)
+float4x4 rotateX(float a)
 {
-	float x = point.x;
-	float y = point.y;
-	float z = point.z;
-	
-	float c = cos(theta);
-	float s = sin(theta);
-	
-	/*float4x4 ret =
-	{
-		{1, 0, 0,  0},
-		{0, c, -s, y - c*y - (-s)*z},
-		{0, s, c,  z - s*y - c*z},
-		{0, 0, 0,  1}
-	};*/
-	
+	float c = cos(a);
+	float s = sin(a);
 	float4x4 ret =
 	{
 		{1, 0, 0,  0},
 		{0, c, -s, 0},
 		{0, s, c,  0},
 		{0, 0, 0,  1}
+	};
+	return ret;
+}
+
+float4x4 rotateY(float a)
+{
+	float c = cos(a);
+	float s = sin(a);
+	float4x4 ret =
+	{
+		{c,  0, s, 0},
+		{0,  1, 0, 0},
+		{-s, 0, c, 0},
+		{0,  0, 0, 1}
 	};
 	return ret;
 }
@@ -36,9 +37,11 @@ void main(in float2 texCoord : TEXCOORD0,
           uniform sampler3D voxelSpace : TEXUNIT1,
           uniform float pixelStep)
 {
-	float theta = texCoord.x * PI/4 - PI/8;
+	float theta = texCoord.x * PI/2 - PI/4;
+	float alpha = texCoord.y * PI/4 - PI/8;
 	
-	float4x4 newMatrix = mul(rotateAbout(theta, rotPoint), matrix);
+	float4x4 newMatrix = mul(rotateX(theta), matrix);
+	newMatrix = mul(rotateY(alpha), newMatrix);
 	
 	float total = 0.0;
 	float filterTotal = 0.0;

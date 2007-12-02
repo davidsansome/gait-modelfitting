@@ -19,6 +19,8 @@ public:
 	int passCount() const { return 1; }
 	void bind(int pass);
 	void release(int pass);
+	
+	static void thighTransform(const FrameInfo* info, bool scale = true, bool offsetCenter = true);
 
 private:
 	ShaderPair* m_shaders;

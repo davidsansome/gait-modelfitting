@@ -103,7 +103,6 @@ void MainWindow::findCenter()
 	m_ui.angle->setFrameInfo(m_frameInfo);
 	
 	Filter* thigh = new Filter("filters/thigh.filter"); // TODO: Not cleaned up
-	m_imgProcessing->resize(640, 480);
 	m_imgProcessing->setFilterSet(new Convolution(thigh, m_frameInfo));
 	m_imgProcessing->update();
 }

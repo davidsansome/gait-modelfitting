@@ -3,6 +3,7 @@
 
 #include <QGLWidget>
 #include <mesh.hh>
+#include <GL/glu.h>
 
 #include "types.h"
 
@@ -43,6 +44,8 @@ private:
 	
 	Mesh* m_mesh;
 	const FrameInfo* m_frameInfo;
+	
+	GLUquadric* m_quadric;
 };
 
 #endif
