@@ -5,6 +5,8 @@
 #include <QList>
 #include <QImage>
 
+#include <svl/SVL.h>
+
 class QPaintEvent;
 class QKeyEvent;
 
@@ -24,6 +26,8 @@ protected:
 	void keyPressEvent(QKeyEvent* e);
 	
 private:
+	QPoint sp(int i) const;
+	Vec2 spv(int i) const;
 	float continuityEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint);
 	float balloonEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint);
 	float externalEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint);
