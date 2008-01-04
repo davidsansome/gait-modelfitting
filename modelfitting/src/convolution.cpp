@@ -16,7 +16,9 @@
 Convolution::Convolution(Filter* filter, FrameInfo* info)
 	: FilterSet(),
 	  m_filter(filter),
-	  m_info(info)
+	  m_info(info),
+	  m_shaders(NULL),
+	  m_fboDU(NULL)
 {
 }
 

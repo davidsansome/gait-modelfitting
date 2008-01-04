@@ -3,6 +3,7 @@
 #include "imgprocessing.h"
 #include "filterset.h"
 #include "dataunit.h"
+#include "glview.h"
 
 #include <QImage>
 #include <QMessageBox>
@@ -11,11 +12,14 @@
 #include <QTimer>
 #include <QGLContext>
 
-ImgProcessing::ImgProcessing(QWidget* parent, const QGLWidget* shareWidget)
-	: QGLWidget(parent, shareWidget),
+ImgProcessing::ImgProcessing(QWidget* parent)
+	: QGLWidget(parent, GLView::s_contextWidget),
 	  m_filterSet(NULL)
 {
 	m_framebuffer = new DataUnit();
+	
+	if (GLView::s_contextWidget == NULL)
+		GLView::s_contextWidget = this;
 }
 
 ImgProcessing::~ImgProcessing()
@@ -109,6 +113,8 @@ void ImgProcessing::paintGL()
 		m_filterSet->release(i);
 	}
 	qDebug() << "Drew frame";
+	
+	setShadersEnabled(false);
 }
 
 void ImgProcessing::drawRect()

@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QTimer>
 #include <QDebug>
+#include <QTime>
 
 MainWindow::MainWindow()
 	: QDialog(NULL),
@@ -31,10 +32,12 @@ MainWindow::MainWindow()
 	connect(m_redrawTimer, SIGNAL(timeout()), SLOT(updateViews()));
 	m_redrawTimer->start(0);
 	
-	m_imgProcessing = new ImgProcessing(NULL, m_ui.front);
-	connect(m_imgProcessing, SIGNAL(setupReady()), SLOT(initializeGL()));
-	m_imgProcessing->resize(500, 5);
-	m_imgProcessing->show();
+	connect(m_ui.imgProcessing, SIGNAL(setupReady()), SLOT(initializeGL()));
+	
+	QList<int> sizes;
+	sizes.append(width());
+	sizes.append(100);
+	m_ui.splitter->setSizes(sizes);
 	
 	m_openDir = m_settings.value("OpenDir", QDir::homePath()).toString();
 }
@@ -94,7 +97,7 @@ void MainWindow::updateViews()
 void MainWindow::findCenter()
 {
 	delete m_frameInfo;
-	FrameInfo* m_frameInfo = new FrameInfo(m_voxelSpace);
+	m_frameInfo = new FrameInfo(m_voxelSpace);
 	m_frameInfo->analyse();
 	
 	m_ui.front->setFrameInfo(m_frameInfo);
@@ -102,13 +105,17 @@ void MainWindow::findCenter()
 	m_ui.overhead->setFrameInfo(m_frameInfo);
 	m_ui.angle->setFrameInfo(m_frameInfo);
 	
+	QTime t;
+	t.start();
+	
 	Filter* thigh = new Filter("filters/thigh.filter");
 	Convolution* convolution = new Convolution(thigh, m_frameInfo);
-	m_imgProcessing->resize(128, 128);
-	m_imgProcessing->setFilterSet(convolution);
-	m_imgProcessing->paintGL();
+	m_ui.imgProcessing->setFilterSet(convolution);
+	m_ui.imgProcessing->updateGL();
 	m_frameInfo->setThighOrientation(convolution);
-	m_imgProcessing->setFilterSet(NULL);
+	m_ui.imgProcessing->setFilterSet(NULL);
+	
+	qDebug() << "Applying filter took" << t.elapsed() << "ms";
 	
 	delete thigh;
 }

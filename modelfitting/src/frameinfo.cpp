@@ -61,10 +61,12 @@ void FrameInfo::analyse()
 	
 	// Convert vspace into format suitable for loading into opengl
 	uchar* data = new uchar[m_vspace->x_size * m_vspace->y_size * m_vspace->z_size];
-	for (int x=0 ; x<m_vspace->x_size ; ++x)
+	uchar* d = data;
+	
+	for (int z=0 ; z<m_vspace->z_size ; ++z)
 		for (int y=0 ; y<m_vspace->y_size ; ++y)
-			for (int z=0 ; z<m_vspace->z_size ; ++z)
-				data[z*m_vspace->y_size*m_vspace->x_size + y*m_vspace->x_size + x] = m_vspace->get(x, y, z) ? 0xFF : 0x00;
+			for (int x=0 ; x<m_vspace->x_size ; ++x)
+				*(d++) = m_vspace->get(x, y, z) ? 0xFF : 0x00;
 	
 	// Load it into an opengl texture
 	glGenTextures(1, &m_texture);
@@ -75,7 +77,7 @@ void FrameInfo::analyse()
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	gluBuild3DMipmaps(GL_TEXTURE_3D, GL_RGB, m_vspace->x_size, m_vspace->y_size, m_vspace->z_size, GL_RED, GL_UNSIGNED_BYTE, data);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB, m_vspace->x_size, m_vspace->y_size, m_vspace->z_size, 0, GL_RED, GL_UNSIGNED_BYTE, data);
 	
 	delete[] data;
 	

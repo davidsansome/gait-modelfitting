@@ -16,7 +16,7 @@ class ImgProcessing : public QGLWidget
 {
 	Q_OBJECT
 public:
-	ImgProcessing(QWidget* parent, const QGLWidget* shareWidget);
+	ImgProcessing(QWidget* parent);
 	~ImgProcessing();
 	
 	void paintGL();
