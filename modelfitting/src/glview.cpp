@@ -285,12 +285,12 @@ void GLView::setCrossSection(int value)
 		case Overhead: equation[2] = 1.0;                     break;
 	}
 	
-	equation[3] = -value;
+	equation[3] = - (value - 0.1);
 	glClipPlane(GL_CLIP_PLANE0, equation);
 	
 	equation[0] *= -1.0;
 	equation[1] *= -1.0;
 	equation[2] *= -1.0;
-	equation[3] = value + 1.0;
+	equation[3] = value + 1.1;
 	glClipPlane(GL_CLIP_PLANE1, equation);
 }
