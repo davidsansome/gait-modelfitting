@@ -30,7 +30,7 @@
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="" >
+     <widget class="QWidget" name="layoutWidget" >
       <layout class="QGridLayout" >
        <property name="horizontalSpacing" >
         <number>1</number>
@@ -229,14 +229,89 @@
         </layout>
        </item>
        <item>
+        <widget class="QGroupBox" name="groupBox" >
+         <property name="title" >
+          <string>Cross-sections</string>
+         </property>
+         <layout class="QGridLayout" >
+          <item row="0" column="0" >
+           <widget class="QLabel" name="crossFrontLabel" >
+            <property name="minimumSize" >
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text" >
+             <string>Off</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="QSlider" name="crossFrontSlider" >
+            <property name="minimum" >
+             <number>-1</number>
+            </property>
+            <property name="value" >
+             <number>-1</number>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="crossSideLabel" >
+            <property name="text" >
+             <string>Off</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QSlider" name="crossSideSlider" >
+            <property name="minimum" >
+             <number>-1</number>
+            </property>
+            <property name="value" >
+             <number>-1</number>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="crossTopLabel" >
+            <property name="text" >
+             <string>Off</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QSlider" name="crossTopSlider" >
+            <property name="minimum" >
+             <number>-1</number>
+            </property>
+            <property name="value" >
+             <number>-1</number>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
          <property name="sizeHint" >
           <size>
-           <width>121</width>
-           <height>485</height>
+           <width>355</width>
+           <height>381</height>
           </size>
          </property>
         </spacer>

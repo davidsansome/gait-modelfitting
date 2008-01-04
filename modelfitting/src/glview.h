@@ -26,7 +26,10 @@ public:
 	
 	void setMesh(Mesh* mesh);
 	void setViewType(ViewType type);
+	void setCrossSection(int value);
 	void setFrameInfo(const FrameInfo* frameInfo) { m_frameInfo = frameInfo; }
+	
+	int extent() const;
 	
 	static QGLWidget* s_contextWidget;
 

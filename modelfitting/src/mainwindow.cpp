@@ -34,6 +34,14 @@ MainWindow::MainWindow()
 	
 	connect(m_ui.imgProcessing, SIGNAL(setupReady()), SLOT(initializeGL()));
 	
+	m_ui.crossFrontSlider->setMaximum(m_ui.front->extent());
+	m_ui.crossSideSlider->setMaximum(m_ui.side->extent());
+	m_ui.crossTopSlider->setMaximum(m_ui.overhead->extent());
+	
+	connect(m_ui.crossFrontSlider, SIGNAL(sliderMoved(int)), SLOT(sliderMoved(int)));
+	connect(m_ui.crossSideSlider, SIGNAL(sliderMoved(int)), SLOT(sliderMoved(int)));
+	connect(m_ui.crossTopSlider, SIGNAL(sliderMoved(int)), SLOT(sliderMoved(int)));
+	
 	QList<int> sizes;
 	sizes.append(width());
 	sizes.append(100);
@@ -122,5 +130,36 @@ void MainWindow::findCenter()
 
 void MainWindow::initializeGL()
 {
+}
+
+void MainWindow::sliderMoved(int value)
+{
+	GLView* view;
+	QLabel* label;
+	
+	if (sender() == m_ui.crossFrontSlider)
+	{
+		view = m_ui.front;
+		label = m_ui.crossFrontLabel;
+	}
+	else if (sender() == m_ui.crossSideSlider)
+	{
+		view = m_ui.side;
+		label = m_ui.crossSideLabel;
+	}
+	else if (sender() == m_ui.crossTopSlider)
+	{
+		view = m_ui.overhead;
+		label = m_ui.crossTopLabel;
+	}
+	else
+		return;
+	
+	if (value == -1)
+		label->setText("Off");
+	else
+		label->setText(QString::number(value));
+	
+	view->setCrossSection(value);
 }
 

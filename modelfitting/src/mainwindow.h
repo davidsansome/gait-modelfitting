@@ -24,6 +24,8 @@ private slots:
 	void findCenter();
 	void updateViews();
 	
+	void sliderMoved(int value);
+	
 private:
 	void clearMesh();
 	

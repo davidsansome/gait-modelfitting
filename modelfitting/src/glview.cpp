@@ -4,6 +4,17 @@
 
 #include <QDebug>
 
+#define MAXX 38.0
+#define MINX (-MAXX)
+#define MAXY 183.0
+#define MINY (-MAXY)
+#define MAXZ 100.0
+#define MINZ (-MAXZ)
+
+#define XEXTENT (MAXX*2)
+#define YEXTENT (MAXY*2)
+#define ZEXTENT (MAXZ*2)
+
 QGLWidget* GLView::s_contextWidget = NULL;
 
 GLView::GLView(QWidget* parent)
@@ -53,17 +64,6 @@ void GLView::initializeGL()
 	
 	m_quadric = gluNewQuadric();
 }
-
-#define MAXX 38.0
-#define MINX (-MAXX)
-#define MAXY 183.0
-#define MINY (-MAXY)
-#define MAXZ 100.0
-#define MINZ (-MAXZ)
-
-#define XEXTENT (MAXX*2)
-#define YEXTENT (MAXY*2)
-#define ZEXTENT (MAXZ*2)
 
 void GLView::resizeGL(int width, int height)
 {
@@ -138,39 +138,34 @@ void GLView::paintGL()
 
 void GLView::drawTunnel()
 {
-	// TODO: Use the #defines above
-	static const float xExtent = 38.0;
-	static const float yExtent = 183.0;
-	static const float zExtent = 200.0;
-	
 	glColor4f(0.0, 1.0, 0.0, 1.0);
 	
 	// Left side
 	glBegin(GL_LINE_LOOP);
-		glVertex3f(-xExtent, -yExtent, 0.0);
-		glVertex3f(-xExtent, yExtent, 0.0);
-		glVertex3f(-xExtent, yExtent, zExtent);
-		glVertex3f(-xExtent, -yExtent, zExtent);
+		glVertex3f(MINX, MINY, 0.0);
+		glVertex3f(MINX, MAXY, 0.0);
+		glVertex3f(MINX, MAXY, ZEXTENT);
+		glVertex3f(MINX, MINY, ZEXTENT);
 	glEnd();
 	
 	// Right side
 	glBegin(GL_LINE_LOOP);
-		glVertex3f(xExtent, -yExtent, 0.0);
-		glVertex3f(xExtent, yExtent, 0.0);
-		glVertex3f(xExtent, yExtent, zExtent);
-		glVertex3f(xExtent, -yExtent, zExtent);
+		glVertex3f(MAXX, MINY, 0.0);
+		glVertex3f(MAXX, MAXY, 0.0);
+		glVertex3f(MAXX, MAXY, ZEXTENT);
+		glVertex3f(MAXX, MINY, ZEXTENT);
 	glEnd();
 	
 	// Lines going across
 	glBegin(GL_LINES);
-		glVertex3f(-xExtent, yExtent, 0.0);
-		glVertex3f(xExtent, yExtent, 0.0);
-		glVertex3f(-xExtent, -yExtent, 0.0);
-		glVertex3f(xExtent, -yExtent, 0.0);
-		glVertex3f(-xExtent, yExtent, zExtent);
-		glVertex3f(xExtent, yExtent, zExtent);
-		glVertex3f(-xExtent, -yExtent, zExtent);
-		glVertex3f(xExtent, -yExtent, zExtent);
+		glVertex3f(MINX, MAXY, 0.0);
+		glVertex3f(MAXX, MAXY, 0.0);
+		glVertex3f(MINX, MINY, 0.0);
+		glVertex3f(MAXX, MINY, 0.0);
+		glVertex3f(MINX, MAXY, ZEXTENT);
+		glVertex3f(MAXX, MAXY, ZEXTENT);
+		glVertex3f(MINX, MINY, ZEXTENT);
+		glVertex3f(MAXX, MINY, ZEXTENT);
 	glEnd();
 }
 
@@ -256,4 +251,46 @@ void GLView::drawInfo()
 		glRotatef(m_frameInfo->thighAlpha() / M_PI * 180.0, 0.0, 1.0, 0.0);
 		gluCylinder(m_quadric, baseRadius, topRadius, 1.0, 10, 10);
 	glPopMatrix();
+}
+
+int GLView::extent() const
+{
+	switch (m_viewType)
+	{
+		case Front:    return int(YEXTENT);
+		case Side:     return int(XEXTENT);
+		case Overhead: return int(ZEXTENT);
+		default:       return -1;
+	}
+}
+
+void GLView::setCrossSection(int value)
+{
+	makeCurrent();
+	
+	if (value == -1)
+	{
+		glDisable(GL_CLIP_PLANE0);
+		glDisable(GL_CLIP_PLANE1);
+		return;
+	}
+	glEnable(GL_CLIP_PLANE0);
+	glEnable(GL_CLIP_PLANE1);
+	
+	double equation[4] = {0.0, 0.0, 0.0, 0.0};
+	switch (m_viewType)
+	{
+		case Front:    equation[1] = 1.0; value += int(MINY); break;
+		case Side:     equation[0] = 1.0; value += int(MINX); break;
+		case Overhead: equation[2] = 1.0;                     break;
+	}
+	
+	equation[3] = -value;
+	glClipPlane(GL_CLIP_PLANE0, equation);
+	
+	equation[0] *= -1.0;
+	equation[1] *= -1.0;
+	equation[2] *= -1.0;
+	equation[3] = value + 1.0;
+	glClipPlane(GL_CLIP_PLANE1, equation);
 }
