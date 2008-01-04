@@ -30,6 +30,7 @@ private:
 	Vec2 spv(int i) const;
 	float continuityEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint);
 	float balloonEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint);
+	float shapeEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint);
 	float externalEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint);
 
 	QList<QPoint> m_spline;

@@ -28,7 +28,7 @@ Contour::~Contour()
 
 void Contour::resetSpline()
 {
-	const int pointCount = 10;
+	const int pointCount = 20;
 	
 	m_center = QPoint(m_image.size().width() / 2, m_image.size().height() / 2);
 	float radius = 15.0;
@@ -60,7 +60,8 @@ void Contour::advanceSpline()
 				float newEnergy =
 					continuityEnergy(i, oldPoint, newPoint) +
 					balloonEnergy(i, oldPoint, newPoint) +
-					10.0 * externalEnergy(i, oldPoint, newPoint);
+					0.04 * shapeEnergy(i, oldPoint, newPoint) +
+					100.0 * externalEnergy(i, oldPoint, newPoint);
 				
 				if (newEnergy < bestEnergy)
 				{
@@ -126,6 +127,22 @@ float Contour::continuityEnergy(int i, const QPoint& oldPoint, const QPoint& new
 	return abs(averageDistance - len(diff));
 }
 
+float Contour::shapeEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint)
+{
+	// Find the mean point
+	float meanDiameter = 0.0;
+	for (int i=0 ; i<m_spline.count()/2 ; ++i)
+		meanDiameter += len(spv(i) - spv(i + m_spline.count()/2));
+	meanDiameter /= m_spline.count()/2;
+	
+	Vec2 oppositePoint = spv(i + m_spline.count()/2);
+	float diameter = len(oppositePoint - v2(newPoint));
+	
+	float diff = abs(meanDiameter - diameter);
+	
+	return pow(diff, 2.0);
+}
+
 float Contour::balloonEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint)
 {
 	Vec2 normal = norm(v2(oldPoint) - v2(m_center));
@@ -136,8 +153,11 @@ float Contour::balloonEnergy(int i, const QPoint& oldPoint, const QPoint& newPoi
 
 float Contour::externalEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint)
 {
-	QRgb color = m_image.pixel(newPoint);
+	int redTotal = 0;
+	for (int x=-3 ; x<=3 ; ++x)
+		for (int y=-3 ; y<=3 ; ++y)
+			redTotal += qRed(m_image.pixel(newPoint + QPoint(x, y)));
 	
-	return (qRed(color) == 0) ? 0.0 : 1.0;
+	return (redTotal == 0) ? 0.0 : 1.0;
 }
 
