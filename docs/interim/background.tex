@@ -1,5 +1,36 @@
 \section{Background and report of literature search}
 
-\subsection{How it can be applied to gait}
+\subsection{2D gait recognition}
+
+How has it been done in the past?
+
+\subsection{Non-modelfitting ways}
+
+\subsection{How modelfitting can be applied to gait}
 
 Cadence and stride length \cite{GaitBook}
+
+\subsection{Fitting a model using active contours}
+
+From paper \cite{ImageSegModesl}
+Active Shape Models  Proposed by 78, 79
+Set of points defined at various features in the image.
+
+A shape Y can be defined by Y(model) + (matrix of eigenvectors)(vector of weights)
+Limits on the value of these weights
+
+So what i'd need to do to train model:
+For every frame in the video:
+  normalize the position and scale
+  mark on points of key features
+Calculate covariance matrix
+PCA to get first eignvalues of covariance matrix
+
+Criticism:
+Seems very generic.
+
+\subsection{GPU Processing}
+
+Talk about standard Cg and then CUDA
+
+Any use by gait in the past?

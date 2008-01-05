@@ -2,6 +2,30 @@
 
 \subsection{Framework for GPU processing}
 
+In the early stages of the project it was decided that it would be necessairy to create a custom application to process and display voxel data.
+The rationale behind doing this instead of using an existing solution such as Matlab or Octave was threefold:
+
+\begin{itemize}
+	\item The sample dataset from the Southampton Gait Tunnel is stored in a custom binary format, the parsing and display of which is
+		performed by an C library, libV4D, written by Richard Seely.
+		The library is efficient and well-tested, therefore it would be benificial to make as much use of it as possible.
+	\item One of the goals of the project is to investigate ways in which the algorithms can be made parallelizable and applicable to real-time processing.
+		As a prototyping language Matlab is generally less suitable for real-time or high-performance computing than a lower-level language such as C.
+	\item The key aspect of this area of research that sets it aside from others in the field is that it focuses on 3D datasets.
+		Visualising 3D data blah.  TODO
+\end{itemize}
+
+It was decided to create an application that would run image-processing and recognition algorithms on the GPU.
+The algorithms would be 
+
+
+Toolkits used, and why?
+
+Design of application.  Stating that UML isn't really needed but here it is anyway.
+
+Screenshots
+
+
 \subsection{Convolution filters}
 
 How will they help?
