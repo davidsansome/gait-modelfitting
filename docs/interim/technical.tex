@@ -46,40 +46,39 @@ Active contours are a useful tool in image processing as they allow a shape to b
 It is reasoned that active contours could be used to locate the thigh in a noisy 3D voxel-space reconstruction.
 An estimation of the likely position of the thigh is first formed by looking for a concentration of voxels below the hip
 (see \ref{LocatingCenter}) and either to the left or right side depending which leg is being located.
-Cross-sections of the leg are taken at various heights up the leg, centered around this concentration of voxels - see figure TODO.
+Cross-sections of the leg are taken at various heights up the leg, centered around this concentration of voxels - see figure \ref{CrossSections}.
 An active contour (or snake) is then placed in the middle of each cross-section and allowed to grow to fill the space available.
 
-TODO: Figure of cross-section of leg.  Both a 3D one and the actual cross-section.
+\begin{figure}[tb]
+	\vspace{-10pt}
+	\centering
+	\subfloat[Lower legs]{\includegraphics[width=4cm]{crosssections1.png}}
+	\quad
+	\subfloat[Thigh joining hips]{\includegraphics[width=4cm]{crosssections2.png}}
+	\caption{Cross sections taken through the legs at various points (after edge-detection.)}
+	\label{CrossSections}
+	\vspace{-10pt}
+\end{figure}
 
 Hopefully each contour will match the interior area of the thigh at its corresponding height up the leg.
 The centers of these contours can then be joined together by a straight line to form the center of the model's cylinder.
 
-TODO: Picture of all centers joined together
-
 As described in section \ref{ContourBackground} an active contour is driven by internal energies and external energies.
 A trial-and-error approach was used to generate these energy functions - their effectiveness being tested on a series of artificial images.
-The images (see Figure \ref{Contour2} and Figure \ref{Contour4}) were designed to emulate expected cross-sections of thighs at various heights - ranging from elongated areas
+The images (see Figure \ref{Contours}) were designed to emulate expected cross-sections of thighs at various heights - ranging from elongated areas
 near the hips to closed circular areas further down.
 An ideal set of energy functions would cause the contour to match the entire of the closed-area images, but not spread out into
 the pelvic area when tested on a cross-section of the joint with the hips.
 
 \begin{figure}[tb]
-	\begin{center}
-		\includegraphics[width=4cm]{contour2.png}
-		\caption{A snake matching the inside of a thigh (test image)}
-		\label{Contour2}
-	\end{center}
+	\centering
+	\subfloat[Inside of thigh]{\includegraphics[width=4cm]{contour2.png}}
+	\quad
+	\subfloat[Thigh joining hips]{\includegraphics[width=4cm]{contour4.png}}
+	\caption{Snakes matching test images for thigh cross-sections.}
+	\label{Contours}
+	\vspace{-10pt}
 \end{figure}
-
-\begin{figure}[tb]
-	\begin{center}
-		\includegraphics[width=4cm]{contour4.png}
-		\caption{A snake matching the inside of a thigh where it joins the hips (test image)}
-		\label{Contour4}
-	\end{center}
-\end{figure}
-
-TODO: Clarify that there's edge detection going on.
 
 \bigskip
 \noindent A set of four energy functions was created.  It should be noted that in the following equations $n$ is the total number of snaxels,
@@ -119,7 +118,7 @@ currently being evaluated.
 		This second version has the advantage of overcoming problems that occur when the contour is allowed to jump large numbers of pixels at a time -
 		it may occasionally skip over a line in the image completely.
 	
-	\item \textbf{Shape energy} - ensures the contour stays in a circular shape. \cite{GunnSnake}
+	\item \textbf{Shape energy} - ensures the contour stays in a circular shape.
 		\begin{equation}
 			E_{shape} = \Bigg| \bigg( \frac{2}{n}\sum_{j=1}^n \| \mathbf{V}_{j+\frac{n}{2}} - \mathbf{V}_j \| \bigg) - \bigg( \| \mathbf{V}_{i+\frac{n}{2}} - \mathbf{V}_{new} \| \bigg) \Bigg|
 		\end{equation}
@@ -154,6 +153,19 @@ The selected point in the grid where the energy function was lowest becomes the 
 
 This process is repeated until the total change in snaxel position falls below a certain threshold $t$.
 
-Possible implementation in shaders?
+Due to its iterative nature it is difficult to find an implementation of this algorithm that is suitable for execution on a stream processor 
+However even with a large number of snaxels the C implementation converges on an answer quickly enough for it not to be an issue.
 
-Results (or still ongoing)
+\bigskip
+\noindent It is still not certain whether the active contour method is the best way of finding the location of the thigh in an image.
+Active contours are generally better suited to locating complex shapes in very noisy greyscale images.
+The shape that we are trying to locate here is a simple circle and the values of the pixels in the image are boolean (edge or not-edge).
+
+Perhaps a better approach could be developed by taking some active contour concepts such as internal and external energies,
+but restricting the shape to being a perfect circle with a radius $r$ and position $\mathbf{V}$.
+This shape would be initialised $r = 0$ and $\mathbf{V} = \mathbf{V}_{origin}$.
+Every iteration $r$ would be increased by $1$, and the center $\mathbf{V}$ moved away from any filled pixels inside the circle's area.
+Iteration would cease when the radius could be increased no further without filled pixels appearing on both sides.
+
+This approach would allow the circle to expand and center itself inside the leg.
+It would stop when it could expand no further without breaching the edge of the shape.
