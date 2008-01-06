@@ -3,16 +3,20 @@
 \subsection{Model fitting}
 
 The primary goal of the project is to produce an application that can process voxel data of a walking figure and generate a simple 3D skeletal model.
-In its simplest form the model will consist of a pair of thighs and a pair of 
+In its simplest form the model will consist of four cylinders representing the thighs and lower legs.
+The angles these cylinders make with each other and the hips will be measured and stored to be used as part of the figure's identifying information.
 
-Create an application that processes voxel data of a walking figure, and generates a simple 3D skeletal model.
-This model should feature at least the most basic joints (ankle, knee, hip),
-with the angles between the limbs being derived from the data.
+The application should also able to track the movemnt of the parts of the model over subsequent frames of a video.
+It should take advantage of the temporal continuity of human gait - that the change in position of a certain point on a person's torso between frames is quite small.
+
 
 \subsection{Real-time}
 
-Investigate ways to make the process above real-time,
-or as close to real-time as is possible while analysing the motion of points over several frames.
+One of the most interesting aspects of gait-recognition is its applicability to security, and the advantages of being able to identify people from a distance without their knowledge.
+For gait systems to be of use in real-world environments they should make use of efficient image-analysis techniques and be able to identify people quickly.
+
+While it might not be possible to make this process truly real-time, it is one of the goals of this project to investigate ways to improve its performance and ability to produce results more quickly.
+
 
 \subsection{Gait recognition}
 

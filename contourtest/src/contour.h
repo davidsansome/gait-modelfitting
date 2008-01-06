@@ -18,8 +18,8 @@ public:
 	~Contour();
 
 public slots:
-	void resetSpline();
-	void advanceSpline();
+	void resetContour();
+	void advanceContour();
 
 protected:
 	void paintEvent(QPaintEvent* e);
@@ -33,7 +33,7 @@ private:
 	float shapeEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint);
 	float externalEnergy(int i, const QPoint& oldPoint, const QPoint& newPoint);
 
-	QList<QPoint> m_spline;
+	QList<QPoint> m_contour;
 	QImage m_image;
 	
 	QPoint m_center;
