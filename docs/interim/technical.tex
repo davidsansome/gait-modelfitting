@@ -27,7 +27,28 @@ Screenshots
 
 \subsection{Computation of global position}\label{LocatingCenter}
 
-The very first pre-processing step is to locate the center of the figure and to calculate some basic parameters such as the height.
+The very first pre-processing step is to calculate some very basic information about the frame.
+Several pieces of information are gathered:
+
+\begin{enumerate}
+	\item The greatest z value for a filled voxel.
+		This is used to determine the height of the figure.
+		Half this height is assumed to be the height of the hips.
+	\item The mean coordinate.
+		This is taken to represent the center of the figure and is used to normalise his position as he walks across the frame.
+		It is calculated as follows:
+		\begin{equation}
+			\mathbf{V}_{mean} = (\overline{x}, \overline{y})
+		\end{equation}
+		Where
+		\begin{align}
+			\overline{\mathbf{x}} &= \frac{1}{s_x s_y s_z} \sum_{x=1}^{s_x} \sum_{y=1}^{s_y} \sum_{z=1}^{s_z} x I(x,y,z) \\
+			\overline{\mathbf{y}} &= \frac{1}{s_x s_y s_z} \sum_{x=1}^{s_x} \sum_{y=1}^{s_y} \sum_{z=1}^{s_z} y I(x,y,z)
+		\end{align}
+
+\end{enumerate}
+
+
 
 \subsection{Cross-correlation}
 
@@ -115,7 +136,7 @@ The values used in these transformations are obtained from Section \ref{Locating
 Our original $\mathbf{M}$ from Equation \ref{eqn:Matrix} is applied to $\mathbf{M}_2$ like so:
 
 \begin{equation}
-	\mathbf{M} = \mathbf{M} * \mathbf{M}_2
+	\mathbf{M}' = \mathbf{M} * \mathbf{M}_2
 \end{equation}
 
 \bigskip
@@ -128,7 +149,7 @@ This is because here the thigh-filter has been rotated inwards towards the cente
 \begin{figure}[tb]
 	\vspace{-10pt}
 	\centering
-	\includegraphics[height=4cm]{parmeterspace.png}
+	\includegraphics[height=4cm]{parameterspace.png}
 	\caption{An output cross-correlation image, with correlation strength rendered into the red color channel.
 		$\theta$ is mapped to the X axis, and $\alpha$ to Y.
 		The center of the image is $(\theta, \alpha) = (0,0)$.}
