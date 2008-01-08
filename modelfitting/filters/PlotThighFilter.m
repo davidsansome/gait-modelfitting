@@ -27,6 +27,8 @@ end
 fwrite(file, total, 'float32');
 fclose(file);
 
-contour(x,y,data(:,:,20))
+%contour(x,y,data(:,:,20))
+%meshz(data(:,:,20))
+pcolor(x,y,data(:,:,20))
 
 'Done'
