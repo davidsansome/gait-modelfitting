@@ -8,6 +8,12 @@
 
 \lstset{breaklines=true,basicstyle=\small,tabsize=3,numbers=left,numberstyle=\tiny,numbersep=5pt,emptylines=1}
 
+\lstdefinelanguage{Cg}
+	{morekeywords={const,float,float2,float3,float4,float4x4,uniform,in,out,sampler3D,int,void,TEXCOORD0,COLOR0,TEXUNIT0,TEXUNIT1,cos,sin,return,for},
+	sensitive=true,
+	morecomment=[l]{//},
+	}
+
 \title{An Investigation into the Generation of 3D Skeletal Models from Voxel Data and their use in Gait Recognition}
 \author{David Sansome}
 
@@ -39,6 +45,10 @@
 \subsection{ThighFilter.m}
 \lstset{language=Matlab}
 \lstinputlisting[label=ThighFilter.m]{"../../modelfitting/filters/ThighFilter.m"}
+
+\subsection{correlation.cg}
+\lstset{language=Cg}
+\lstinputlisting[label=correlation.cg]{"../../modelfitting/shaders/convolution.cg"}
 
 
 \end{document}
