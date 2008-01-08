@@ -4,6 +4,9 @@
 \usepackage[pdftex]{hyperref}
 \usepackage{amsmath}
 \usepackage{subfig}
+\usepackage{listings}
+
+\lstset{breaklines=true,basicstyle=\small,tabsize=3,numbers=left,numberstyle=\tiny,numbersep=5pt,emptylines=1}
 
 \title{An Investigation into the Generation of 3D Skeletal Models from Voxel Data and their use in Gait Recognition}
 \author{David Sansome}
@@ -28,5 +31,14 @@
 
 \newpage
 \bibliography{../../bibtex}
+
+\appendix
+
+\section{Code listings}
+
+\subsection{ThighFilter.m}
+\lstset{language=Matlab}
+\lstinputlisting[label=ThighFilter.m]{"../../modelfitting/filters/ThighFilter.m"}
+
 
 \end{document}

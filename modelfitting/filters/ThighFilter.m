@@ -1,6 +1,5 @@
 function v = ThighFilter(x,y,z)
-%THIGHFILTER Summary of this function goes here
-%   Detailed explanation goes here
+%THIGHFILTER Generates a thigh-shaped filter
 
 % Constants
 rT = 1.0;  % radius of thigh
