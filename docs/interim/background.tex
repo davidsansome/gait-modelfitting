@@ -1,8 +1,23 @@
 \section{Background and report of literature search}
 
-\subsection{2D gait recognition}
+This project builds heavily on previous research and development work by members of the University of Southampton.
+The sample data used was obtained from test subjects walking through the Southampton Gait Tunnel.
+Their movements were recorded on a number of cameras and the images processed by segmentation and 3D reconstruction algorithms.
 
-How has it been done in the past?
+This section covers any other work that has been useful in the developement of the project.
+
+\subsection{2D model-fitting}
+
+In \cite{cardboardpeople} Michael et al. describe an approach to model fitting entitled ``Cardboard People''.
+Limbs in the model are represented by rigid planar patches.
+These are connected together in a chain structure, with each rectangular plane consisting of four articulated points.
+While the research presents an interesting approach to model-fitting, the technique is strictly 2D and therefore not directly applicable to this project.
+
+In \cite{GaitBook} Nixon et al. summarise the general approach to model-based gait recognition.
+The important angles between the limbs for consideration are shown to be those along the direction of movement.
+A Pose Evaluation Function (PEF) is described that can be used to improve and measure the error of a particular fitting of a model to an image.
+Both boundary and region matching errors are considered when calculating this function, reducing the chance that a model segment will be placed in the empty space between two limbs.
+A technique building on this is proposed in \ref{ImprovedCC}.
 
 \subsection{Non-modelfitting ways}
 
@@ -11,6 +26,30 @@ How has it been done in the past?
 Cadence and stride length \cite{GaitBook}
 
 \subsection{Active contours}\label{ContourBackground}
+
+In \cite{CohenBalloons}, Cohen presents a model for active contours that considers the curve as a ``balloon'' that is inflated by a balloon force.
+This force takes the form:
+
+\begin{equation}
+	F = k_1 \vec{n}(s) - k\frac{\nabla P}{\|\nabla P\|}
+	\label{CohenEquation}
+\end{equation}
+
+Where $\vec{n}(s)$ is the normal vector to the curve and $P$ is the image force.
+This force in Equation \ref{CohenEquation} makes our contour expand like a balloon to fill a space, and stop when it encounters an opposing force from features of the image.
+
+Gunn and Nixon present \cite{GunnSnakes} an additional force that cause an active contour to take the shape of a circle.
+The force $\mathbf{e}_i$ for the snaxel $i$ at position $\mathbf{V}_i$ is calculated from the neighbouring points by:
+
+\begin{equation}
+	\mathbf{e}_i = \tfrac{1}{2}(\mathbf{V}_{i-1} + \mathbf{V}_{i+1}) - \mathbf{V}_i + \theta_i\tfrac{1}{2}\mathbf{R}(\mathbf{V}_{i-1} - \mathbf{V}_{i+1})
+\end{equation}
+
+Where $\mathbf{R}$ is a $+90^\circ$ rotation matrix.
+$\theta$ is the angle that should exist between a snaxel and its neighbours in order for them to form a circular shape.
+This angle is defined by $\theta = tan(\pi/N)$ where $N$ is the number of snaxels.
+
+
 
 \subsection{Fitting a model using active contours}
 
@@ -32,6 +71,14 @@ PCA to get first eignvalues of covariance matrix
 
 Criticism:
 Seems very generic.
+
+\subsection{Gait Recognition}
+
+Cunado et al. present a detailed background to the various gait recognition approaches in \cite{GaitModels}.
+The paper describes which of the limbs provide the most useful information for gait.
+The smaller and easily obscured body parts such as the ankle and pelvis tend to provide useful identifying information, however identifying these from noisy images can be very difficult.
+
+The focus of the paper is on the angle made by the thigh with the hip, the thigh and calf being modelled as simple pendulae.
 
 \subsection{GPU Processing}
 
