@@ -48,14 +48,14 @@ Several pieces of information are gathered:
 		\end{equation}
 		Where
 		\begin{align}
-			\overline{\mathbf{x}} &= \frac{1}{s_x s_y s_z} \sum_{x=1}^{s_x} \sum_{y=1}^{s_y} \sum_{z=1}^{s_z} x I(x,y,z) \\
-			\overline{\mathbf{y}} &= \frac{1}{s_x s_y s_z} \sum_{x=1}^{s_x} \sum_{y=1}^{s_y} \sum_{z=1}^{s_z} y I(x,y,z)
+			\overline{x} &= \frac{1}{s_x s_y s_z} \sum_{x=1}^{s_x} \sum_{y=1}^{s_y} \sum_{z=1}^{s_z} x I(x,y,z) \\
+			\overline{y} &= \frac{1}{s_x s_y s_z} \sum_{x=1}^{s_x} \sum_{y=1}^{s_y} \sum_{z=1}^{s_z} y I(x,y,z)
 		\end{align}
 
 \end{enumerate}
 
 
-\subsection{Cross-correlation}
+\subsection{Cross-correlation}\label{sec:CC}
 
 The first attempt at locating a thigh in the 3D image used the mathematical cross-correlation operator.
 A 3D ``thigh-filter'' was generated using Matlab which matched the shape and size of a typical thigh from the sample data.
@@ -138,7 +138,7 @@ The fragment shader used is listed in \ref{correlation.cg}.
 The implementation creates an additional matrix $\mathbf{M}_2$ that is used to convert between the coordinate spaces of OpenGL textures to that of our filters and voxel-space.
 It also contains a translate and a scale operation to align the filter with the hips, and scale it to the right size.
 The values used in these transformations are obtained from Section \ref{LocatingCenter}.
-Our original $\mathbf{M}$ from Equation \ref{eqn:Matrix} is applied to $\mathbf{M}_2$ like so:
+This $\mathbf{M}_2$ is applied to our original $\mathbf{M}$ from Equation \ref{eqn:Matrix} like so:
 
 \begin{equation}
 	\mathbf{M}' = \mathbf{M} * \mathbf{M}_2

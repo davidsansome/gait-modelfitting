@@ -2,3 +2,23 @@
 
 \subsection{Improving cross-correlation}\label{ImprovedCC}
 
+The current approach for cross-correlation described in Section \ref{sec:CC} relies purely on matching filled voxels.
+It suffers from the problem that the filter tends to fit better when aligned diagonally across both legs - in the position where it can match the greatest number of voxels.
+To correct this problem we can create a new filter that is more intelligent about the type of voxels it matches.
+
+\begin{figure}[b]
+	\centering
+	\includegraphics[width=4cm]{improvedfilter.png}
+	\caption{A cross section through a possible improved cross-correlation filter.
+		Black circles represent filled voxels, and white circles represent edge voxels.}
+	\label{ImprovedFilter}
+\end{figure}
+
+Instead of points in the filter having an intensity value $v \in \{0 \cdots 1\}$, our points could take one of two possible states: they could match either an edge voxel or a filled voxel.
+This would hopefully overcome the problem of a filter spanning the two legs, as the area between the legs would contain edge voxels.
+These edge voxels wouldn't match up with the edge-seeking points in the filter, and so would be a lower match than if the filter was placed the proper position inside the thigh.
+
+Figure \ref{ImprovedFilter} shows a cross section of such a filter.
+One important thing to consider about this idea is whether the points in the filter should be spaced in a regular grid.
+In the form shown in Figure \ref{ImprovedFilter} the points have an arbitrary spacing and are very different from the original filter shown in Figure \ref{ThighFilterCrossSections}.
+This spacing would lend itself more towards a more traditional linear regression approach such as least squares.
