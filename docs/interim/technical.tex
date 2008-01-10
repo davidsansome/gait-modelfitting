@@ -270,11 +270,11 @@ The overall energy function is therefore given by:
 \end{equation}
 
 \bigskip
-\noindent The implementation in C of the active contour was fairly straightforward.
+\noindent The implementation in C of the active contour was fairly straightforward and followed the algorithm given my Williams and Shah \cite{SnakeAlgorithm}.
 A \texttt{resetContour} function initialises the contour to a tiny circle at the given location,
 and an \texttt{advanceContour} function calculates and updates each snaxel with its next position.
 This works by evaluating the energy function at each point in a $k$x$k$ grid centered on the snaxel,
-and selecting the one with the lowest value. \cite{SnakeAlgorithm}
+and selecting the one with the lowest value.
 The selected point in the grid where the energy function was lowest becomes the snaxel's new position.
 
 This process is repeated until the total change in snaxel position falls below a certain threshold $t$.
@@ -290,8 +290,8 @@ The shape that we are trying to locate here is a simple circle and the values of
 Perhaps a better approach could be developed by taking some active contour concepts such as internal and external energies,
 but restricting the shape to being a perfect circle with a radius $r$ and position $\mathbf{V}$.
 This shape would be initialised $r = 0$ and $\mathbf{V} = \mathbf{V}_{origin}$.
-Every iteration $r$ would be increased by $1$, and the center $\mathbf{V}$ moved away from any filled pixels inside the circle's area.
+Every iteration $r$ would be increased by $1$, and the centre $\mathbf{V}$ moved away from any filled pixels inside the circle's area.
 Iteration would cease when the radius could be increased no further without filled pixels appearing on both sides.
 
-This approach would allow the circle to expand and center itself inside the leg.
+This approach would allow the circle to expand and centre itself inside the leg.
 It would stop when it could expand no further without breaching the edge of the shape.
