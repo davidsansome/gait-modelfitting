@@ -6,12 +6,9 @@ Their movements were recorded on a number of cameras and the images processed by
 
 This section covers any other work that has been useful in the developement of the project.
 
-\subsection{2D model-fitting}
+\subsection{Model-fitting}
 
-In \cite{cardboardpeople} Michael et al. describe an approach to model fitting entitled ``Cardboard People''.
-Limbs in the model are represented by rigid planar patches.
-These are connected together in a chain structure, with each rectangular plane consisting of four articulated points.
-While the research presents an interesting approach to model-fitting, the technique is strictly 2D and therefore not directly applicable to this project.
+Most research centered around 2D model fitting.
 
 In \cite{GaitBook} Nixon et al. summarise the general approach to model-based gait recognition.
 The important angles between the limbs for consideration are shown to be those along the direction of movement.
@@ -19,11 +16,10 @@ A Pose Evaluation Function (PEF) is described that can be used to improve and me
 Both boundary and region matching errors are considered when calculating this function, reducing the chance that a model segment will be placed in the empty space between two limbs.
 A technique building on this is proposed in \ref{ImprovedCC}.
 
-\subsection{Non-modelfitting ways}
-
-\subsection{How modelfitting can be applied to gait}
-
-Cadence and stride length \cite{GaitBook}
+In \cite{cardboardpeople} Michael et al. describe an approach to model fitting entitled ``Cardboard People''.
+Limbs in the model are represented by rigid planar patches.
+These are connected together in a chain structure, with each rectangular plane consisting of four articulated points.
+While the research presents an interesting approach to model-fitting, the technique is strictly 2D and therefore not directly applicable to this project.
 
 \subsection{Active contours}\label{ContourBackground}
 
@@ -38,8 +34,8 @@ This force takes the form:
 Where $\vec{n}(s)$ is the normal vector to the curve and $P$ is the image force.
 This force in Equation \ref{CohenEquation} makes our contour expand like a balloon to fill a space, and stop when it encounters an opposing force from features of the image.
 
-Gunn and Nixon present \cite{GunnSnakes} an additional force that cause an active contour to take the shape of a circle.
-The force $\mathbf{e}_i$ for the snaxel $i$ at position $\mathbf{V}_i$ is calculated from the neighbouring points by:
+Gunn and Nixon present an additional force \cite{GunnSnake} that causes an active contour to take the shape of a circle.
+The force $\mathbf{e}_i$ on the snaxel $i$ at position $\mathbf{V}_i$ is calculated from the neighbouring snaxels by:
 
 \begin{equation}
 	\mathbf{e}_i = \tfrac{1}{2}(\mathbf{V}_{i-1} + \mathbf{V}_{i+1}) - \mathbf{V}_i + \theta_i\tfrac{1}{2}\mathbf{R}(\mathbf{V}_{i-1} - \mathbf{V}_{i+1})
@@ -47,11 +43,7 @@ The force $\mathbf{e}_i$ for the snaxel $i$ at position $\mathbf{V}_i$ is calcul
 
 Where $\mathbf{R}$ is a $+90^\circ$ rotation matrix.
 $\theta$ is the angle that should exist between a snaxel and its neighbours in order for them to form a circular shape.
-This angle is defined by $\theta = tan(\pi/N)$ where $N$ is the number of snaxels.
-
-
-
-\subsection{Fitting a model using active contours}
+This angle is defined by $\theta = tan(\frac{\pi}{N})$ where $N$ is the number of snaxels.
 
 The water thing
 
@@ -80,8 +72,12 @@ The smaller and easily obscured body parts such as the ankle and pelvis tend to 
 
 The focus of the paper is on the angle made by the thigh with the hip, the thigh and calf being modelled as simple pendulae.
 
+In his PHD thesis \cite{KarlSharman} Sharman lists 23 parameters that are required for simple gait recognition.
+Among these are the central position of the hip at time $t = 0$, the thigh length, and the harmonics of oscillations of hip positions both vertically and in the direction of travel.
+
+
 \subsection{GPU Processing}
 
-Talk about standard Cg and then CUDA
+Talk about standard Cg and then CUDA \cite{CgToolkit} \cite{CudaToolkit}
 
 Any use by gait in the past?
