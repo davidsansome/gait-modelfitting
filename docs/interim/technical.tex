@@ -135,7 +135,7 @@ The fragment shader used is listed in \ref{correlation.cg}.
 	\label{CrossCorrelation}
 \end{figure}
 
-The implementation creates an additional matrix $\mathbf{M}_2$ that is used to convert between the coordinate spaces of OpenGL textures to that of our filters and voxel-space.
+The implementation creates an additional matrix $\mathbf{M}_2$ that is used to convert between the coordinate spaces of OpenGL textures to those of our filters and voxel-space.
 It also contains a translate and a scale operation to align the filter with the hips, and scale it to the right size.
 The values used in these transformations are obtained from Section \ref{LocatingCenter}.
 This $\mathbf{M}_2$ is applied to our original $\mathbf{M}$ from Equation \ref{eqn:Matrix} like so:
@@ -270,7 +270,7 @@ The overall energy function is therefore given by:
 \end{equation}
 
 \bigskip
-\noindent The implementation in C of the active contour was fairly straightforward and followed the algorithm given my Williams and Shah \cite{SnakeAlgorithm}.
+\noindent The implementation in C of the active contour was fairly straightforward and followed the algorithm given by Williams and Shah \cite{SnakeAlgorithm}.
 A \texttt{resetContour} function initialises the contour to a tiny circle at the given location,
 and an \texttt{advanceContour} function calculates and updates each snaxel with its next position.
 This works by evaluating the energy function at each point in a $k$x$k$ grid centered on the snaxel,
