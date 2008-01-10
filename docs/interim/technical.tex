@@ -1,4 +1,4 @@
-\section{Report on Technical Progress}
+\section{Report on technical progress}
 
 \subsection{Framework for GPU processing}
 
@@ -82,7 +82,7 @@ We implement this by introducing a transformation matrix $\mathbf{M}(\alpha,\the
 		0 & 1 & 0 \\
 		-sin(\alpha) & 0 & cos(\alpha)
 	\end{array} \right)
-	*
+	\times
 	\left(\begin{array}{ccc}
 		1 & 0 & 0 \\
 		0 & cos(\theta) & -sin(\theta) \\
@@ -94,7 +94,7 @@ We implement this by introducing a transformation matrix $\mathbf{M}(\alpha,\the
 This allows us to parameterize the cross-correlation image $(f \star g)$ with $\alpha$ and $\theta$ instead:
 
 \begin{equation}
-	(f \star g)_{(\alpha,\theta)} = \sum_{x=1}^{s_{x}} \sum_{y=1}^{s_{y}} \sum_{z=1}^{s_{z}} f_{(x,y,z)} \cdot g_{\mathbf{M}(\alpha,\theta) * (x,y,z)^T}
+	(f \star g)_{(\alpha,\theta)} = \sum_{x=1}^{s_{x}} \sum_{y=1}^{s_{y}} \sum_{z=1}^{s_{z}} f_{(x,y,z)} \cdot g_{\mathbf{M}(\alpha,\theta) \times (x,y,z)^T}
 	\label{eqn:CrossCorrelation}
 \end{equation}
 
