@@ -9,6 +9,9 @@ SET(MODELFITTING-SOURCES
 	convolution.cpp
 	dataunit.cpp
 	imgprocessing.cpp
+	../filters/thighmodel.cpp
+	model.cpp
+	modelloader.cpp
 )
 
 # Header files that have Q_OBJECT in
@@ -51,6 +54,7 @@ TARGET_LINK_LIBRARIES(modelfitting
 	${QT_QTGUI_LIBRARY}
 	${QT_QTOPENGL_LIBRARY}
 	-lV4D
+	-lsvl
 	${CG_LIBRARY}
 	${CG_GL_LIBRARY}
 	${OPENGL_LIBRARIES}
