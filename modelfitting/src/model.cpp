@@ -10,10 +10,16 @@ Model::Model(const QString& name)
 	qDebug() << "Adding model" << name;
 }
 
-void Model::setVertices(int count, const Vec4* data)
+void Model::setVertices(int count, const Vertex* data)
 {
 	m_vertexCount = count;
 	m_vertexData = data;
+}
+
+void Model::setMaterials(int count, const Material* data)
+{
+	m_materialCount = count;
+	m_materialData = data;
 }
 
 void Model::setMinMax(const Vec3& min, const Vec3& max)

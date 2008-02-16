@@ -1085,7 +1085,7 @@ void Voxel_Space::erode_slow(int r)
     timestamp_exit("done\n");
 }
 
-bool Voxel_Space::get(int x, int y, int z)
+bool Voxel_Space::get(int x, int y, int z) const
 {
     if ((x<0) || (y<0) || (z<0) || (x >= x_size) || (y >= y_size) || (z >= z_size))
         return(false);

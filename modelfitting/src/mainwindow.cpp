@@ -23,6 +23,8 @@ MainWindow::MainWindow()
 	connect(m_ui.openButton, SIGNAL(clicked()), SLOT(openMesh()));
 	connect(m_ui.findCenterButton, SIGNAL(clicked()), SLOT(findCenter()));
 	
+	m_meshFilter = new MeshFilter("thighmodel", ":meshsearch.lut");
+	
 	m_ui.front->setViewType(GLView::Front);
 	m_ui.side->setViewType(GLView::Side);
 	m_ui.overhead->setViewType(GLView::Overhead);
@@ -54,6 +56,7 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
 	clearMesh();
+	delete m_meshFilter;
 }
 
 void MainWindow::clearMesh()
@@ -125,9 +128,7 @@ void MainWindow::findCenter()
 	m_ui.imgProcessing->setFilterSet(NULL);
 	delete thigh;*/
 	
-	MeshFilter* filter = new MeshFilter("thighmodel", ":meshsearch.lut");
-	filter->correlate(m_frameInfo);
-	delete filter;
+	m_meshFilter->correlate(m_frameInfo);
 	
 	qDebug() << "Applying filter took" << t.elapsed() << "ms";
 }

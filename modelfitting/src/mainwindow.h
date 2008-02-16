@@ -7,6 +7,7 @@
 class QTimer;
 class Mesh;
 class FrameInfo;
+class MeshFilter;
 
 #include "ui_mainwindow.h"
 #include "types.h"
@@ -37,6 +38,7 @@ private:
 	Voxel_Space* m_voxelSpace;
 	Mesh* m_mesh;
 	FrameInfo* m_frameInfo;
+	MeshFilter* m_meshFilter;
 };
 
 #endif

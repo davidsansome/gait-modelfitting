@@ -81,7 +81,7 @@ class Voxel_Space
         void erode_r12();
         #endif
         
-        bool get(int x, int y, int z);
+        bool get(int x, int y, int z) const;
         void set(int x, int y, int z, bool value);
     
     private:

@@ -224,7 +224,7 @@ void GLView::drawInfo()
 	}
 	
 	// These match the values in ThighFilter.m
-	float rT = 1.0;
+	/*float rT = 1.0;
 	float a = 0.2;
 	float b = 0.5;
 	float minAbMod = 0.25;
@@ -239,6 +239,10 @@ void GLView::drawInfo()
 		glRotatef(m_frameInfo->thighTheta() / M_PI * 180.0, 1.0, 0.0, 0.0);
 		glRotatef(m_frameInfo->thighAlpha() / M_PI * 180.0, 0.0, 1.0, 0.0);
 		gluCylinder(m_quadric, baseRadius, topRadius, 1.0, 10, 10);
+	glPopMatrix();*/
+	
+	glPushMatrix();
+		//m_meshFilter->draw(m_frameInfo, 0.0);
 	glPopMatrix();
 }
 
