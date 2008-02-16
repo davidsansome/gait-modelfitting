@@ -25,5 +25,7 @@ std::tr1::array<float, N> floatn(double f, ...)
 QDebug& operator <<(QDebug& s, const Vec3& v);
 QDebug& operator <<(QDebug& s, const Vec4& v);
 
+void glMultMatrix(const Mat4& mat);
+
 
 #endif

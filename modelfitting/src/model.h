@@ -24,6 +24,8 @@ class Model
 public:
 	Model(const QString& name);
 	
+	void drawPoints() const;
+	
 	void setVertices(int count, const Vertex* data);
 	void setMaterials(int count, const Material* data);
 	void setMinMax(const Vec3& min, const Vec3& max);

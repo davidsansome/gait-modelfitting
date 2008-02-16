@@ -38,7 +38,7 @@ private:
 	Voxel_Space* m_voxelSpace;
 	Mesh* m_mesh;
 	FrameInfo* m_frameInfo;
-	MeshFilter* m_meshFilter;
+	MeshFilter* m_thighFilter;
 };
 
 #endif

@@ -1,6 +1,8 @@
 #include "glview.h"
 #include "frameinfo.h"
 #include "convolution.h"
+#include "meshfilter.h"
+#include "model.h"
 
 #include <QDebug>
 
@@ -209,40 +211,48 @@ void GLView::drawInfo()
 	
 	glColor4f(1.0, 1.0, 1.0, 1.0);
 	
-	if (m_viewType == Overhead)
-	{
-		glBegin(GL_POINTS);
-			glVertex3f(center[0] - MAXX, center[1] - MAXY, 0);
-		glEnd();
-	}
-	else
-	{
-		glBegin(GL_LINES);
-			glVertex3f(center[0] - MAXX, center[1] - MAXY, 0);
-			glVertex3f(center[0] - MAXX, center[1] - MAXY, highestPoint);
-		glEnd();
-	}
-	
-	// These match the values in ThighFilter.m
-	/*float rT = 1.0;
-	float a = 0.2;
-	float b = 0.5;
-	float minAbMod = 0.25;
-	float extent = 4.0;
-	
-	float baseRadius = (minAbMod * a + rT) / extent;
-	float topRadius = (a + rT) / extent;
-	
 	glPushMatrix();
 		glTranslatef(MINX, MINY, 0.0);
-		Convolution::thighTransform(m_frameInfo, false, false);
-		glRotatef(m_frameInfo->thighTheta() / M_PI * 180.0, 1.0, 0.0, 0.0);
-		glRotatef(m_frameInfo->thighAlpha() / M_PI * 180.0, 0.0, 1.0, 0.0);
-		gluCylinder(m_quadric, baseRadius, topRadius, 1.0, 10, 10);
-	glPopMatrix();*/
-	
-	glPushMatrix();
-		//m_meshFilter->draw(m_frameInfo, 0.0);
+		
+		if (m_viewType == Overhead)
+		{
+			glBegin(GL_POINTS);
+				glVertex3f(center[0], center[1], 0.0);
+			glEnd();
+		}
+		else
+		{
+			glBegin(GL_LINES);
+				glVertex3f(center[0], center[1], 0.0);
+				glVertex3f(center[0], center[1], highestPoint);
+			glEnd();
+		}
+		
+		// These match the values in ThighFilter.m
+		/*float rT = 1.0;
+		float a = 0.2;
+		float b = 0.5;
+		float minAbMod = 0.25;
+		float extent = 4.0;
+		
+		float baseRadius = (minAbMod * a + rT) / extent;
+		float topRadius = (a + rT) / extent;
+		
+		glPushMatrix();
+			glTranslatef(MINX, MINY, 0.0);
+			Convolution::thighTransform(m_frameInfo, false, false);
+			glRotatef(m_frameInfo->thighTheta() / M_PI * 180.0, 1.0, 0.0, 0.0);
+			glRotatef(m_frameInfo->thighAlpha() / M_PI * 180.0, 0.0, 1.0, 0.0);
+			gluCylinder(m_quadric, baseRadius, topRadius, 1.0, 10, 10);
+		glPopMatrix();*/
+		
+		if (m_thighFilter != NULL)
+		{
+			glPushMatrix();
+				glMultMatrix(m_thighFilter->matrix(m_frameInfo, 0.0));
+				m_thighFilter->model()->drawPoints();
+			glPopMatrix();
+		}
 	glPopMatrix();
 }
 

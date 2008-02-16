@@ -8,6 +8,7 @@
 #include "types.h"
 
 class FrameInfo;
+class MeshFilter;
 
 class GLView : public QGLWidget
 {
@@ -28,6 +29,7 @@ public:
 	void setViewType(ViewType type);
 	void setCrossSection(int value);
 	void setFrameInfo(const FrameInfo* frameInfo) { m_frameInfo = frameInfo; }
+	void setThighFilter(const MeshFilter* filter) { m_thighFilter = filter; }
 	
 	int extent() const;
 	
@@ -47,6 +49,7 @@ private:
 	
 	Mesh* m_mesh;
 	const FrameInfo* m_frameInfo;
+	const MeshFilter* m_thighFilter;
 	
 	GLUquadric* m_quadric;
 };

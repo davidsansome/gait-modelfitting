@@ -14,8 +14,11 @@ public:
 	MeshFilter(const QString& modelName, const QString& lookupTableName);
 	~MeshFilter();
 	
-	void correlate(FrameInfo* info);
-	void draw(FrameInfo* info, float theta);
+	Mat4 matrix(const FrameInfo* info, float theta) const;
+	
+	float correlate(const FrameInfo* info);
+	
+	const Model* model() const { return m_model; }
 
 private:
 	float doSearch(const Voxel_Space& voxelSpace, int x, int y, int z);

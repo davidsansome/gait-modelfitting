@@ -23,12 +23,17 @@ MainWindow::MainWindow()
 	connect(m_ui.openButton, SIGNAL(clicked()), SLOT(openMesh()));
 	connect(m_ui.findCenterButton, SIGNAL(clicked()), SLOT(findCenter()));
 	
-	m_meshFilter = new MeshFilter("thighmodel", ":meshsearch.lut");
+	m_thighFilter = new MeshFilter("thighmodel", ":meshsearch.lut");
 	
 	m_ui.front->setViewType(GLView::Front);
 	m_ui.side->setViewType(GLView::Side);
 	m_ui.overhead->setViewType(GLView::Overhead);
 	m_ui.angle->setViewType(GLView::Angle);
+	
+	m_ui.front->setThighFilter(m_thighFilter);
+	m_ui.side->setThighFilter(m_thighFilter);
+	m_ui.overhead->setThighFilter(m_thighFilter);
+	m_ui.angle->setThighFilter(m_thighFilter);
 	
 	m_redrawTimer = new QTimer(this);
 	m_redrawTimer->setSingleShot(true);
@@ -56,7 +61,7 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
 	clearMesh();
-	delete m_meshFilter;
+	delete m_thighFilter;
 }
 
 void MainWindow::clearMesh()
@@ -128,7 +133,7 @@ void MainWindow::findCenter()
 	m_ui.imgProcessing->setFilterSet(NULL);
 	delete thigh;*/
 	
-	m_meshFilter->correlate(m_frameInfo);
+	qDebug() << "Minimum energy at theta =" << m_thighFilter->correlate(m_frameInfo);
 	
 	qDebug() << "Applying filter took" << t.elapsed() << "ms";
 }

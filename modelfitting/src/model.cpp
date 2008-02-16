@@ -2,6 +2,8 @@
 #include "modelloader.h"
 
 #include <QDebug>
+#include <GL/gl.h>
+#include <svl/SVLgl.h>
 
 Model::Model(const QString& name)
 	: m_name(name)
@@ -26,4 +28,18 @@ void Model::setMinMax(const Vec3& min, const Vec3& max)
 {
 	m_min = min;
 	m_max = max;
+}
+
+void Model::drawPoints() const
+{
+	glBegin(GL_POINTS);
+		const Vertex* vertex = m_vertexData;
+		for (int i=0 ; i<m_vertexCount ; i++)
+		{
+			//glColor(m_materialData[vertex->mat].color);
+			glVertex(vertex->pos);
+			
+			vertex++;
+		}
+	glEnd();
 }
