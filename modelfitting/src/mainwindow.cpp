@@ -5,6 +5,7 @@
 #include "imgprocessing.h"
 #include "filter.h"
 #include "convolution.h"
+#include "meshfilter.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -116,16 +117,19 @@ void MainWindow::findCenter()
 	QTime t;
 	t.start();
 	
-	Filter* thigh = new Filter("filters/thigh.filter");
+	/*Filter* thigh = new Filter("filters/thigh.filter");
 	Convolution* convolution = new Convolution(thigh, m_frameInfo);
 	m_ui.imgProcessing->setFilterSet(convolution);
 	m_ui.imgProcessing->updateGL();
 	m_frameInfo->setThighOrientation(convolution);
 	m_ui.imgProcessing->setFilterSet(NULL);
+	delete thigh;*/
+	
+	MeshFilter* filter = new MeshFilter("thighmodel", ":meshsearch.lut");
+	filter->correlate(m_frameInfo);
+	delete filter;
 	
 	qDebug() << "Applying filter took" << t.elapsed() << "ms";
-	
-	delete thigh;
 }
 
 void MainWindow::initializeGL()

@@ -6,6 +6,17 @@
 class Voxel_Space;
 class Convolution;
 
+#define MAXX 38.0
+#define MINX (-MAXX)
+#define MAXY 183.0
+#define MINY (-MAXY)
+#define MAXZ 100.0
+#define MINZ (-MAXZ)
+
+#define XEXTENT (MAXX*2)
+#define YEXTENT (MAXY*2)
+#define ZEXTENT (MAXZ*2)
+
 class FrameInfo
 {
 public:

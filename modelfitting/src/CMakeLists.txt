@@ -12,6 +12,8 @@ SET(MODELFITTING-SOURCES
 	../filters/thighmodel.cpp
 	model.cpp
 	modelloader.cpp
+	types.cpp
+	meshfilter.cpp
 )
 
 # Header files that have Q_OBJECT in
@@ -28,6 +30,7 @@ SET(MODELFITTING-UI
 
 # Resource files
 SET(MODELFITTING-RESOURCES
+	../data/resources.qrc
 )
 
 SET (EXECUTABLE_OUTPUT_PATH ..)

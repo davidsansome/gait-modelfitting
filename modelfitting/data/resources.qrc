@@ -1,0 +1,5 @@
+<RCC>
+	<qresource prefix="/" >
+		<file>meshsearch.lut</file>
+	</qresource>
+</RCC>

@@ -18,5 +18,8 @@ void ModelLoader::addModel(const Model* model)
 
 const Model* ModelLoader::model(const QString& name)
 {
+	if (!m_models.contains(name))
+		qFatal("Model %s not found", name.toAscii().data());
+	
 	return m_models[name];
 }

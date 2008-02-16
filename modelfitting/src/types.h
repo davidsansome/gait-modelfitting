@@ -3,6 +3,8 @@
 
 #include <tr1/array>
 #include <stdarg.h>
+#include <svl/SVL.h>
+#include <QDebug>
 
 typedef std::tr1::array<float, 2> float2;
 typedef std::tr1::array<float, 3> float3;
@@ -19,6 +21,9 @@ std::tr1::array<float, N> floatn(double f, ...)
 	va_end(ap);
 	return ret;
 }
+
+QDebug& operator <<(QDebug& s, const Vec3& v);
+QDebug& operator <<(QDebug& s, const Vec4& v);
 
 
 #endif
