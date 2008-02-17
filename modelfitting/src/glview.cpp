@@ -5,6 +5,7 @@
 #include "model.h"
 
 #include <QDebug>
+#include <QMouseEvent>
 
 QGLWidget* GLView::s_contextWidget = NULL;
 
@@ -13,7 +14,9 @@ GLView::GLView(QWidget* parent)
 	  m_mesh(NULL),
 	  m_frameInfo(NULL),
 	  m_viewType(Front),
-	  m_zoom(1.0)
+	  m_viewDistance(150.0),
+	  m_azimuth(0.0),
+	  m_zenith(0.0)
 {
 	if (!s_contextWidget)
 		s_contextWidget = this;
@@ -104,7 +107,13 @@ void GLView::paintGL()
 		case Front:    gluLookAt(0.0, 200.0, 100.0, 0.0, 0.0, 100.0, 0.0,  0.0, 1.0);             break;
 		case Side:     gluLookAt(200.0, 0.0, 100.0, 0.0, 0.0, 100.0, 0.0,  0.0, 1.0);             break;
 		case Overhead: gluLookAt(0.0, 0.0, 200.0,   0.0, 0.0, 100.0, -1.0, 0.0, 0.0);             break;
-		case Angle:    gluLookAt(283.0 * m_zoom - 50.0, 283.0 * m_zoom, 100.0, -50.0, 0.0, 100.0, 0.0, 0.0, 1.0); break; // 400 * sin(pi/4) = 283
+		case Angle:
+			gluLookAt(cos(m_azimuth) * cos(m_zenith) * m_viewDistance,
+			          sin(m_azimuth) * cos(m_zenith) * m_viewDistance,
+			          100.0 + sin(m_zenith) * m_viewDistance,
+			          0.0, 0.0, 100.0,
+			          0.0, 0.0, 1.0);
+			break;
 	}
 	
 	if (!m_mesh)
@@ -297,3 +306,19 @@ void GLView::setCrossSection(int value)
 	equation[3] = value + 1.1;
 	glClipPlane(GL_CLIP_PLANE1, equation);
 }
+
+void GLView::mousePressEvent(QMouseEvent* e)
+{
+	m_mouseDownPos = e->pos();
+	m_mouseDownAzimuth = m_azimuth;
+	m_mouseDownZenith = m_zenith;
+}
+
+void GLView::mouseMoveEvent(QMouseEvent* e)
+{
+	m_azimuth = m_mouseDownAzimuth + (m_mouseDownPos.x() - e->pos().x()) * 0.01;
+	m_zenith = m_mouseDownZenith + (e->pos().y() - m_mouseDownPos.y()) * 0.01;
+	
+	m_zenith = qBound(float(-M_PI_2 + 0.001), m_zenith, float(M_PI_2 - 0.001));
+}
+
