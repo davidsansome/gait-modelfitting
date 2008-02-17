@@ -63,6 +63,8 @@ private:
 	float m_mouseDownAzimuth;
 	float m_zenith;
 	float m_mouseDownZenith;
+	Vec3 m_center;
+	Vec3 m_mouseDownCenter;
 };
 
 #endif

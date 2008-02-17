@@ -16,7 +16,8 @@ GLView::GLView(QWidget* parent)
 	  m_viewType(Front),
 	  m_viewDistance(150.0),
 	  m_azimuth(0.0),
-	  m_zenith(0.0)
+	  m_zenith(0.0),
+	  m_center(0.0, 0.0, 100.0)
 {
 	if (!s_contextWidget)
 		s_contextWidget = this;
@@ -108,10 +109,10 @@ void GLView::paintGL()
 		case Side:     gluLookAt(200.0, 0.0, 100.0, 0.0, 0.0, 100.0, 0.0,  0.0, 1.0);             break;
 		case Overhead: gluLookAt(0.0, 0.0, 200.0,   0.0, 0.0, 100.0, -1.0, 0.0, 0.0);             break;
 		case Angle:
-			gluLookAt(cos(m_azimuth) * cos(m_zenith) * m_viewDistance,
-			          sin(m_azimuth) * cos(m_zenith) * m_viewDistance,
-			          100.0 + sin(m_zenith) * m_viewDistance,
-			          0.0, 0.0, 100.0,
+			gluLookAt(m_center[0] + cos(m_azimuth) * cos(m_zenith) * m_viewDistance,
+			          m_center[1] + sin(m_azimuth) * cos(m_zenith) * m_viewDistance,
+			          m_center[2] + sin(m_zenith) * m_viewDistance,
+			          m_center[0], m_center[1], m_center[2],
 			          0.0, 0.0, 1.0);
 			break;
 	}
@@ -132,7 +133,7 @@ void GLView::paintGL()
 		drawTestCube();
 	glPopMatrix();*/
 	
-	glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
 	drawInfo();
 }
 
@@ -312,13 +313,32 @@ void GLView::mousePressEvent(QMouseEvent* e)
 	m_mouseDownPos = e->pos();
 	m_mouseDownAzimuth = m_azimuth;
 	m_mouseDownZenith = m_zenith;
+	m_mouseDownCenter = m_center;
 }
 
 void GLView::mouseMoveEvent(QMouseEvent* e)
 {
-	m_azimuth = m_mouseDownAzimuth + (m_mouseDownPos.x() - e->pos().x()) * 0.01;
-	m_zenith = m_mouseDownZenith + (e->pos().y() - m_mouseDownPos.y()) * 0.01;
-	
-	m_zenith = qBound(float(-M_PI_2 + 0.001), m_zenith, float(M_PI_2 - 0.001));
+	if (e->modifiers() & Qt::ShiftModifier)
+	{
+		Vec3 viewVec(cos(m_azimuth) * cos(m_zenith),
+		             sin(m_azimuth) * cos(m_zenith),
+		             sin(m_zenith));
+		viewVec = norm(viewVec);
+		Vec3 upVec(0.0, 0.0, 1.0);
+		
+		Vec3 screenRight = cross(viewVec, upVec);
+		Vec3 screenUp = cross(screenRight, viewVec);
+		
+		m_center = m_mouseDownCenter +
+		           screenUp * 0.5 * (e->pos().y() - m_mouseDownPos.y()) +
+		           screenRight * 0.5 * (e->pos().x() - m_mouseDownPos.x());
+	}
+	else
+	{
+		m_azimuth = m_mouseDownAzimuth + (m_mouseDownPos.x() - e->pos().x()) * 0.01;
+		m_zenith = m_mouseDownZenith + (e->pos().y() - m_mouseDownPos.y()) * 0.01;
+		
+		m_zenith = qBound(float(-M_PI_2 + 0.001), m_zenith, float(M_PI_2 - 0.001));
+	}
 }
 
