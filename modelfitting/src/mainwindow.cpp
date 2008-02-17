@@ -133,8 +133,8 @@ void MainWindow::findCenter()
 	m_ui.imgProcessing->setFilterSet(NULL);
 	delete thigh;*/
 	
-	float theta = m_thighFilter->correlate(m_frameInfo);
-	m_frameInfo->setThighTheta(theta);
+	Vec vec = m_thighFilter->correlate(m_frameInfo);
+	m_frameInfo->setFeatureVec(vec);
 	
 	qDebug() << "Applying filter took" << t.elapsed() << "ms";
 }

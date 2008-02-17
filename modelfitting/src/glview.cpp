@@ -260,7 +260,7 @@ void GLView::drawInfo()
 		if (m_thighFilter != NULL)
 		{
 			glPushMatrix();
-				glMultMatrix(m_thighFilter->matrix(m_frameInfo, m_frameInfo->thighTheta()));
+				glMultMatrix(m_thighFilter->matrix(m_frameInfo, m_frameInfo->featureVec()));
 				m_thighFilter->model()->drawPoints();
 			glPopMatrix();
 		}

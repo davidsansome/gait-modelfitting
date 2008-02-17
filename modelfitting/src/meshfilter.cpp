@@ -30,7 +30,7 @@ MeshFilter::~MeshFilter()
 	delete[] m_lookupData;
 }
 
-Mat4 MeshFilter::matrix(const FrameInfo* info, float theta) const
+Mat4 MeshFilter::matrix(const FrameInfo* info, Vec vec) const
 {
 	// Scale factors
 	const float scale1 = 1.0 / qMax(qMax(m_model->extent()[0], m_model->extent()[1]), m_model->extent()[2]);
@@ -39,7 +39,8 @@ Mat4 MeshFilter::matrix(const FrameInfo* info, float theta) const
 	Mat4 matrix;
 	matrix = HTrans4(-m_model->min()); // Translate origin to min
 	matrix = HTrans4(Vec3(-m_model->extent()[0] / 2.0, -m_model->extent()[1] / 2.0, -m_model->extent()[2])) * matrix; // Translate origin to center of the top face
-	matrix = HRot4(Vec3(1.0, 0.0, 0.0), theta) * matrix; // Apply thigh rotation
+	matrix = HRot4(Vec3(1.0, 0.0, 0.0), vec[0]) * matrix; // Apply thigh theta rotation
+	matrix = HRot4(Vec3(0.0, 1.0, 0.0), vec[1]) * matrix; // Apply thigh alpha rotation
 	matrix = HScale4(Vec3(scale1, scale1, scale1)) * matrix; // Scale down to 0-1 space
 	matrix = HScale4(Vec3(scale2, scale2, scale2)) * matrix; // Scale up to voxel space
 	matrix = HTrans4(Vec3(info->center()[0], info->center()[1], info->highestPoint() / 2.0)) * matrix; // Move to the estimated thigh position
@@ -48,7 +49,7 @@ Mat4 MeshFilter::matrix(const FrameInfo* info, float theta) const
 	return matrix;
 }
 
-float MeshFilter::correlate(const FrameInfo* info)
+Vec MeshFilter::correlate(const FrameInfo* info)
 {
 	// Copy the voxel space and do edge detection on it
 	Voxel_Space edge(*(info->vspace())); // Ceep copy
@@ -57,39 +58,43 @@ float MeshFilter::correlate(const FrameInfo* info)
 	const int edgeMaterial = (len(m_model->materialData()[0].color) > 0.7) ? 0 : 1;
 	const int internalMaterial = (len(m_model->materialData()[1].color) > 0.7) ? 0 : 1;
 	
-	float minTheta = 0.0;
+	Vec minVec(2, 0.0, 0.0);
 	float minEnergy = std::numeric_limits<float>::infinity();
-	for (float theta=-M_PI_4 ; theta<M_PI_4 ; theta+=M_PI_2/40)
+	for (float alpha=-M_PI_4 ; alpha<M_PI_4 ; alpha+=M_PI_2/40)
 	{
-		Mat4 mat = matrix(info, theta);
-		
-		float energy = 0.0;
-		
-		const Vertex* vertex = m_model->vertexData();
-		for (int i=0 ; i<m_model->vertexCount() ; ++i)
+		for (float theta=-M_PI_4 ; theta<M_PI_4 ; theta+=M_PI_2/40)
 		{
-			const Vec3 pos(proj(mat * vertex->pos));
-			int x = int(pos[0]); // These get floored, that's ok
-			int y = int(pos[1]);
-			int z = int(pos[2]);
+			Vec vec(2, theta, alpha);
+			Mat4 mat = matrix(info, vec);
 			
-			if (vertex->mat == edgeMaterial) // Search for nearby edge voxels
-				energy += doSearch(edge, x, y, z);
-			else // Search for nearby filled voxels
-				energy += doSearch(*info->vspace(), x, y, z);
+			float energy = 0.0;
 			
-			vertex++;
+			const Vertex* vertex = m_model->vertexData();
+			for (int i=0 ; i<m_model->vertexCount() ; ++i)
+			{
+				const Vec3 pos(proj(mat * vertex->pos));
+				int x = int(pos[0]); // These get floored, that's ok
+				int y = int(pos[1]);
+				int z = int(pos[2]);
+				
+				if (vertex->mat == edgeMaterial) // Search for nearby edge voxels
+					energy += doSearch(edge, x, y, z);
+				else // Search for nearby filled voxels
+					energy += doSearch(*info->vspace(), x, y, z);
+				
+				vertex++;
+			}
+			
+			if (energy < minEnergy)
+			{
+				minEnergy = energy;
+				minVec = vec;
+			}
+			qDebug() << "vec" << vec << "energy" << energy;
 		}
-		
-		if (energy < minEnergy)
-		{
-			minEnergy = energy;
-			minTheta = theta;
-		}
-		qDebug() << "theta" << theta << "energy" << energy;
 	}
 	
-	return minTheta;
+	return minVec;
 }
 
 float MeshFilter::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z)

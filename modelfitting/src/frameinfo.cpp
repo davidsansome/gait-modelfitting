@@ -91,9 +91,4 @@ void FrameInfo::bindTexture(int texUnit)
 	glBindTexture(GL_TEXTURE_3D, m_texture);
 }
 
-void FrameInfo::setThighTheta(float theta)
-{
-	m_thighTheta = theta;
-}
-
 

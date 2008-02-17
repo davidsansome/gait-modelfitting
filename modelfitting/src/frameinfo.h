@@ -24,13 +24,12 @@ public:
 	~FrameInfo();
 
 	void analyse();
-	void setThighTheta(float theta);
+	void setFeatureVec(const Vec& fv) { m_featureVec = fv; }
 	
 	const float2& center() const { return m_center; }
 	int highestPoint() const { return m_highest; }
 	int xWidth() const { return m_xWidth; }
-	float thighTheta() const { return m_thighTheta; }
-	float thighAlpha() const { return m_thighAlpha; }
+	Vec featureVec() const { return m_featureVec; }
 	
 	void bindTexture(int texUnit=0);
 	const Voxel_Space* vspace() const { return m_vspace; }
@@ -42,8 +41,7 @@ private:
 	float2 m_center;
 	int m_xWidth;
 	
-	float m_thighTheta;
-	float m_thighAlpha;
+	Vec m_featureVec;
 	
 	uint m_texture;
 };

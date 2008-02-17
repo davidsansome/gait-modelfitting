@@ -14,6 +14,15 @@ QDebug& operator <<(QDebug& s, const Vec4& v)
 	return s;
 }
 
+QDebug& operator <<(QDebug& s, const Vec& v)
+{
+	s << "(";
+	for (int i=0 ; i<v.Elts() ; i++)
+		s << v[i] << ",";
+	s << ")";
+	return s;
+}
+
 void glMultMatrix(const Mat4& mat)
 {
 #ifdef VL_FLOAT

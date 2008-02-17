@@ -14,9 +14,9 @@ public:
 	MeshFilter(const QString& modelName, const QString& lookupTableName);
 	~MeshFilter();
 	
-	Mat4 matrix(const FrameInfo* info, float theta) const;
+	Mat4 matrix(const FrameInfo* info, Vec vec) const;
 	
-	float correlate(const FrameInfo* info);
+	Vec correlate(const FrameInfo* info);
 	
 	const Model* model() const { return m_model; }
 
