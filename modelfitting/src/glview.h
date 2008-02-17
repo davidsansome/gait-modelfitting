@@ -11,6 +11,7 @@ class FrameInfo;
 class MeshFilter;
 
 class QMouseEvent;
+class QWheelEvent;
 
 class GLView : public QGLWidget
 {
@@ -37,6 +38,7 @@ public:
 	
 	void mouseMoveEvent(QMouseEvent* e);
 	void mousePressEvent(QMouseEvent* e);
+	void wheelEvent(QWheelEvent* e);
 	
 	static QGLWidget* s_contextWidget;
 

@@ -6,6 +6,7 @@
 
 #include <QDebug>
 #include <QMouseEvent>
+#include <QWheelEvent>
 
 QGLWidget* GLView::s_contextWidget = NULL;
 
@@ -340,5 +341,10 @@ void GLView::mouseMoveEvent(QMouseEvent* e)
 		
 		m_zenith = qBound(float(-M_PI_2 + 0.001), m_zenith, float(M_PI_2 - 0.001));
 	}
+}
+
+void GLView::wheelEvent(QWheelEvent* e)
+{
+	m_viewDistance = qMax(2.0, m_viewDistance - float(e->delta()) / 5.0);
 }
 
