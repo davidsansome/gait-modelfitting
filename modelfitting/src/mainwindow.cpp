@@ -133,7 +133,8 @@ void MainWindow::findCenter()
 	m_ui.imgProcessing->setFilterSet(NULL);
 	delete thigh;*/
 	
-	qDebug() << "Minimum energy at theta =" << m_thighFilter->correlate(m_frameInfo);
+	float theta = m_thighFilter->correlate(m_frameInfo);
+	m_frameInfo->setThighTheta(theta);
 	
 	qDebug() << "Applying filter took" << t.elapsed() << "ms";
 }

@@ -24,7 +24,7 @@ public:
 	~FrameInfo();
 
 	void analyse();
-	void setThighOrientation(Convolution* convolution);
+	void setThighTheta(float theta);
 	
 	const float2& center() const { return m_center; }
 	int highestPoint() const { return m_highest; }

@@ -39,7 +39,7 @@ Mat4 MeshFilter::matrix(const FrameInfo* info, float theta) const
 	Mat4 matrix;
 	matrix = HTrans4(-m_model->min()); // Translate origin to min
 	matrix = HTrans4(Vec3(-m_model->extent()[0] / 2.0, -m_model->extent()[1] / 2.0, -m_model->extent()[2])) * matrix; // Translate origin to center of the top face
-	matrix = HRot4(Vec3(0.0, 1.0, 0.0), theta) * matrix; // Apply thigh rotation
+	matrix = HRot4(Vec3(1.0, 0.0, 0.0), theta) * matrix; // Apply thigh rotation
 	matrix = HScale4(Vec3(scale1, scale1, scale1)) * matrix; // Scale down to 0-1 space
 	matrix = HScale4(Vec3(scale2, scale2, scale2)) * matrix; // Scale up to voxel space
 	matrix = HTrans4(Vec3(info->center()[0], info->center()[1], info->highestPoint() / 2.0)) * matrix; // Move to the estimated thigh position

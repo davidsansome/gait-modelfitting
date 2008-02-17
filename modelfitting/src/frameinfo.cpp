@@ -91,12 +91,9 @@ void FrameInfo::bindTexture(int texUnit)
 	glBindTexture(GL_TEXTURE_3D, m_texture);
 }
 
-void FrameInfo::setThighOrientation(Convolution* convolution)
+void FrameInfo::setThighTheta(float theta)
 {
-	QPointF orientation(convolution->mean());
-	m_thighTheta = orientation.x();
-	//m_thighAlpha = orientation.y();
-	m_thighAlpha = 0.0;
+	m_thighTheta = theta;
 }
 
 
