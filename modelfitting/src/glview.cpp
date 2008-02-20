@@ -221,6 +221,7 @@ void GLView::drawInfo()
 	int highestPoint = m_frameInfo->highestPoint();
 	
 	glColor4f(1.0, 1.0, 1.0, 1.0);
+	glDisable(GL_CULL_FACE);
 	
 	glPushMatrix();
 		glTranslatef(MINX, MINY, 0.0);
@@ -261,7 +262,7 @@ void GLView::drawInfo()
 		{
 			glPushMatrix();
 				glMultMatrix(m_thighFilter->matrix(m_frameInfo, m_frameInfo->featureVec()));
-				m_thighFilter->model()->drawPoints();
+				m_thighFilter->model()->draw();
 			glPopMatrix();
 		}
 	glPopMatrix();

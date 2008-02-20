@@ -24,6 +24,12 @@ void Model::setMaterials(int count, const Material* data)
 	m_materialData = data;
 }
 
+void Model::setTriangles(int count, const Triangle* data)
+{
+	m_triangleCount = count;
+	m_triangleData = data;
+}
+
 void Model::setMinMax(const Vec3& min, const Vec3& max)
 {
 	m_min = min;
@@ -40,6 +46,23 @@ void Model::drawPoints() const
 			glVertex(vertex->pos);
 			
 			vertex++;
+		}
+	glEnd();
+}
+
+void Model::draw() const
+{
+	// TODO: VBOs?
+	glBegin(GL_TRIANGLES);
+		const Triangle* triangle = m_triangleData;
+		for (int i=0 ; i<m_triangleCount ; i++)
+		{
+			glColor(m_materialData[triangle->mat].color);
+			glVertex(m_vertexData[triangle->v1].pos);
+			glVertex(m_vertexData[triangle->v2].pos);
+			glVertex(m_vertexData[triangle->v3].pos);
+			
+			triangle++;
 		}
 	glEnd();
 }
