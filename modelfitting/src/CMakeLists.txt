@@ -6,14 +6,12 @@ SET(MODELFITTING-SOURCES
 	frameinfo.cpp
 	filter.cpp
 	shaderpair.cpp
-	convolution.cpp
 	dataunit.cpp
 	imgprocessing.cpp
 	../filters/thighmodel.cpp
 	model.cpp
 	modelloader.cpp
 	types.cpp
-	meshfilter.cpp
 )
 
 # Header files that have Q_OBJECT in
@@ -21,6 +19,7 @@ SET(MODELFITTING-MOC-HEADERS
 	mainwindow.h
 	glview.h
 	imgprocessing.h
+	frameinfo.h
 )
 
 # UI files

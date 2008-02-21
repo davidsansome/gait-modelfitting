@@ -109,7 +109,7 @@ class Mesh
         void saveR(char * filename);
         void saveZ(char * filename);
         void draw_init( bool fast );
-        void draw( );
+        void draw( ) const;
         void draw_destroy( );
         
         float * vertices;
@@ -123,8 +123,8 @@ class Mesh
         unsigned int _vbo[4];
     private:
         void pack(const Quad_List& lst);
-        void draw_slow( );
-        void draw_fast( );
+        void draw_slow( ) const;
+        void draw_fast( ) const;
         bool use_draw_fast;
 };
 

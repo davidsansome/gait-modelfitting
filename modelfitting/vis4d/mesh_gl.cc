@@ -16,7 +16,7 @@
 
 
 
-void Mesh::draw_slow( )
+void Mesh::draw_slow( ) const
 {
     int n,i;
     if (colours != NULL)
@@ -46,7 +46,7 @@ void Mesh::draw_slow( )
     }
 }
 
-void Mesh::draw_fast( )
+void Mesh::draw_fast( ) const
 {
     glPushClientAttrib( GL_CLIENT_VERTEX_ARRAY_BIT );
     glEnableClientState( GL_VERTEX_ARRAY );
@@ -86,7 +86,7 @@ void Mesh::draw_fast( )
     glDisableClientState(GL_COLOR_ARRAY);*/
 }
 
-void Mesh::draw( )
+void Mesh::draw( ) const
 {
     if (use_draw_fast)
         draw_fast( );

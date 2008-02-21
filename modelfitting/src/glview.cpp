@@ -1,18 +1,17 @@
 #include "glview.h"
 #include "frameinfo.h"
 #include "convolution.h"
-#include "meshfilter.h"
 #include "model.h"
 
 #include <QDebug>
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <mesh.hh>
 
 QGLWidget* GLView::s_contextWidget = NULL;
 
 GLView::GLView(QWidget* parent)
 	: QGLWidget(parent, s_contextWidget),
-	  m_mesh(NULL),
 	  m_frameInfo(NULL),
 	  m_viewType(Front),
 	  m_viewDistance(150.0),
@@ -26,12 +25,6 @@ GLView::GLView(QWidget* parent)
 
 GLView::~GLView()
 {
-}
-
-void GLView::setMesh(Mesh* mesh)
-{
-	m_mesh = mesh;
-	m_frameInfo = NULL;
 }
 
 void GLView::setViewType(ViewType type)
@@ -118,12 +111,12 @@ void GLView::paintGL()
 			break;
 	}
 	
-	if (!m_mesh)
+	if (!m_frameInfo)
 		return;
 	
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
-	m_mesh->draw();
+	m_frameInfo->mesh()->draw();
 	glDisable(GL_LIGHTING);
 	
 	drawTunnel();
@@ -214,10 +207,10 @@ void GLView::drawTestCube()
 
 void GLView::drawInfo()
 {
-	if (m_frameInfo == NULL)
+	if (m_frameInfo == NULL || !m_frameInfo->hasModelInformation())
 		return;
 	
-	const float2 center(m_frameInfo->center());
+	const Vec2 center(m_frameInfo->center());
 	int highestPoint = m_frameInfo->highestPoint();
 	
 	glColor4f(1.0, 1.0, 1.0, 1.0);
@@ -240,31 +233,10 @@ void GLView::drawInfo()
 			glEnd();
 		}
 		
-		// These match the values in ThighFilter.m
-		/*float rT = 1.0;
-		float a = 0.2;
-		float b = 0.5;
-		float minAbMod = 0.25;
-		float extent = 4.0;
-		
-		float baseRadius = (minAbMod * a + rT) / extent;
-		float topRadius = (a + rT) / extent;
-		
 		glPushMatrix();
-			glTranslatef(MINX, MINY, 0.0);
-			Convolution::thighTransform(m_frameInfo, false, false);
-			glRotatef(m_frameInfo->thighTheta() / M_PI * 180.0, 1.0, 0.0, 0.0);
-			glRotatef(m_frameInfo->thighAlpha() / M_PI * 180.0, 0.0, 1.0, 0.0);
-			gluCylinder(m_quadric, baseRadius, topRadius, 1.0, 10, 10);
-		glPopMatrix();*/
-		
-		if (m_thighFilter != NULL)
-		{
-			glPushMatrix();
-				glMultMatrix(m_thighFilter->matrix(m_frameInfo, m_frameInfo->featureVec()));
-				m_thighFilter->model()->draw();
-			glPopMatrix();
-		}
+			glMultMatrix(m_frameInfo->limbMatrix(FrameInfo::LeftThigh));
+			FrameInfo::thighModel()->draw();
+		glPopMatrix();
 	glPopMatrix();
 }
 

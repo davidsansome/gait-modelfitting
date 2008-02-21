@@ -5,7 +5,6 @@
 #include "imgprocessing.h"
 #include "filter.h"
 #include "convolution.h"
-#include "meshfilter.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -27,8 +26,6 @@ MainWindow::MainWindow()
 	
 	connect(m_ui.fileList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(loadSelectedFile()));
 	
-	m_thighFilter = new MeshFilter("thighmodel", ":meshsearch.lut");
-	
 	m_progressDialog = new QProgressDialog("Running map-reduce", 0, 0, 100, this);
 	m_futureWatcher = new QFutureWatcher<ReduceType>(this);
 	connect(m_futureWatcher, SIGNAL(started()), m_progressDialog, SLOT(show()));
@@ -40,11 +37,6 @@ MainWindow::MainWindow()
 	m_ui.side->setViewType(GLView::Side);
 	m_ui.overhead->setViewType(GLView::Overhead);
 	m_ui.angle->setViewType(GLView::Angle);
-	
-	m_ui.front->setThighFilter(m_thighFilter);
-	m_ui.side->setThighFilter(m_thighFilter);
-	m_ui.overhead->setThighFilter(m_thighFilter);
-	m_ui.angle->setThighFilter(m_thighFilter);
 	
 	m_redrawTimer = new QTimer(this);
 	m_redrawTimer->setSingleShot(true);
@@ -71,22 +63,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-	clearMesh();
-	delete m_thighFilter;
-}
-
-void MainWindow::clearMesh()
-{
-	if (m_mesh)
-		m_mesh->draw_destroy();
-	
-	delete m_mesh;
-	delete m_voxelSpace;
 	delete m_frameInfo;
-	
-	m_mesh = NULL;
-	m_voxelSpace = NULL;
-	m_frameInfo = NULL;
 }
 
 void MainWindow::openDirectory()
@@ -110,7 +87,6 @@ void MainWindow::updateFileListing()
 	QDir dir(m_openDir);
 	QStringList fileNames(dir.entryList(QStringList() << "*.Zspc", QDir::Files | QDir::NoDotAndDotDot | QDir::Readable, QDir::Name));
 	
-	clearMesh();
 	m_ui.fileList->clear();
 	m_ui.fileList->addItems(fileNames);
 	
@@ -128,15 +104,13 @@ void MainWindow::loadSelectedFile()
 	
 	QString fileName = m_openDir + QDir::separator() + m_ui.fileList->currentItem()->text();
 	
-	clearMesh();
-	m_voxelSpace = new Voxel_Space(fileName.toAscii().data());
-	m_mesh = new Mesh(*m_voxelSpace);
-	m_mesh->draw_init(true);
+	delete m_frameInfo;
+	m_frameInfo = new FrameInfo(fileName);
 	
-	m_ui.front->setMesh(m_mesh);
-	m_ui.side->setMesh(m_mesh);
-	m_ui.overhead->setMesh(m_mesh);
-	m_ui.angle->setMesh(m_mesh);
+	m_ui.front->setFrameInfo(m_frameInfo);
+	m_ui.side->setFrameInfo(m_frameInfo);
+	m_ui.overhead->setFrameInfo(m_frameInfo);
+	m_ui.angle->setFrameInfo(m_frameInfo);
 }
 
 void MainWindow::updateViews()
@@ -151,20 +125,10 @@ void MainWindow::updateViews()
 
 void MainWindow::recalculate()
 {
-	delete m_frameInfo;
-	m_frameInfo = new FrameInfo(m_voxelSpace);
-	m_frameInfo->analyse();
+	QFuture<ReduceType> future = m_frameInfo->update();
 	
-	m_ui.front->setFrameInfo(m_frameInfo);
-	m_ui.side->setFrameInfo(m_frameInfo);
-	m_ui.overhead->setFrameInfo(m_frameInfo);
-	m_ui.angle->setFrameInfo(m_frameInfo);
-	
-	QFuture<ReduceType> future = m_thighFilter->correlate(m_frameInfo);
 	m_futureWatcher->setFuture(future);
 	m_progressDialog->exec(); // Doesn't return until the mapreduce is done
-	
-	m_frameInfo->setFeatureVec(future.result().first);
 }
 
 void MainWindow::recalculateAll()
