@@ -2,9 +2,6 @@
 
 #include <mesh.hh>
 #include "frameinfo.h"
-#include "imgprocessing.h"
-#include "filter.h"
-#include "convolution.h"
 
 #include <QFileDialog>
 #include <QTimer>

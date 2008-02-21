@@ -4,10 +4,6 @@ SET(MODELFITTING-SOURCES
 	mainwindow.cpp
 	glview.cpp
 	frameinfo.cpp
-	filter.cpp
-	shaderpair.cpp
-	dataunit.cpp
-	imgprocessing.cpp
 	../filters/thighmodel.cpp
 	model.cpp
 	modelloader.cpp
@@ -18,7 +14,6 @@ SET(MODELFITTING-SOURCES
 SET(MODELFITTING-MOC-HEADERS
 	mainwindow.h
 	glview.h
-	imgprocessing.h
 	frameinfo.h
 )
 

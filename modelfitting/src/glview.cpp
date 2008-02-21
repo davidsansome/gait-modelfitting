@@ -1,6 +1,5 @@
 #include "glview.h"
 #include "frameinfo.h"
-#include "convolution.h"
 #include "model.h"
 
 #include <QDebug>
