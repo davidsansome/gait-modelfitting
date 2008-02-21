@@ -3,14 +3,16 @@
 
 #include <QDialog>
 #include <QSettings>
+#include <QFutureWatcher>
 
 class QTimer;
 class Mesh;
 class FrameInfo;
-class MeshFilter;
+class QProgressDialog;
 
 #include "ui_mainwindow.h"
 #include "types.h"
+#include "meshfilter.h"
 
 class MainWindow : public QDialog
 {
@@ -42,6 +44,9 @@ private:
 	Mesh* m_mesh;
 	FrameInfo* m_frameInfo;
 	MeshFilter* m_thighFilter;
+	
+	QFutureWatcher<ReduceType>* m_futureWatcher;
+	QProgressDialog* m_progressDialog;
 };
 
 #endif

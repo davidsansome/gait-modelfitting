@@ -8,7 +8,10 @@
 #include <QDataStream>
 #include <limits>
 
+#include <QtConcurrentMap>
+
 MeshFilter::MeshFilter(const QString& modelName, const QString& lookupTableName)
+	: m_edgeVspace(NULL)
 {
 	// Get the mesh model
 	m_model = ModelLoader::instance()->model(modelName);
@@ -28,6 +31,7 @@ MeshFilter::MeshFilter(const QString& modelName, const QString& lookupTableName)
 MeshFilter::~MeshFilter()
 {
 	delete[] m_lookupData;
+	delete m_edgeVspace;
 }
 
 Mat4 MeshFilter::matrix(const FrameInfo* info, Vec vec) const
@@ -49,55 +53,66 @@ Mat4 MeshFilter::matrix(const FrameInfo* info, Vec vec) const
 	return matrix;
 }
 
-Vec MeshFilter::correlate(const FrameInfo* info)
+float MeshFilter::energy(Vec vec) const
 {
-	// Copy the voxel space and do edge detection on it
-	Voxel_Space edge(*(info->vspace())); // Ceep copy
-	edge.edge_detect();
-	
 	const int edgeMaterial = (len(m_model->materialData()[0].color) > 0.7) ? 0 : 1;
 	const int internalMaterial = (len(m_model->materialData()[1].color) > 0.7) ? 0 : 1;
 	
-	Vec minVec(2, 0.0, 0.0);
-	float minEnergy = std::numeric_limits<float>::infinity();
-	for (float alpha=-M_PI_4 ; alpha<M_PI_4 ; alpha+=M_PI_2/40)
+	Mat4 mat = matrix(m_info, vec);
+	
+	float ret = 0.0;
+	
+	const Vertex* vertex = m_model->vertexData();
+	for (int i=0 ; i<m_model->vertexCount() ; ++i)
 	{
-		for (float theta=-M_PI_4 ; theta<M_PI_4 ; theta+=M_PI_2/40)
-		{
-			Vec vec(2, theta, alpha);
-			Mat4 mat = matrix(info, vec);
-			
-			float energy = 0.0;
-			
-			const Vertex* vertex = m_model->vertexData();
-			for (int i=0 ; i<m_model->vertexCount() ; ++i)
-			{
-				const Vec3 pos(proj(mat * vertex->pos));
-				int x = int(pos[0]); // These get floored, that's ok
-				int y = int(pos[1]);
-				int z = int(pos[2]);
-				
-				if (vertex->mat == edgeMaterial) // Search for nearby edge voxels
-					energy += doSearch(edge, x, y, z);
-				else // Search for nearby filled voxels
-					energy += doSearch(*info->vspace(), x, y, z);
-				
-				vertex++;
-			}
-			
-			if (energy < minEnergy)
-			{
-				minEnergy = energy;
-				minVec = vec;
-			}
-			qDebug() << "vec" << vec << "energy" << energy;
-		}
+		const Vec3 pos(proj(mat * vertex->pos));
+		int x = int(pos[0]); // These get floored, that's ok
+		int y = int(pos[1]);
+		int z = int(pos[2]);
+		
+		if (vertex->mat == edgeMaterial) // Search for nearby edge voxels
+			ret += doSearch(*m_edgeVspace, x, y, z);
+		else // Search for nearby filled voxels
+			ret += doSearch(*m_info->vspace(), x, y, z);
+		
+		vertex++;
 	}
 	
-	return minVec;
+	return ret;
 }
 
-float MeshFilter::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z)
+ReduceType correlateMap(const MapType& p)
+{
+	Vec vec = p.first;
+	MeshFilter* filter = p.second;
+	
+	return ReduceType(vec, filter->energy(vec));
+}
+
+void correlateReduce(ReduceType& result, const ReduceType& intermediate)
+{
+	if (result.first.Elts() == 0 || intermediate.second < result.second)
+		result = intermediate;
+}
+
+QFuture<ReduceType> MeshFilter::correlate(const FrameInfo* info)
+{
+	m_info = info;
+	// Copy the voxel space and do edge detection on it
+	delete m_edgeVspace;
+	m_edgeVspace = new Voxel_Space(*(info->vspace())); // Deep copy
+	m_edgeVspace->edge_detect();
+	
+	// Construct list of potential parameters
+	QList<MapType> params;
+	for (float alpha=-M_PI_4 ; alpha<M_PI_4 ; alpha+=M_PI_2/40)
+		for (float theta=-M_PI_4 ; theta<M_PI_4 ; theta+=M_PI_2/40)
+			params << MapType(Vec(2, theta, alpha), this);
+	
+	return QtConcurrent::mappedReduced(params, correlateMap, correlateReduce);
+}
+
+float MeshFilter::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) const
 {
 	char* lookup = m_lookupData;
 	for (int i=0 ; i<m_lookupElements ; i++)
