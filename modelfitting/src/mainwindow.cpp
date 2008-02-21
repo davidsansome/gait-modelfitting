@@ -20,8 +20,11 @@ MainWindow::MainWindow()
 {
 	m_ui.setupUi(this);
 	
-	connect(m_ui.openButton, SIGNAL(clicked()), SLOT(openMesh()));
-	connect(m_ui.findCenterButton, SIGNAL(clicked()), SLOT(findCenter()));
+	connect(m_ui.openButton, SIGNAL(clicked()), SLOT(openDirectory()));
+	connect(m_ui.recalculateButton, SIGNAL(clicked()), SLOT(recalculate()));
+	connect(m_ui.recalculateAllButton, SIGNAL(clicked()), SLOT(recalculateAll()));
+	
+	connect(m_ui.fileList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(loadSelectedFile()));
 	
 	m_thighFilter = new MeshFilter("thighmodel", ":meshsearch.lut");
 	
@@ -40,8 +43,6 @@ MainWindow::MainWindow()
 	connect(m_redrawTimer, SIGNAL(timeout()), SLOT(updateViews()));
 	m_redrawTimer->start(0);
 	
-	connect(m_ui.imgProcessing, SIGNAL(setupReady()), SLOT(initializeGL()));
-	
 	m_ui.crossFrontSlider->setMaximum(m_ui.front->extent());
 	m_ui.crossSideSlider->setMaximum(m_ui.side->extent());
 	m_ui.crossTopSlider->setMaximum(m_ui.overhead->extent());
@@ -56,6 +57,8 @@ MainWindow::MainWindow()
 	m_ui.splitter->setSizes(sizes);
 	
 	m_openDir = m_settings.value("OpenDir", QDir::homePath()).toString();
+	
+	updateFileListing();
 }
 
 MainWindow::~MainWindow()
@@ -78,17 +81,44 @@ void MainWindow::clearMesh()
 	m_frameInfo = NULL;
 }
 
-void MainWindow::openMesh()
+void MainWindow::openDirectory()
 {
-	QString fileName = QFileDialog::getOpenFileName(this, "Open file", m_openDir, "*.Zspc");
+	QString dirName = QFileDialog::getExistingDirectory(this, "Open directory", m_openDir);
 	
-	if (fileName.isNull())
+	if (dirName.isNull())
 		return;
 	
-	QFileInfo fileInfo(fileName);
-	m_ui.meshName->setText(fileInfo.baseName());
-	m_openDir = fileInfo.path();
+	m_openDir = dirName;
 	m_settings.setValue("OpenDir", m_openDir);
+	
+	updateFileListing();
+}
+
+void MainWindow::updateFileListing()
+{
+	if (m_openDir.isNull())
+		return;
+	
+	QDir dir(m_openDir);
+	QStringList fileNames(dir.entryList(QStringList() << "*.Zspc", QDir::Files | QDir::NoDotAndDotDot | QDir::Readable, QDir::Name));
+	
+	clearMesh();
+	m_ui.fileList->clear();
+	m_ui.fileList->addItems(fileNames);
+	
+	if (m_ui.fileList->count() > 0)
+		m_ui.fileList->setCurrentRow(0);
+	
+	m_ui.recalculateButton->setEnabled(m_ui.fileList->count() > 0);
+	m_ui.recalculateAllButton->setEnabled(m_ui.fileList->count() > 0);
+}
+
+void MainWindow::loadSelectedFile()
+{
+	if (m_ui.fileList->currentItem() == NULL)
+		return;
+	
+	QString fileName = m_openDir + QDir::separator() + m_ui.fileList->currentItem()->text();
 	
 	clearMesh();
 	m_voxelSpace = new Voxel_Space(fileName.toAscii().data());
@@ -111,7 +141,7 @@ void MainWindow::updateViews()
 	m_redrawTimer->start(30);
 }
 
-void MainWindow::findCenter()
+void MainWindow::recalculate()
 {
 	delete m_frameInfo;
 	m_frameInfo = new FrameInfo(m_voxelSpace);
@@ -137,6 +167,10 @@ void MainWindow::findCenter()
 	m_frameInfo->setFeatureVec(vec);
 	
 	qDebug() << "Applying filter took" << t.elapsed() << "ms";
+}
+
+void MainWindow::recalculateAll()
+{
 }
 
 void MainWindow::initializeGL()

@@ -21,14 +21,17 @@ public:
 
 private slots:
 	void initializeGL();
-	void openMesh();
-	void findCenter();
+	void openDirectory();
+	void recalculate();
+	void recalculateAll();
 	void updateViews();
+	void loadSelectedFile();
 	
 	void sliderMoved(int value);
 	
 private:
 	void clearMesh();
+	void updateFileListing();
 	
 	Ui_MainWindow m_ui;
 	QString m_openDir;

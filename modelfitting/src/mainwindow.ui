@@ -13,6 +13,9 @@
    <string>Model Fitter</string>
   </property>
   <layout class="QVBoxLayout" >
+   <property name="spacing" >
+    <number>4</number>
+   </property>
    <property name="leftMargin" >
     <number>0</number>
    </property>
@@ -128,7 +131,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="" >
+     <widget class="QWidget" name="layoutWidget" >
       <layout class="QVBoxLayout" >
        <item>
         <widget class="QGroupBox" name="meshGroup" >
@@ -137,96 +140,37 @@
          </property>
          <layout class="QVBoxLayout" >
           <item>
-           <layout class="QHBoxLayout" >
-            <item>
-             <widget class="QLabel" name="meshName" >
-              <property name="sizePolicy" >
-               <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text" >
-               <string>(no mesh loaded)</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="openButton" >
-              <property name="text" >
-               <string>Open...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <widget class="QListWidget" name="fileList" />
           </item>
           <item>
-           <widget class="QPushButton" name="findCenterButton" >
+           <widget class="QPushButton" name="openButton" >
             <property name="text" >
-             <string>Find center</string>
+             <string>Open directory...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="recalculateButton" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="text" >
+             <string>Recalculate</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="recalculateAllButton" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="text" >
+             <string>Recalculate all</string>
             </property>
            </widget>
           </item>
          </layout>
         </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" >
-         <item>
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType" >
-            <enum>QSizePolicy::Preferred</enum>
-           </property>
-           <property name="sizeHint" >
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="ImgProcessing" native="1" name="imgProcessing" >
-           <property name="sizePolicy" >
-            <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize" >
-            <size>
-             <width>128</width>
-             <height>128</height>
-            </size>
-           </property>
-           <property name="maximumSize" >
-            <size>
-             <width>128</width>
-             <height>128</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType" >
-            <enum>QSizePolicy::Preferred</enum>
-           </property>
-           <property name="sizeHint" >
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox" >
@@ -327,12 +271,6 @@
    <class>GLView</class>
    <extends>QWidget</extends>
    <header>glview.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ImgProcessing</class>
-   <extends>QWidget</extends>
-   <header>imgprocessing.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
