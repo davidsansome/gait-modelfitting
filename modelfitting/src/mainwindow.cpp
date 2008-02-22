@@ -118,12 +118,8 @@ void MainWindow::updateViews()
 
 void MainWindow::recalculate()
 {
-	QList<MapReduceOperation> operations = m_frameInfo->update();
-	
-	m_progressDialog->addOperations(operations);
+	m_progressDialog->addOperations(m_frameInfo->update());
 	m_progressDialog->exec();
-	//m_futureWatcher->setFuture(future);
-	//m_progressDialog->exec(); // Doesn't return until the mapreduce is done
 }
 
 void MainWindow::recalculateAll()

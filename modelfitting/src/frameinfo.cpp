@@ -127,7 +127,7 @@ QList<MapReduceOperation> FrameInfo::update()
 	
 	// Construct list of potential parameters
 	QList<MapType> params;
-	for (float alpha=-M_PI_4 ; alpha<M_PI_4 ; alpha+=M_PI_2/40)
+	for (float alpha=-M_PI/8.0 ; alpha<M_PI/8.0 ; alpha+=M_PI_4/20)
 		for (float theta=-M_PI_4 ; theta<M_PI_4 ; theta+=M_PI_2/40)
 			params << MapType(Params(alpha, theta), MapArgs(this, LeftThigh));
 	
@@ -137,7 +137,7 @@ QList<MapReduceOperation> FrameInfo::update()
 	ret << MapReduceOperation("Left leg", future);
 	
 	params.clear();
-	for (float alpha=-M_PI_4 ; alpha<M_PI_4 ; alpha+=M_PI_2/40)
+	for (float alpha=-M_PI/8.0 ; alpha<M_PI/8.0 ; alpha+=M_PI_4/20)
 		for (float theta=-M_PI_4 ; theta<M_PI_4 ; theta+=M_PI_2/40)
 			params << MapType(Params(alpha, theta), MapArgs(this, RightThigh));
 	
