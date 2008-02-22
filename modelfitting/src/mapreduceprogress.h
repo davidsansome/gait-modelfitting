@@ -22,7 +22,7 @@ public slots:
 	void addOperation(const MapReduceOperation& op);
 	void addOperations(const QList<MapReduceOperation>& ops);
 	
-	void reject() {} // Ignore
+	void reject() {close();}
 
 private slots:
 	void operationChanged();

@@ -73,6 +73,9 @@ FrameInfo::~FrameInfo()
 
 void FrameInfo::mapReduceFinished()
 {
+	if (m_futureWatcher->isCanceled())
+		return;
+	
 	m_params = m_futureWatcher->future().result().first;
 }
 

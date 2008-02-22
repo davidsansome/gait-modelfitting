@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QFutureWatcher>
 #include <QCloseEvent>
+#include <QMessageBox>
 
 class ProgressDelegate : public QAbstractItemDelegate
 {
@@ -55,6 +56,8 @@ MapReduceProgress::MapReduceProgress(QWidget* parent)
 	m_model->setColumnCount(2);
 	m_ui.view->setModel(m_model);
 	m_ui.view->setItemDelegateForColumn(1, new ProgressDelegate(this));
+	
+	connect(m_ui.cancelButton, SIGNAL(clicked()), SLOT(close()));
 }
 
 void MapReduceProgress::addOperation(const MapReduceOperation& op)
@@ -110,6 +113,17 @@ void MapReduceProgress::operationFinished()
 
 void MapReduceProgress::closeEvent(QCloseEvent* event)
 {
-	event->ignore();
+	if (QMessageBox::question(this, "Cancel all?", "Are you sure you want to cancel all remaining mapreduce operations?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+	{
+		for (int i=0 ; i<m_model->rowCount() ; ++i)
+		{
+			QStandardItem* item = m_model->item(i, 1);
+			QFuture<void> itemFuture(item->data(Qt::DisplayRole).value<QFuture<void> >());
+			itemFuture.cancel();
+		}
+		event->accept();
+	}
+	else
+		event->ignore();
 }
 
