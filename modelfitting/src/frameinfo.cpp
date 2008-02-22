@@ -18,6 +18,22 @@ quint32 FrameInfo::s_lookupElements = 0;
 char* FrameInfo::s_lookupData = NULL;
 
 
+Params::Params(float a, float t)
+	: valid(true),
+	  alpha(a),
+	  theta(t)
+{
+}
+
+Params::Params(const Params& other)
+	: valid(true),
+	  alpha(other.alpha),
+	  theta(other.theta)
+{
+}
+
+
+
 
 FrameInfo::FrameInfo(const QString& filename)
 {
@@ -57,10 +73,10 @@ FrameInfo::~FrameInfo()
 
 void FrameInfo::mapReduceFinished()
 {
-	m_featureVec = m_futureWatcher->future().result().first;
+	m_params = m_futureWatcher->future().result().first;
 }
 
-QFuture<ReduceType> FrameInfo::update()
+QList<MapReduceOperation> FrameInfo::update()
 {
 	unsigned long long xTotal = 0;
 	unsigned long long yTotal = 0;
@@ -94,39 +110,43 @@ QFuture<ReduceType> FrameInfo::update()
 	m_center = Vec2(float(xTotal)/i, float(yTotal)/i);
 	m_xWidth = maxX - minX;
 	
+	QList<MapReduceOperation> ret;
+	
 	// Construct list of potential parameters
 	QList<MapType> params;
 	for (float alpha=-M_PI_4 ; alpha<M_PI_4 ; alpha+=M_PI_2/40)
 		for (float theta=-M_PI_4 ; theta<M_PI_4 ; theta+=M_PI_2/40)
-			params << MapType(Vec(2, theta, alpha), this);
+			params << MapType(Params(alpha, theta), MapArgs(this, LeftThigh));
 	
 	// Start the mapreduce
 	QFuture<ReduceType> future = QtConcurrent::mappedReduced(params, correlateMap, correlateReduce);
 	m_futureWatcher->setFuture(future);
+	ret << MapReduceOperation("Left thigh", future);
 	
-	return future;
+	return ret;
 }
 
 ReduceType correlateMap(const MapType& p)
 {
-	Vec vec = p.first;
-	FrameInfo* info = p.second;
+	Params params = p.first;
+	FrameInfo* info = p.second.first;
+	Limb limb = p.second.second;
 	
-	return ReduceType(vec, info->energy(vec));
+	return ReduceType(params, info->energy(limb, params));
 }
 
 void correlateReduce(ReduceType& result, const ReduceType& intermediate)
 {
-	if (result.first.Elts() == 0 || intermediate.second < result.second)
+	if (!result.first.valid || intermediate.second < result.second)
 		result = intermediate;
 }
 
-float FrameInfo::energy(Vec vec) const
+float FrameInfo::energy(Limb limb, const Params& params) const
 {
 	const int edgeMaterial = (len(s_thighModel->materialData()[0].color) > 0.7) ? 0 : 1;
 	const int internalMaterial = (len(s_thighModel->materialData()[1].color) > 0.7) ? 0 : 1;
 	
-	Mat4 mat = limbMatrix(LeftThigh, vec);
+	Mat4 mat = limbMatrix(limb, params);
 	
 	float ret = 0.0;
 	
@@ -163,9 +183,9 @@ float FrameInfo::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) co
 	return 500.0; // TODO: Store this value in the lookup file
 }
 
-Mat4 FrameInfo::limbMatrix(Limb limb, const Vec& v) const
+Mat4 FrameInfo::limbMatrix(Limb limb, const Params& p) const
 {
-	const Vec vec = (v.Elts() == 0) ? m_featureVec : v;
+	const Params params = (p.valid) ? p : m_params;
 	
 	// Scale factors
 	const float scale1 = 1.0 / qMax(qMax(s_thighModel->extent()[0], s_thighModel->extent()[1]), s_thighModel->extent()[2]);
@@ -174,12 +194,15 @@ Mat4 FrameInfo::limbMatrix(Limb limb, const Vec& v) const
 	Mat4 matrix;
 	matrix = HTrans4(-s_thighModel->min()); // Translate origin to min
 	matrix = HTrans4(Vec3(-s_thighModel->extent()[0] / 2.0, -s_thighModel->extent()[1] / 2.0, -s_thighModel->extent()[2])) * matrix; // Translate origin to center of the top face
-	matrix = HRot4(Vec3(1.0, 0.0, 0.0), vec[0]) * matrix; // Apply thigh theta rotation
-	matrix = HRot4(Vec3(0.0, 1.0, 0.0), vec[1]) * matrix; // Apply thigh alpha rotation
+	matrix = HRot4(Vec3(1.0, 0.0, 0.0), params.theta) * matrix; // Apply thigh theta rotation
+	matrix = HRot4(Vec3(0.0, 1.0, 0.0), params.alpha) * matrix; // Apply thigh alpha rotation
 	matrix = HScale4(Vec3(scale1, scale1, scale1)) * matrix; // Scale down to 0-1 space
 	matrix = HScale4(Vec3(scale2, scale2, scale2)) * matrix; // Scale up to voxel space
 	matrix = HTrans4(Vec3(m_center[0], m_center[1], m_highest / 2.0)) * matrix; // Move to the estimated thigh position
-	matrix = HTrans4(Vec3(m_xWidth / 6.0, 0.0, 0.0)) * matrix; // Change to right leg
+	if (limb == RightThigh)
+		matrix = HTrans4(Vec3(m_xWidth / 6.0, 0.0, 0.0)) * matrix; // Change to right leg
+	else if (limb == LeftThigh)
+		matrix = HTrans4(Vec3(- m_xWidth / 6.0, 0.0, 0.0)) * matrix; // Change to left leg
 	
 	return matrix;
 }

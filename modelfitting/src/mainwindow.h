@@ -7,7 +7,7 @@
 
 class QTimer;
 class Mesh;
-class QProgressDialog;
+class MapReduceProgress;
 
 #include "ui_mainwindow.h"
 #include "types.h"
@@ -42,8 +42,7 @@ private:
 	Mesh* m_mesh;
 	FrameInfo* m_frameInfo;
 	
-	QFutureWatcher<ReduceType>* m_futureWatcher;
-	QProgressDialog* m_progressDialog;
+	MapReduceProgress* m_progressDialog;
 };
 
 #endif

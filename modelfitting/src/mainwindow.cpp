@@ -2,12 +2,12 @@
 
 #include <mesh.hh>
 #include "frameinfo.h"
+#include "mapreduceprogress.h"
 
 #include <QFileDialog>
 #include <QTimer>
 #include <QDebug>
 #include <QTime>
-#include <QProgressDialog>
 
 MainWindow::MainWindow()
 	: QDialog(NULL),
@@ -23,12 +23,8 @@ MainWindow::MainWindow()
 	
 	connect(m_ui.fileList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(loadSelectedFile()));
 	
-	m_progressDialog = new QProgressDialog("Running map-reduce", 0, 0, 100, this);
-	m_futureWatcher = new QFutureWatcher<ReduceType>(this);
-	connect(m_futureWatcher, SIGNAL(started()), m_progressDialog, SLOT(show()));
-	connect(m_futureWatcher, SIGNAL(finished()), m_progressDialog, SLOT(hide()));
-	connect(m_futureWatcher, SIGNAL(progressRangeChanged(int, int)), m_progressDialog, SLOT(setRange(int, int)));
-	connect(m_futureWatcher, SIGNAL(progressValueChanged(int)), m_progressDialog, SLOT(setValue(int)));
+	//m_progressDialog = new QProgressDialog("Running map-reduce", 0, 0, 100, this);
+	m_progressDialog = new MapReduceProgress(this);
 	
 	m_ui.front->setViewType(GLView::Front);
 	m_ui.side->setViewType(GLView::Side);
@@ -122,10 +118,12 @@ void MainWindow::updateViews()
 
 void MainWindow::recalculate()
 {
-	QFuture<ReduceType> future = m_frameInfo->update();
+	QList<MapReduceOperation> operations = m_frameInfo->update();
 	
-	m_futureWatcher->setFuture(future);
-	m_progressDialog->exec(); // Doesn't return until the mapreduce is done
+	m_progressDialog->addOperations(operations);
+	m_progressDialog->exec();
+	//m_futureWatcher->setFuture(future);
+	//m_progressDialog->exec(); // Doesn't return until the mapreduce is done
 }
 
 void MainWindow::recalculateAll()
