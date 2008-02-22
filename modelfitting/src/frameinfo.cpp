@@ -44,8 +44,10 @@ FrameInfo::FrameInfo(const QString& filename)
 	m_edgeVspace = new Voxel_Space(*m_vspace);
 	m_edgeVspace->edge_detect();
 	
-	m_futureWatcher = new QFutureWatcher<ReduceType>(this);
-	connect(m_futureWatcher, SIGNAL(finished()), SLOT(mapReduceFinished()));
+	m_leftLegWatcher = new QFutureWatcher<ReduceType>(this);
+	m_rightLegWatcher = new QFutureWatcher<ReduceType>(this);
+	connect(m_leftLegWatcher, SIGNAL(finished()), SLOT(leftLegFinished()));
+	connect(m_rightLegWatcher, SIGNAL(finished()), SLOT(rightLegFinished()));
 	
 	if (s_thighModel == NULL)
 	{
@@ -71,12 +73,20 @@ FrameInfo::~FrameInfo()
 	delete m_edgeVspace;
 }
 
-void FrameInfo::mapReduceFinished()
+void FrameInfo::leftLegFinished()
 {
-	if (m_futureWatcher->isCanceled())
+	if (m_leftLegWatcher->isCanceled())
 		return;
 	
-	m_params = m_futureWatcher->future().result().first;
+	m_leftLegParams = m_leftLegWatcher->future().result().first;
+}
+
+void FrameInfo::rightLegFinished()
+{
+	if (m_rightLegWatcher->isCanceled())
+		return;
+	
+	m_rightLegParams = m_rightLegWatcher->future().result().first;
 }
 
 QList<MapReduceOperation> FrameInfo::update()
@@ -123,8 +133,18 @@ QList<MapReduceOperation> FrameInfo::update()
 	
 	// Start the mapreduce
 	QFuture<ReduceType> future = QtConcurrent::mappedReduced(params, correlateMap, correlateReduce);
-	m_futureWatcher->setFuture(future);
-	ret << MapReduceOperation("Left thigh", future);
+	m_leftLegWatcher->setFuture(future);
+	ret << MapReduceOperation("Left leg", future);
+	
+	params.clear();
+	for (float alpha=-M_PI_4 ; alpha<M_PI_4 ; alpha+=M_PI_2/40)
+		for (float theta=-M_PI_4 ; theta<M_PI_4 ; theta+=M_PI_2/40)
+			params << MapType(Params(alpha, theta), MapArgs(this, RightThigh));
+	
+	// Start the mapreduce
+	future = QtConcurrent::mappedReduced(params, correlateMap, correlateReduce);
+	m_rightLegWatcher->setFuture(future);
+	ret << MapReduceOperation("Right leg", future);
 	
 	return ret;
 }
@@ -188,7 +208,7 @@ float FrameInfo::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) co
 
 Mat4 FrameInfo::limbMatrix(Limb limb, const Params& p) const
 {
-	const Params params = (p.valid) ? p : m_params;
+	const Params params = (p.valid) ? p : (limb == LeftThigh ? m_leftLegParams : m_rightLegParams);
 	
 	// Scale factors
 	const float scale1 = 1.0 / qMax(qMax(s_thighModel->extent()[0], s_thighModel->extent()[1]), s_thighModel->extent()[2]);

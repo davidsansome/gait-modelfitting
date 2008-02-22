@@ -64,7 +64,7 @@ public:
 	FrameInfo(const QString& filename);
 	~FrameInfo();
 	
-	bool hasModelInformation() const { return m_params.valid; }
+	bool hasModelInformation() const { return m_leftLegParams.valid && m_rightLegParams.valid; }
 	QList<MapReduceOperation> update();
 	
 	Mat4 limbMatrix(Limb limb, const Params& p = Params()) const;
@@ -76,10 +76,12 @@ public:
 	Vec2 center() const { return m_center; }
 	int highestPoint() const { return m_highest; }
 	int xWidth() const { return m_xWidth; }
-	Params params() const { return m_params; }
+	Params leftLeg() const { return m_leftLegParams; }
+	Params rightLeg() const { return m_rightLegParams; }
 	
 private slots:
-	void mapReduceFinished();
+	void leftLegFinished();
+	void rightLegFinished();
 
 private:
 	float energy(Limb limb, const Params& params) const;
@@ -97,9 +99,11 @@ private:
 	Vec2 m_center;
 	int m_xWidth;
 	
-	Params m_params;
+	QFutureWatcher<ReduceType>* m_leftLegWatcher;
+	QFutureWatcher<ReduceType>* m_rightLegWatcher;
 	
-	QFutureWatcher<ReduceType>* m_futureWatcher;
+	Params m_leftLegParams;
+	Params m_rightLegParams;
 };
 
 #endif
