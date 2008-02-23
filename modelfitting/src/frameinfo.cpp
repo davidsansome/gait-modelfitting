@@ -214,12 +214,14 @@ float FrameInfo::modelEnergy(const Model* model, const Mat4& mat) const
 
 float FrameInfo::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) const
 {
+	// See if this search has already been done, and the answer is available
 	int cacheLoc = (x + y*voxelSpace.x_size + z*(voxelSpace.x_size*voxelSpace.y_size))*2;
 	if (&voxelSpace == m_edgeVspace)
 		cacheLoc++;
 	if (m_distanceCache[cacheLoc] != std::numeric_limits<float>::infinity())
 		return m_distanceCache[cacheLoc];
 	
+	// Not in the cache - so calculate it
 	float ret = 500.0;
 	char* lookup = s_lookupData;
 	for (int i=0 ; i<s_lookupElements ; i++)
@@ -233,6 +235,8 @@ float FrameInfo::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) co
 		lookup += 3;
 	}
 	
+	// Store it in the cache.  Another thread might have done this already, but it doesn't
+	// matter since both threads will get the same answer and we'll only be overwriting the value.
 	m_distanceCache[cacheLoc] = ret;
 	
 	return 500.0; // TODO: Store this value in the lookup file
@@ -271,6 +275,7 @@ Mat4 FrameInfo::limbMatrix(Part part, Limb limb, const Params& p) const
 
 void FrameInfo::initDistanceCache()
 {
+	// Init all elements of the cache to +ve infinity
 	int size = m_vspace->x_size * m_vspace->y_size * m_vspace->z_size * 2;
 	m_distanceCache = new float[size];
 	
