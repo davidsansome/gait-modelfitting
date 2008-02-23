@@ -104,6 +104,7 @@ private:
 	static const Model* s_thighModel;
 	static quint32 s_lookupElements;
 	static char* s_lookupData;
+	static char* s_lookupEnd;
 	
 	int m_highest;
 	Vec2 m_center;

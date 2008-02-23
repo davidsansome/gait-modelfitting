@@ -16,6 +16,7 @@
 const Model* FrameInfo::s_thighModel = NULL;
 quint32 FrameInfo::s_lookupElements = 0;
 char* FrameInfo::s_lookupData = NULL;
+char* FrameInfo::s_lookupEnd = NULL;
 
 #define ALPHA_RESOLUTION 10
 #define THETA_RESOLUTION 20
@@ -70,6 +71,7 @@ FrameInfo::FrameInfo(const QString& filename)
 		s >> s_lookupElements;
 		s_lookupData = new char[s_lookupElements * 3];
 		s.readRawData(s_lookupData, s_lookupElements * 3);
+		s_lookupEnd = s_lookupData + s_lookupElements;
 	}
 }
 
@@ -224,7 +226,7 @@ float FrameInfo::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) co
 	// Not in the cache - so calculate it
 	float ret = 500.0;
 	char* lookup = s_lookupData;
-	for (int i=0 ; i<s_lookupElements ; i++)
+	while (lookup != s_lookupEnd) // This is lots faster than for (i=0 ; i<size...
 	{
 		if (voxelSpace.get(x + lookup[0], y + lookup[1], z + lookup[2]))
 		{
