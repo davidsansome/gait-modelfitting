@@ -233,12 +233,22 @@ void GLView::drawInfo()
 		}
 		
 		glPushMatrix();
-			glMultMatrix(m_frameInfo->limbMatrix(LeftThigh));
+			glMultMatrix(m_frameInfo->limbMatrix(LeftLeg, Thigh));
 			FrameInfo::thighModel()->draw();
 		glPopMatrix();
 		
 		glPushMatrix();
-			glMultMatrix(m_frameInfo->limbMatrix(RightThigh));
+			glMultMatrix(m_frameInfo->limbMatrix(LeftLeg, LowerLeg));
+			FrameInfo::thighModel()->draw();
+		glPopMatrix();
+		
+		glPushMatrix();
+			glMultMatrix(m_frameInfo->limbMatrix(RightLeg, Thigh));
+			FrameInfo::thighModel()->draw();
+		glPopMatrix();
+		
+		glPushMatrix();
+			glMultMatrix(m_frameInfo->limbMatrix(RightLeg, LowerLeg));
 			FrameInfo::thighModel()->draw();
 		glPopMatrix();
 	glPopMatrix();

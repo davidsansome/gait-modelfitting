@@ -25,23 +25,31 @@ class Mesh;
 
 enum Limb
 {
-	LeftThigh,
-	RightThigh
+	Thigh,
+	LowerLeg
+};
+
+enum Part
+{
+	LeftLeg,
+	RightLeg
 };
 
 class Params
 {
 public:
 	Params() : valid(false) {}
-	Params(float a, float t);
+	Params(float ta, float tt, float la, float lt);
 	Params(const Params& other);
 	
 	bool valid;
-	float alpha;
-	float theta;
+	float thighAlpha;
+	float thighTheta;
+	float lowerLegAlpha;
+	float lowerLegTheta;
 };
 
-typedef QPair<FrameInfo*, Limb> MapArgs;
+typedef QPair<FrameInfo*, Part> MapArgs;
 typedef QPair<Params, MapArgs> MapType;
 typedef QPair<Params, float> ReduceType;
 
@@ -67,7 +75,7 @@ public:
 	bool hasModelInformation() const { return m_leftLegParams.valid && m_rightLegParams.valid; }
 	QList<MapReduceOperation> update();
 	
-	Mat4 limbMatrix(Limb limb, const Params& p = Params()) const;
+	Mat4 limbMatrix(Part part, Limb limb, const Params& p = Params()) const;
 	
 	const Voxel_Space* vspace() const { return m_vspace; }
 	const Voxel_Space* edgeVspace() const { return m_edgeVspace; }
@@ -84,7 +92,8 @@ private slots:
 	void rightLegFinished();
 
 private:
-	float energy(Limb limb, const Params& params) const;
+	float energy(Part part, const Params& params) const;
+	float modelEnergy(const Model* model, const Mat4& mat) const;
 	float doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) const;
 	
 	Voxel_Space* m_vspace;
