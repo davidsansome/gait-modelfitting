@@ -92,6 +92,7 @@ private slots:
 	void rightLegFinished();
 
 private:
+	void initDistanceCache();
 	float energy(Part part, const Params& params) const;
 	float modelEnergy(const Model* model, const Mat4& mat) const;
 	float doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) const;
@@ -113,6 +114,8 @@ private:
 	
 	Params m_leftLegParams;
 	Params m_rightLegParams;
+	
+	float* m_distanceCache;
 };
 
 #endif

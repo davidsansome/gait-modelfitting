@@ -43,6 +43,7 @@ Params::Params(const Params& other)
 
 
 FrameInfo::FrameInfo(const QString& filename)
+	: m_distanceCache(NULL)
 {
 	m_vspace = new Voxel_Space(filename.toAscii().data());
 	m_mesh = new Mesh(*m_vspace);
@@ -78,6 +79,7 @@ FrameInfo::~FrameInfo()
 	delete m_mesh;
 	delete m_vspace;
 	delete m_edgeVspace;
+	delete[] m_distanceCache;
 }
 
 void FrameInfo::leftLegFinished()
@@ -129,6 +131,9 @@ QList<MapReduceOperation> FrameInfo::update()
 	m_highest = highest;
 	m_center = Vec2(float(xTotal)/i, float(yTotal)/i);
 	m_xWidth = maxX - minX;
+	
+	if (m_distanceCache == NULL)
+		initDistanceCache();
 	
 	QList<MapReduceOperation> ret;
 	
@@ -209,14 +214,26 @@ float FrameInfo::modelEnergy(const Model* model, const Mat4& mat) const
 
 float FrameInfo::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) const
 {
+	int cacheLoc = (x + y*voxelSpace.x_size + z*(voxelSpace.x_size*voxelSpace.y_size))*2;
+	if (&voxelSpace == m_edgeVspace)
+		cacheLoc++;
+	if (m_distanceCache[cacheLoc] != std::numeric_limits<float>::infinity())
+		return m_distanceCache[cacheLoc];
+	
+	float ret = 500.0;
 	char* lookup = s_lookupData;
 	for (int i=0 ; i<s_lookupElements ; i++)
 	{
 		if (voxelSpace.get(x + lookup[0], y + lookup[1], z + lookup[2]))
-			return ::pow(lookup[0], 2) + ::pow(lookup[1], 2) + ::pow(lookup[2], 2);
+		{
+			ret = ::pow(lookup[0], 2) + ::pow(lookup[1], 2) + ::pow(lookup[2], 2);
+			break;
+		}
 		
 		lookup += 3;
 	}
+	
+	m_distanceCache[cacheLoc] = ret;
 	
 	return 500.0; // TODO: Store this value in the lookup file
 }
@@ -250,4 +267,17 @@ Mat4 FrameInfo::limbMatrix(Part part, Limb limb, const Params& p) const
 		matrix = HTrans4(Vec3(- m_xWidth / 6.0, 0.0, 0.0)) * matrix; // Change to left leg
 	
 	return matrix;
+}
+
+void FrameInfo::initDistanceCache()
+{
+	int size = m_vspace->x_size * m_vspace->y_size * m_vspace->z_size * 2;
+	m_distanceCache = new float[size];
+	
+	float* end = m_distanceCache + size;
+	float* p = m_distanceCache;
+	float inf = std::numeric_limits<float>::infinity();
+	
+	while (p != end)
+		*(p++) = inf;
 }
