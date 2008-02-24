@@ -169,3 +169,9 @@ QString MapReduceProgress::timeComponent(int* ms, int denom, const QString& unit
 	return ret;
 }
 
+int MapReduceProgress::exec(const QString& title)
+{
+	m_ui.title->setText(title);
+	return QDialog::exec();
+}
+

@@ -23,6 +23,8 @@ public slots:
 	void addOperation(const MapReduceOperation& op);
 	void addOperations(const QList<MapReduceOperation>& ops);
 	
+	int exec(const QString& title);
+	
 	void reject() {close();}
 
 protected:

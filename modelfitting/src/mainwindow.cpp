@@ -119,7 +119,7 @@ void MainWindow::updateViews()
 void MainWindow::recalculate()
 {
 	m_progressDialog->addOperations(m_frameInfo->update());
-	m_progressDialog->exec();
+	m_progressDialog->exec("Fitting model to " + QFileInfo(m_frameInfo->filename()).fileName());
 }
 
 void MainWindow::recalculateAll()

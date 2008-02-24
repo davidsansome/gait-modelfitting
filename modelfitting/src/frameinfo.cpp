@@ -44,7 +44,8 @@ Params::Params(const Params& other)
 
 
 FrameInfo::FrameInfo(const QString& filename)
-	: m_distanceCache(NULL)
+	: m_distanceCache(NULL),
+	  m_filename(filename)
 {
 	m_vspace = new Voxel_Space(filename.toAscii().data());
 	m_mesh = new Mesh(*m_vspace);

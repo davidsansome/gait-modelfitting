@@ -14,9 +14,9 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" >
    <item>
-    <widget class="QLabel" name="label" >
+    <widget class="QLabel" name="title" >
      <property name="text" >
-      <string>Active mapreduce operations:</string>
+      <string>[title]</string>
      </property>
     </widget>
    </item>

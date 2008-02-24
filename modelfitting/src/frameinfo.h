@@ -77,6 +77,7 @@ public:
 	
 	Mat4 limbMatrix(Part part, Limb limb, const Params& p = Params()) const;
 	
+	QString filename() const { return m_filename; }
 	const Voxel_Space* vspace() const { return m_vspace; }
 	const Voxel_Space* edgeVspace() const { return m_edgeVspace; }
 	const Mesh* mesh() const { return m_mesh; }
@@ -97,6 +98,7 @@ private:
 	float modelEnergy(const Model* model, const Mat4& mat) const;
 	float doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) const;
 	
+	QString m_filename;
 	Voxel_Space* m_vspace;
 	Voxel_Space* m_edgeVspace;
 	Mesh* m_mesh;
