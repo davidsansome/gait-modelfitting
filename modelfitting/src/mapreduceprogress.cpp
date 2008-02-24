@@ -8,6 +8,7 @@
 #include <QFutureWatcher>
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QShowEvent>
 
 class ProgressDelegate : public QAbstractItemDelegate
 {
@@ -125,5 +126,46 @@ void MapReduceProgress::closeEvent(QCloseEvent* event)
 	}
 	else
 		event->ignore();
+}
+
+void MapReduceProgress::showEvent(QShowEvent* event)
+{
+	m_timeElapsed.start();
+	m_timerId = startTimer(1000);
+	updateTimeElapsed();
+}
+
+void MapReduceProgress::hideEvent(QShowEvent* event)
+{
+	killTimer(m_timerId);
+}
+
+void MapReduceProgress::timerEvent(QTimerEvent* event)
+{
+	updateTimeElapsed();
+}
+
+void MapReduceProgress::updateTimeElapsed()
+{
+	QString niceTime = "";
+	int ms = m_timeElapsed.elapsed();
+	
+	niceTime += timeComponent(&ms, 60*60*1000, "hour");
+	niceTime += timeComponent(&ms, 60*1000, "minute");
+	niceTime += timeComponent(&ms, 1000, "second", true);
+	
+	m_ui.timeElapsed->setText("Time elapsed: " + niceTime);
+}
+
+QString MapReduceProgress::timeComponent(int* ms, int denom, const QString& unit, bool alwaysShow) const
+{
+	if (!alwaysShow && *ms < denom)
+		return QString::null;
+	
+	int num = *ms/denom;
+	QString ret(QString::number(num) + " " + unit + (num != 1 ? "s " : " "));
+	*ms %= denom;
+	
+	return ret;
 }
 

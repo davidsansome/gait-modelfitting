@@ -43,6 +43,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="timeElapsed" >
+     <property name="text" >
+      <string>Time elapsed: 0 seconds</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout" >
      <item>
       <spacer name="horizontalSpacer" >
