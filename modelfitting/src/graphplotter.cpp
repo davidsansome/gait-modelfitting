@@ -23,8 +23,8 @@ void GraphPlotter::display()
 {
 	if (m_info == NULL || !m_info->hasModelInformation())
 	{
-	//	QMessageBox::warning(NULL, "Error", "You need to calculate the frame's model information first");
-	//	return;
+		QMessageBox::warning(NULL, "Error", "You need to calculate the frame's model information first");
+		return;
 	}
 	
 	plot(":showgraph.g");
@@ -34,8 +34,8 @@ void GraphPlotter::save()
 {
 	if (m_info == NULL || !m_info->hasModelInformation())
 	{
-	//	QMessageBox::warning(NULL, "Error", "You need to calculate the frame's model information first");
-	//	return;
+		QMessageBox::warning(NULL, "Error", "You need to calculate the frame's model information first");
+		return;
 	}
 	
 	QPair<QString, QString> ret(getFilename());
