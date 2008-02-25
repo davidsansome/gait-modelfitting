@@ -299,8 +299,8 @@ Mat4 FrameInfo::limbMatrix(Part part, Limb limb, const Params<float>& p) const
 	matrix = HScale4(Vec3(scale2, scale2, scale2)) * matrix; // Scale up to voxel space
 	if (limb == LowerLeg)
 	{
-		matrix = HRot4(Vec3(1.0, 0.0, 0.0), params.lowerLegTheta) * matrix; // Apply both theta rotations
-		matrix = HRot4(Vec3(0.0, 1.0, 0.0), params.lowerLegAlpha) * matrix; // Apply both alpha rotations
+		matrix = HRot4(Vec3(1.0, 0.0, 0.0), params.lowerLegTheta - params.thighTheta) * matrix; // Apply lower leg theta rotations
+		matrix = HRot4(Vec3(0.0, 1.0, 0.0), params.lowerLegAlpha - params.thighTheta) * matrix; // Apply lower leg alpha rotations
 		matrix = HTrans4(Vec3(0.0, 0.0, -scale2)) * matrix; // Go down the thigh to the lower leg position
 	}
 	matrix = HRot4(Vec3(1.0, 0.0, 0.0), params.thighTheta) * matrix; // Apply thigh theta rotation
