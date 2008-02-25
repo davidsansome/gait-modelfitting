@@ -20,49 +20,55 @@ char* FrameInfo::s_lookupData = NULL;
 char* FrameInfo::s_lookupEnd = NULL;
 
 
-Params::Params(float ta, float tt, float la, float lt)
-	: valid(true),
-	  thighAlpha(ta),
-	  thighTheta(tt),
-	  lowerLegAlpha(la),
-	  lowerLegTheta(lt)
+MapType::MapType(Params<int> i, Params<float> p, FrameInfo* f, Part pa)
+	: indices(i),
+	  params(p),
+	  frame(f),
+	  part(pa)
 {
 }
 
-Params::Params(const Params& other)
-	: valid(true),
-	  thighAlpha(other.thighAlpha),
-	  thighTheta(other.thighTheta),
-	  lowerLegAlpha(other.lowerLegAlpha),
-	  lowerLegTheta(other.lowerLegTheta)
+MapType::MapType(const MapType& other)
+{
+	*this = other;
+}
+
+MapType& MapType::operator =(const MapType& other)
+{
+	indices = other.indices;
+	params = other.params;
+	frame = other.frame;
+	part = other.part;
+	return *this;
+}
+
+bool MapType::operator <(const MapType& other) const
+{
+	return params < other.params;
+}
+
+ReduceType::ReduceType(Params<int> i, Params<float> p, float e)
+	: indices(i),
+	  params(p),
+	  energy(e)
 {
 }
 
-bool Params::operator <(const Params& other) const
+ReduceType::ReduceType(const ReduceType& other)
 {
-	if (thighAlpha != other.thighAlpha)
-		return thighAlpha < other.thighAlpha;
-	if (thighTheta != other.thighTheta)
-		return thighTheta < other.thighTheta;
-	if (lowerLegAlpha != other.lowerLegAlpha)
-		return lowerLegAlpha < other.lowerLegAlpha;
-	if (lowerLegTheta != other.lowerLegTheta)
-		return lowerLegTheta < other.lowerLegTheta;
-	return false;
+	*this = other;
 }
 
-bool Params::operator ==(const Params& other) const
+ReduceType& ReduceType::operator =(const ReduceType& other)
 {
-	return thighAlpha == other.thighAlpha &&
-	       thighTheta == other.thighTheta &&
-	       lowerLegAlpha == other.lowerLegAlpha &&
-	       lowerLegTheta == other.lowerLegTheta;
+	indices = other.indices;
+	params = other.params;
+	energy = other.energy;
 }
 
-QDebug operator <<(QDebug s, const Params& p)
+bool ReduceType::operator <(const ReduceType& other) const
 {
-	s.nospace() << "Params(" << p.thighAlpha << ", " << p.thighTheta << ", " << p.lowerLegAlpha << ", " << p.lowerLegTheta << ")";
-	return s.space();
+	return params < other.params;
 }
 
 
@@ -115,7 +121,7 @@ void FrameInfo::leftLegFinished()
 	if (m_leftLegWatcher->isCanceled())
 		return;
 	
-	m_leftLegParams = m_leftLegWatcher->future().result().first;
+	m_leftLegParams = m_leftLegWatcher->future().result().params;
 	qDebug() << "Final params for left leg =" << m_leftLegParams;
 }
 
@@ -124,7 +130,8 @@ void FrameInfo::rightLegFinished()
 	if (m_rightLegWatcher->isCanceled())
 		return;
 	
-	m_rightLegParams = m_rightLegWatcher->future().result().first;
+	m_rightLegParams = m_rightLegWatcher->future().result().params;
+	qDebug() << "Final params for right leg =" << m_rightLegParams;
 }
 
 QList<MapReduceOperation> FrameInfo::update()
@@ -169,11 +176,13 @@ QList<MapReduceOperation> FrameInfo::update()
 	
 	// Construct list of potential parameters
 	QList<MapType> params;
-	for (float ta=-ALPHA_RANGE ; ta<ALPHA_RANGE ; ta+=(2.0*ALPHA_RANGE)/ALPHA_RESOLUTION)
-		for (float tt=-THETA_RANGE ; tt<THETA_RANGE ; tt+=(2.0*THETA_RANGE)/THETA_RESOLUTION)
-			for (float la=-ALPHA_RANGE ; la<ALPHA_RANGE ; la+=(2.0*ALPHA_RANGE)/ALPHA_RESOLUTION)
-				for (float lt=-THETA_RANGE ; lt<THETA_RANGE ; lt+=(2.0*THETA_RANGE)/THETA_RESOLUTION)
-					params << MapType(Params(ta, tt, la, lt), MapArgs(this, LeftLeg));
+	for (int ta=-ALPHA_RESOLUTION ; ta<=ALPHA_RESOLUTION ; ta++)
+		for (int tt=-THETA_RESOLUTION ; tt<=THETA_RESOLUTION ; tt++)
+			for (int la=-ALPHA_RESOLUTION ; la<=ALPHA_RESOLUTION ; la++)
+				for (int lt=-THETA_RESOLUTION ; lt<=THETA_RESOLUTION ; lt++)
+					params << MapType(Params<int>(ta, tt, la, lt),
+					                  Params<float>(ta*ALPHA_STEP, tt*THETA_STEP, la*ALPHA_STEP, lt*THETA_STEP),
+					                  this, LeftLeg);
 	
 	// Start the mapreduce
 	QFuture<ReduceType> future = QtConcurrent::mappedReduced(params, correlateMap, correlateReduce);
@@ -181,11 +190,13 @@ QList<MapReduceOperation> FrameInfo::update()
 	ret << MapReduceOperation("Left leg", future);
 	
 	params.clear();
-	for (float ta=-ALPHA_RANGE ; ta<ALPHA_RANGE ; ta+=(2.0*ALPHA_RANGE)/ALPHA_RESOLUTION)
-		for (float tt=-THETA_RANGE ; tt<THETA_RANGE ; tt+=(2.0*THETA_RANGE)/THETA_RESOLUTION)
-			for (float la=-ALPHA_RANGE ; la<ALPHA_RANGE ; la+=(2.0*ALPHA_RANGE)/ALPHA_RESOLUTION)
-				for (float lt=-THETA_RANGE ; lt<THETA_RANGE ; lt+=(2.0*THETA_RANGE)/THETA_RESOLUTION)
-					params << MapType(Params(ta, tt, la, lt), MapArgs(this, RightLeg));
+	for (int ta=-ALPHA_RESOLUTION ; ta<=ALPHA_RESOLUTION ; ta++)
+		for (int tt=-THETA_RESOLUTION ; tt<=THETA_RESOLUTION ; tt++)
+			for (int la=-ALPHA_RESOLUTION ; la<=ALPHA_RESOLUTION ; la++)
+				for (int lt=-THETA_RESOLUTION ; lt<=THETA_RESOLUTION ; lt++)
+					params << MapType(Params<int>(ta, tt, la, lt),
+					                  Params<float>(ta*ALPHA_STEP, tt*THETA_STEP, la*ALPHA_STEP, lt*THETA_STEP),
+					                  this, RightLeg);
 	
 	// Start the mapreduce
 	future = QtConcurrent::mappedReduced(params, correlateMap, correlateReduce);
@@ -197,23 +208,21 @@ QList<MapReduceOperation> FrameInfo::update()
 
 ReduceType correlateMap(const MapType& p)
 {
-	Params params = p.first;
-	FrameInfo* info = p.second.first;
-	Part part = p.second.second;
+	float energy = p.frame->energy(p.part, p.params);
 	
-	ReduceType ret(params, info->energy(part, params));
-	info->addResult(part, ret);
+	ReduceType ret(p.indices, p.params, energy);
+	p.frame->addResult(p.indices, p.part, energy);
 	
 	return ret;
 }
 
 void correlateReduce(ReduceType& result, const ReduceType& intermediate)
 {
-	if (!result.first.valid || intermediate.second < result.second)
+	if (!result.params.valid || intermediate.energy < result.energy)
 		result = intermediate;
 }
 
-float FrameInfo::energy(Part part, const Params& params) const
+float FrameInfo::energy(Part part, const Params<float>& params) const
 {
 	float ret = 0.0;
 	ret += modelEnergy(s_thighModel, limbMatrix(part, Thigh, params));
@@ -275,9 +284,9 @@ float FrameInfo::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) co
 	return 500.0; // TODO: Store this value in the lookup file
 }
 
-Mat4 FrameInfo::limbMatrix(Part part, Limb limb, const Params& p) const
+Mat4 FrameInfo::limbMatrix(Part part, Limb limb, const Params<float>& p) const
 {
-	const Params params = (p.valid) ? p : (part == LeftLeg ? m_leftLegParams : m_rightLegParams);
+	const Params<float> params = (p.valid) ? p : (part == LeftLeg ? m_leftLegParams : m_rightLegParams);
 	
 	// Scale factors
 	const float scale1 = 1.0 / qMax(qMax(s_thighModel->extent()[0], s_thighModel->extent()[1]), s_thighModel->extent()[2]);
@@ -319,9 +328,9 @@ void FrameInfo::initDistanceCache()
 		*(p++) = inf;
 }
 
-void FrameInfo::addResult(Part part, const ReduceType& result)
+void FrameInfo::addResult(const Params<int>& indices, Part part, float energy)
 {
 	QMutexLocker locker(&m_resultMutex);
-	m_results[QPair<Params, Part>(result.first, part)] = result.second;
+	m_results[QPair<Params<int>, Part>(indices, part)] = energy;
 }
 

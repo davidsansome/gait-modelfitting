@@ -29,8 +29,8 @@ private:
 	QPair<QString, QString> getFilename();
 	void plot(const QString& templateFilename, const QString& outFilename = QString::null, const QString& termType = QString::null);
 	
-	QTextStream& writeThighData(Part part, const Params& initialParams, QTextStream& s);
-	QTextStream& writeLowerLegData(Part part, const Params& initialParams, QTextStream& s);
+	QTextStream& writeThighData(Part part, const Params<float>& initialParams, QTextStream& s);
+	QTextStream& writeLowerLegData(Part part, const Params<float>& initialParams, QTextStream& s);
 	
 	FrameInfo* m_info;
 	int m_limb;

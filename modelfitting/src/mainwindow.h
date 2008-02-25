@@ -35,6 +35,7 @@ private slots:
 	
 private:
 	void updateFileListing();
+	void setupSpinBox(QDoubleSpinBox* spinner, double range, double step);
 	
 	Ui_MainWindow m_ui;
 	QString m_openDir;

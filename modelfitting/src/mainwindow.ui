@@ -342,23 +342,7 @@
              </widget>
             </item>
             <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="leftThighAlpha" >
-              <property name="decimals" >
-               <number>5</number>
-              </property>
-              <property name="minimum" >
-               <double>-0.392699082</double>
-              </property>
-              <property name="maximum" >
-               <double>0.392699082</double>
-              </property>
-              <property name="singleStep" >
-               <double>0.0785398163</double>
-              </property>
-              <property name="value" >
-               <double>0.000000000000000</double>
-              </property>
-             </widget>
+             <widget class="QDoubleSpinBox" name="leftThighAlpha" />
             </item>
             <item row="1" column="0" >
              <widget class="QLabel" name="label_2" >
@@ -368,23 +352,7 @@
              </widget>
             </item>
             <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="leftThighTheta">
-		     <property name="decimals" >
-			     <number>5</number>
-		     </property>
-		     <property name="minimum" >
-			     <double>-0.785398163</double>
-		     </property>
-		     <property name="maximum" >
-			     <double>0.785398163</double>
-		     </property>
-		     <property name="singleStep" >
-			     <double>0.0785398163</double>
-		     </property>
-		     <property name="value" >
-			     <double>0.000000000000000</double>
-              </property>
-      </widget>
+             <widget class="QDoubleSpinBox" name="leftThighTheta" />
             </item>
             <item row="2" column="0" >
              <widget class="QLabel" name="label_3" >
@@ -394,23 +362,7 @@
              </widget>
             </item>
             <item row="2" column="1" >
-             <widget class="QDoubleSpinBox" name="leftLowerAlpha" >
-              <property name="decimals" >
-               <number>5</number>
-              </property>
-              <property name="minimum" >
-               <double>-0.392699082</double>
-              </property>
-              <property name="maximum" >
-               <double>0.392699082</double>
-              </property>
-              <property name="singleStep" >
-               <double>0.0785398163</double>
-              </property>
-              <property name="value" >
-               <double>0.000000000000000</double>
-              </property>
-             </widget>
+             <widget class="QDoubleSpinBox" name="leftLowerAlpha" />
             </item>
             <item row="3" column="0" >
              <widget class="QLabel" name="label_4" >
@@ -420,23 +372,7 @@
              </widget>
             </item>
             <item row="3" column="1" >
-             <widget class="QDoubleSpinBox" name="leftLowerTheta">
-		     <property name="decimals" >
-			     <number>5</number>
-		     </property>
-		     <property name="minimum" >
-			     <double>-0.785398163</double>
-		     </property>
-		     <property name="maximum" >
-			     <double>0.785398163</double>
-		     </property>
-		     <property name="singleStep" >
-			     <double>0.0785398163</double>
-		     </property>
-		     <property name="value" >
-			     <double>0.000000000000000</double>
-		     </property>
-      </widget>
+             <widget class="QDoubleSpinBox" name="leftLowerTheta" />
             </item>
            </layout>
           </widget>
@@ -458,23 +394,7 @@
              </widget>
             </item>
             <item row="0" column="1" >
-             <widget class="QDoubleSpinBox" name="rightThighAlpha" >
-              <property name="decimals" >
-               <number>5</number>
-              </property>
-              <property name="minimum" >
-               <double>-0.392699082</double>
-              </property>
-              <property name="maximum" >
-               <double>0.392699082</double>
-              </property>
-              <property name="singleStep" >
-               <double>0.0785398163</double>
-              </property>
-              <property name="value" >
-               <double>0.000000000000000</double>
-              </property>
-             </widget>
+             <widget class="QDoubleSpinBox" name="rightThighAlpha" />
             </item>
             <item row="1" column="0" >
              <widget class="QLabel" name="label_6" >
@@ -484,23 +404,7 @@
              </widget>
             </item>
             <item row="1" column="1" >
-             <widget class="QDoubleSpinBox" name="rightThighTheta">
-		     <property name="decimals" >
-			     <number>5</number>
-		     </property>
-		     <property name="minimum" >
-			     <double>-0.785398163</double>
-		     </property>
-		     <property name="maximum" >
-			     <double>0.785398163</double>
-		     </property>
-		     <property name="singleStep" >
-			     <double>0.0785398163</double>
-		     </property>
-		     <property name="value" >
-			     <double>0.000000000000000</double>
-		     </property>
-      </widget>
+             <widget class="QDoubleSpinBox" name="rightThighTheta" />
             </item>
             <item row="2" column="0" >
              <widget class="QLabel" name="label_7" >
@@ -510,23 +414,7 @@
              </widget>
             </item>
             <item row="2" column="1" >
-             <widget class="QDoubleSpinBox" name="rightLowerAlpha" >
-              <property name="decimals" >
-               <number>5</number>
-              </property>
-              <property name="minimum" >
-               <double>-0.392699082</double>
-              </property>
-              <property name="maximum" >
-               <double>0.392699082</double>
-              </property>
-              <property name="singleStep" >
-               <double>0.0785398163</double>
-              </property>
-              <property name="value" >
-               <double>0.000000000000000</double>
-              </property>
-             </widget>
+             <widget class="QDoubleSpinBox" name="rightLowerAlpha" />
             </item>
             <item row="3" column="0" >
              <widget class="QLabel" name="label_8" >
@@ -536,23 +424,7 @@
              </widget>
             </item>
             <item row="3" column="1" >
-             <widget class="QDoubleSpinBox" name="rightLowerTheta">
-		     <property name="decimals" >
-			     <number>5</number>
-		     </property>
-		     <property name="minimum" >
-			     <double>-0.785398163</double>
-		     </property>
-		     <property name="maximum" >
-			     <double>0.785398163</double>
-		     </property>
-		     <property name="singleStep" >
-			     <double>0.0785398163</double>
-		     </property>
-		     <property name="value" >
-			     <double>0.000000000000000</double>
-		     </property>
-      </widget>
+             <widget class="QDoubleSpinBox" name="rightLowerTheta" />
             </item>
            </layout>
           </widget>

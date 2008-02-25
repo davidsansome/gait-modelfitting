@@ -26,8 +26,10 @@ class Mesh;
 
 #define ALPHA_RANGE (M_PI/8.0)
 #define THETA_RANGE (M_PI/4.0)
-#define ALPHA_RESOLUTION 10
-#define THETA_RESOLUTION 20
+#define ALPHA_RESOLUTION 5
+#define THETA_RESOLUTION 10
+#define ALPHA_STEP (ALPHA_RANGE / ALPHA_RESOLUTION)
+#define THETA_STEP (THETA_RANGE / THETA_RESOLUTION)
 
 enum Limb
 {
@@ -41,28 +43,102 @@ enum Part
 	RightLeg
 };
 
+template <typename T>
 class Params
 {
 public:
 	Params() : valid(false) {}
-	Params(float ta, float tt, float la, float lt);
+	Params(T ta, T tt, T la, T lt);
 	Params(const Params& other);
 	
 	bool operator <(const Params& other) const;
-	bool operator ==(const Params& other) const;
+	Params& operator =(const Params& other);
 	
 	bool valid;
-	float thighAlpha;
-	float thighTheta;
-	float lowerLegAlpha;
-	float lowerLegTheta;
+	T thighAlpha;
+	T thighTheta;
+	T lowerLegAlpha;
+	T lowerLegTheta;
 };
 
-QDebug operator <<(QDebug s, const Params& p);
+template <typename T>
+QDebug operator <<(QDebug s, const Params<T>& p)
+{
+	s.nospace() << "Params(" << p.thighAlpha << ", " << p.thighTheta << ", " << p.lowerLegAlpha << ", " << p.lowerLegTheta << ")";
+	return s.space();
+}
 
-typedef QPair<FrameInfo*, Part> MapArgs;
-typedef QPair<Params, MapArgs> MapType;
-typedef QPair<Params, float> ReduceType;
+template <typename T>
+Params<T>::Params(T ta, T tt, T la, T lt)
+	: valid(true),
+	  thighAlpha(ta),
+	  thighTheta(tt),
+	  lowerLegAlpha(la),
+	  lowerLegTheta(lt)
+{
+}
+
+template <typename T>
+Params<T>::Params(const Params& other)
+{
+	*this = other;
+}
+
+template <typename T>
+Params<T>& Params<T>::operator =(const Params& other)
+{
+	valid = other.valid;
+	thighAlpha = other.thighAlpha;
+	thighTheta = other.thighTheta;
+	lowerLegAlpha = other.lowerLegAlpha;
+	lowerLegTheta = other.lowerLegTheta;
+	return *this;
+}
+
+template <typename T>
+bool Params<T>::operator <(const Params& other) const
+{
+	if (thighAlpha != other.thighAlpha)
+		return thighAlpha < other.thighAlpha;
+	if (thighTheta != other.thighTheta)
+		return thighTheta < other.thighTheta;
+	if (lowerLegAlpha != other.lowerLegAlpha)
+		return lowerLegAlpha < other.lowerLegAlpha;
+	if (lowerLegTheta != other.lowerLegTheta)
+		return lowerLegTheta < other.lowerLegTheta;
+	return false;
+}
+
+class MapType
+{
+public:
+	MapType() {}
+	MapType(Params<int> i, Params<float> p, FrameInfo* f, Part pa);
+	MapType(const MapType& other);
+	
+	bool operator <(const MapType& other) const;
+	MapType& operator =(const MapType& other);
+	
+	Params<int> indices;
+	Params<float> params;
+	FrameInfo* frame;
+	Part part;
+};
+
+class ReduceType
+{
+public:
+	ReduceType() {}
+	ReduceType(Params<int> i, Params<float> p, float e);
+	ReduceType(const ReduceType& other);
+	
+	bool operator <(const ReduceType& other) const;
+	ReduceType& operator =(const ReduceType& other);
+	
+	Params<int> indices;
+	Params<float> params;
+	float energy;
+};
 
 ReduceType correlateMap(const MapType& p);
 void correlateReduce(ReduceType& result, const ReduceType& intermediate);
@@ -86,10 +162,10 @@ public:
 	bool hasModelInformation() const { return m_leftLegParams.valid && m_rightLegParams.valid; }
 	QList<MapReduceOperation> update();
 	
-	Mat4 limbMatrix(Part part, Limb limb, const Params& p = Params()) const;
+	Mat4 limbMatrix(Part part, Limb limb, const Params<float>& p = Params<float>()) const;
 	
-	void setLeftLeg(const Params& p) { m_leftLegParams = p; }
-	void setRightLeg(const Params& p) { m_rightLegParams = p; }
+	void setLeftLeg(const Params<float>& p) { m_leftLegParams = p; }
+	void setRightLeg(const Params<float>& p) { m_rightLegParams = p; }
 	
 	QString filename() const { return m_filename; }
 	const Voxel_Space* vspace() const { return m_vspace; }
@@ -99,10 +175,10 @@ public:
 	Vec2 center() const { return m_center; }
 	int highestPoint() const { return m_highest; }
 	int xWidth() const { return m_xWidth; }
-	Params leftLeg() const { return m_leftLegParams; }
-	Params rightLeg() const { return m_rightLegParams; }
+	Params<float> leftLeg() const { return m_leftLegParams; }
+	Params<float> rightLeg() const { return m_rightLegParams; }
 	
-	float result(const Params& params, Part part) { return m_results.value(QPair<Params, Part>(params, part)); }
+	float result(const Params<int>& indices, Part part) { return m_results.value(QPair<Params<int>, Part>(indices, part)); }
 	
 private slots:
 	void leftLegFinished();
@@ -110,10 +186,10 @@ private slots:
 
 private:
 	void initDistanceCache();
-	float energy(Part part, const Params& params) const;
+	float energy(Part part, const Params<float>& params) const;
 	float modelEnergy(const Model* model, const Mat4& mat) const;
 	float doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) const;
-	void addResult(Part part, const ReduceType& result);
+	void addResult(const Params<int>& indices, Part part, float energy);
 	
 	QString m_filename;
 	Voxel_Space* m_vspace;
@@ -132,13 +208,13 @@ private:
 	QFutureWatcher<ReduceType>* m_leftLegWatcher;
 	QFutureWatcher<ReduceType>* m_rightLegWatcher;
 	
-	Params m_leftLegParams;
-	Params m_rightLegParams;
+	Params<float> m_leftLegParams;
+	Params<float> m_rightLegParams;
 	
 	float* m_distanceCache;
 	
 	QMutex m_resultMutex;
-	QMap<QPair<Params, Part>, float> m_results;
+	QMap<QPair<Params<int>, Part>, float> m_results;
 };
 
 #endif

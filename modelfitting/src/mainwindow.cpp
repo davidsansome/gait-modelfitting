@@ -50,14 +50,14 @@ MainWindow::MainWindow()
 	connect(m_ui.crossSideSlider, SIGNAL(sliderMoved(int)), SLOT(sliderMoved(int)));
 	connect(m_ui.crossTopSlider, SIGNAL(sliderMoved(int)), SLOT(sliderMoved(int)));
 	
-	connect(m_ui.leftThighAlpha, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
-	connect(m_ui.leftThighTheta, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
-	connect(m_ui.leftLowerAlpha, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
-	connect(m_ui.leftLowerTheta, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
-	connect(m_ui.rightThighAlpha, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
-	connect(m_ui.rightThighTheta, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
-	connect(m_ui.rightLowerAlpha, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
-	connect(m_ui.rightLowerTheta, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
+	setupSpinBox(m_ui.leftThighAlpha, ALPHA_RANGE, ALPHA_STEP);
+	setupSpinBox(m_ui.leftThighTheta, THETA_RANGE, THETA_STEP);
+	setupSpinBox(m_ui.leftLowerAlpha, ALPHA_RANGE, ALPHA_STEP);
+	setupSpinBox(m_ui.leftLowerTheta, THETA_RANGE, THETA_STEP);
+	setupSpinBox(m_ui.rightThighAlpha, ALPHA_RANGE, ALPHA_STEP);
+	setupSpinBox(m_ui.rightThighTheta, THETA_RANGE, THETA_STEP);
+	setupSpinBox(m_ui.rightLowerAlpha, ALPHA_RANGE, ALPHA_STEP);
+	setupSpinBox(m_ui.rightLowerTheta, THETA_RANGE, THETA_STEP);
 	
 	QList<int> sizes;
 	sizes.append(width());
@@ -72,6 +72,16 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
 	delete m_frameInfo;
+}
+
+void MainWindow::setupSpinBox(QDoubleSpinBox* spinner, double range, double step)
+{
+	connect(spinner, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
+	spinner->setDecimals(5);
+	spinner->setMinimum(-range);
+	spinner->setMaximum(range);
+	spinner->setSingleStep(step);
+	spinner->setValue(0.0);
 }
 
 void MainWindow::openDirectory()
@@ -195,14 +205,14 @@ void MainWindow::updateParameters()
 	if (!m_frameInfo || m_paramUpdatesDisabled)
 		return;
 	
-	Params left(m_ui.leftThighAlpha->value(),
-	            m_ui.leftThighTheta->value(),
-	            m_ui.leftLowerAlpha->value(),
-	            m_ui.leftLowerTheta->value());
-	Params right(m_ui.rightThighAlpha->value(),
-	             m_ui.rightThighTheta->value(),
-	             m_ui.rightLowerAlpha->value(),
-	             m_ui.rightLowerTheta->value());
+	Params<float> left(m_ui.leftThighAlpha->value(),
+	                   m_ui.leftThighTheta->value(),
+	                   m_ui.leftLowerAlpha->value(),
+	                   m_ui.leftLowerTheta->value());
+	Params<float> right(m_ui.rightThighAlpha->value(),
+	                    m_ui.rightThighTheta->value(),
+	                    m_ui.rightLowerAlpha->value(),
+	                    m_ui.rightLowerTheta->value());
 	
 	m_frameInfo->setLeftLeg(left);
 	m_frameInfo->setRightLeg(right);

@@ -6,6 +6,8 @@
 #include <QFileInfo>
 #include <QFileDialog>
 
+#define ROUND(x) int((x) + ((x) > 0.0 ? 0.5 : -0.5))
+
 GraphPlotter::GraphPlotter(QObject* parent)
 	: QObject(parent),
 	  m_limb(0),
@@ -83,18 +85,18 @@ void GraphPlotter::plot(const QString& templateFilename, const QString& outFilen
 	qDebug() << gnuplot.readAll();
 }
 
-QTextStream& GraphPlotter::writeThighData(Part part, const Params& initialParams, QTextStream& s)
+QTextStream& GraphPlotter::writeThighData(Part part, const Params<float>& initialParams, QTextStream& s)
 {
-	Params p(initialParams);
+	Params<int> p(0,
+	              0,
+	              ROUND(initialParams.lowerLegAlpha / ALPHA_STEP),
+	              ROUND(initialParams.lowerLegTheta / THETA_STEP));
 	
-	for (float ta=-ALPHA_RANGE ; ta<ALPHA_RANGE ; ta+=(2.0*ALPHA_RANGE)/ALPHA_RESOLUTION)
+	for (p.thighAlpha=-ALPHA_RESOLUTION ; p.thighAlpha<=ALPHA_RESOLUTION ; p.thighAlpha++)
 	{
-		for (float tt=-THETA_RANGE ; tt<THETA_RANGE ; tt+=(2.0*THETA_RANGE)/THETA_RESOLUTION)
+		for (p.thighTheta=-THETA_RESOLUTION ; p.thighTheta<=THETA_RESOLUTION ; p.thighTheta++)
 		{
-			p.thighAlpha = ta;
-			p.thighTheta = tt;
-			
-			s << tt << " " << ta << " " << m_info->result(p, part) << "\n";
+			s << float(p.thighTheta) * THETA_STEP << " " << float(p.thighAlpha) * ALPHA_STEP << " " << m_info->result(p, part) << "\n";
 		}
 		s << "\n";
 	}
@@ -102,19 +104,18 @@ QTextStream& GraphPlotter::writeThighData(Part part, const Params& initialParams
 	return s;
 }
 
-QTextStream& GraphPlotter::writeLowerLegData(Part part, const Params& initialParams, QTextStream& s)
+QTextStream& GraphPlotter::writeLowerLegData(Part part, const Params<float>& initialParams, QTextStream& s)
 {
-	Params p(initialParams);
+	Params<int> p(ROUND(initialParams.thighAlpha / ALPHA_STEP),
+	              ROUND(initialParams.thighTheta / THETA_STEP),
+	              0,
+	              0);
 	
-	for (float la=-ALPHA_RANGE ; la<ALPHA_RANGE ; la+=(2.0*ALPHA_RANGE)/ALPHA_RESOLUTION)
+	for (p.lowerLegAlpha=-ALPHA_RESOLUTION ; p.lowerLegAlpha<=ALPHA_RESOLUTION ; p.lowerLegAlpha++)
 	{
-		for (float lt=-THETA_RANGE ; lt<THETA_RANGE ; lt+=(2.0*THETA_RANGE)/THETA_RESOLUTION)
+		for (p.lowerLegTheta=-THETA_RESOLUTION ; p.lowerLegTheta<=THETA_RESOLUTION ; p.lowerLegTheta++)
 		{
-			p.lowerLegAlpha = la;
-			p.lowerLegTheta = lt;
-			
-			s << lt << " " << la << " " << m_info->result(p, part) << "\n";
-			qDebug() << lt << " " << la << " " << m_info->result(p, part) << "\n";
+			s << float(p.lowerLegTheta) * THETA_STEP << " " << float(p.lowerLegAlpha) * ALPHA_STEP << " " << m_info->result(p, part) << "\n";
 		}
 		s << "\n";
 	}
