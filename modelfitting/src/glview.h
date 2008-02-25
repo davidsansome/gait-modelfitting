@@ -26,10 +26,6 @@ public:
 	GLView(QWidget* parent = NULL);
 	~GLView();
 	
-	void setViewType(ViewType type);
-	void setCrossSection(int value);
-	void setFrameInfo(const FrameInfo* frameInfo) { m_frameInfo = frameInfo; }
-	
 	int extent() const;
 	
 	void mouseMoveEvent(QMouseEvent* e);
@@ -37,6 +33,14 @@ public:
 	void wheelEvent(QWheelEvent* e);
 	
 	static QGLWidget* s_contextWidget;
+
+public slots:
+	void setViewType(ViewType type);
+	void setCrossSection(int value);
+	void setFrameInfo(const FrameInfo* frameInfo) { m_frameInfo = frameInfo; }
+	
+	void setVoxelDataVisible(bool showVoxelData) { m_showVoxelData = showVoxelData; }
+	void setModelVisible(bool showModel) { m_showModel = showModel; }
 
 private:
 	void initializeGL();
@@ -49,6 +53,9 @@ private:
 
 	ViewType m_viewType;
 	float m_viewDistance;
+	
+	bool m_showModel;
+	bool m_showVoxelData;
 	
 	const FrameInfo* m_frameInfo;
 	

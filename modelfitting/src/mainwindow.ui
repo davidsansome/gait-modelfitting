@@ -336,6 +336,10 @@
    <extends>QWidget</extends>
    <header>glview.h</header>
    <container>1</container>
+   <slots>
+    <slot>setVoxelDataVisible(bool)</slot>
+    <slot>setModelVisible(bool)</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -351,5 +355,134 @@
   <tabstop>graphSave</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>showVoxelData</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>angle</receiver>
+   <slot>setVoxelDataVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>766</x>
+     <y>508</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>517</x>
+     <y>533</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showVoxelData</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>overhead</receiver>
+   <slot>setVoxelDataVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>778</x>
+     <y>514</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>151</x>
+     <y>496</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showVoxelData</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>side</receiver>
+   <slot>setVoxelDataVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>817</x>
+     <y>516</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>524</x>
+     <y>237</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showVoxelData</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>front</receiver>
+   <slot>setVoxelDataVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>832</x>
+     <y>515</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>244</x>
+     <y>241</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showModel</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>front</receiver>
+   <slot>setModelVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>727</x>
+     <y>550</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>272</x>
+     <y>301</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showModel</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>side</receiver>
+   <slot>setModelVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>883</x>
+     <y>541</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>549</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showModel</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>angle</receiver>
+   <slot>setModelVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>949</x>
+     <y>542</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>533</x>
+     <y>579</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showModel</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>overhead</receiver>
+   <slot>setModelVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>980</x>
+     <y>542</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>226</x>
+     <y>589</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

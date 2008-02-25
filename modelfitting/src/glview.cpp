@@ -16,7 +16,9 @@ GLView::GLView(QWidget* parent)
 	  m_viewDistance(150.0),
 	  m_azimuth(0.0),
 	  m_zenith(0.0),
-	  m_center(0.0, 0.0, 100.0)
+	  m_center(0.0, 0.0, 100.0),
+	  m_showModel(true),
+	  m_showVoxelData(true)
 {
 	if (!s_contextWidget)
 		s_contextWidget = this;
@@ -113,10 +115,13 @@ void GLView::paintGL()
 	if (!m_frameInfo)
 		return;
 	
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_LIGHTING);
-	m_frameInfo->mesh()->draw();
-	glDisable(GL_LIGHTING);
+	if (m_showVoxelData)
+	{
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_LIGHTING);
+		m_frameInfo->mesh()->draw();
+		glDisable(GL_LIGHTING);
+	}
 	
 	drawTunnel();
 	
@@ -127,7 +132,8 @@ void GLView::paintGL()
 	glPopMatrix();*/
 	
 	//glDisable(GL_DEPTH_TEST);
-	drawInfo();
+	if (m_showModel)
+		drawInfo();
 }
 
 void GLView::drawTunnel()
