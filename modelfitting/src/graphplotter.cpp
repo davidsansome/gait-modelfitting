@@ -23,9 +23,9 @@ GraphPlotter::~GraphPlotter()
 
 void GraphPlotter::display()
 {
-	if (m_info == NULL || !m_info->hasModelInformation())
+	if (m_info == NULL || !m_info->hasResults())
 	{
-		QMessageBox::warning(NULL, "Error", "You need to calculate the frame's model information first");
+		QMessageBox::warning(NULL, "Error", "You need to recalculate the frame's model information");
 		return;
 	}
 	
@@ -34,9 +34,9 @@ void GraphPlotter::display()
 
 void GraphPlotter::save()
 {
-	if (m_info == NULL || !m_info->hasModelInformation())
+	if (m_info == NULL || !m_info->hasResults())
 	{
-		QMessageBox::warning(NULL, "Error", "You need to calculate the frame's model information first");
+		QMessageBox::warning(NULL, "Error", "You need to recalculate the frame's model information");
 		return;
 	}
 	

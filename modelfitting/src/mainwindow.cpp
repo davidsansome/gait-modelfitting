@@ -125,6 +125,10 @@ void MainWindow::loadSelectedFile()
 	delete m_frameInfo;
 	m_frameInfo = new FrameInfo(fileName);
 	
+	m_ui.graphGroup->setEnabled(false);
+	m_ui.leftLegGroup->setEnabled(m_frameInfo->hasModelInformation());
+	m_ui.rightLegGroup->setEnabled(m_frameInfo->hasModelInformation());
+	
 	m_ui.front->setFrameInfo(m_frameInfo);
 	m_ui.side->setFrameInfo(m_frameInfo);
 	m_ui.overhead->setFrameInfo(m_frameInfo);
@@ -159,6 +163,10 @@ void MainWindow::recalculate()
 	m_ui.rightLowerAlpha->setValue(m_frameInfo->rightLeg().lowerLegAlpha);
 	m_ui.rightLowerTheta->setValue(m_frameInfo->rightLeg().lowerLegTheta);
 	m_paramUpdatesDisabled = false;
+	
+	m_ui.graphGroup->setEnabled(m_frameInfo->hasModelInformation());
+	m_ui.leftLegGroup->setEnabled(m_frameInfo->hasModelInformation());
+	m_ui.rightLegGroup->setEnabled(m_frameInfo->hasModelInformation());
 }
 
 void MainWindow::recalculateAll()

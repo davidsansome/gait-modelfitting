@@ -6,6 +6,7 @@
 #include <QFuture>
 #include <QMetaType>
 #include <QMutex>
+#include <QSettings>
 
 class Voxel_Space;
 class Convolution;
@@ -50,9 +51,12 @@ public:
 	Params() : valid(false) {}
 	Params(T ta, T tt, T la, T lt);
 	Params(const Params& other);
+	Params(QSettings& settings);
 	
 	bool operator <(const Params& other) const;
 	Params& operator =(const Params& other);
+	
+	void save(QSettings& settings) const;
 	
 	bool valid;
 	T thighAlpha;
@@ -85,6 +89,16 @@ Params<T>::Params(const Params& other)
 }
 
 template <typename T>
+Params<T>::Params(QSettings& settings)
+	: valid(true)
+{
+	thighAlpha = settings.value("ThighAlpha", 0.0).value<T>();
+	thighTheta = settings.value("ThighTheta", 0.0).value<T>();
+	lowerLegAlpha = settings.value("LowerLegAlpha", 0.0).value<T>();
+	lowerLegTheta = settings.value("LowerLegTheta", 0.0).value<T>();
+}
+
+template <typename T>
 Params<T>& Params<T>::operator =(const Params& other)
 {
 	valid = other.valid;
@@ -108,6 +122,16 @@ bool Params<T>::operator <(const Params& other) const
 		return lowerLegTheta < other.lowerLegTheta;
 	return false;
 }
+
+template <typename T>
+void Params<T>::save(QSettings& settings) const
+{
+	settings.setValue("ThighAlpha", thighAlpha);
+	settings.setValue("ThighTheta", thighTheta);
+	settings.setValue("LowerLegAlpha", lowerLegAlpha);
+	settings.setValue("LowerLegTheta", lowerLegTheta);
+}
+
 
 class MapType
 {
@@ -178,7 +202,13 @@ public:
 	Params<float> leftLeg() const { return m_leftLegParams; }
 	Params<float> rightLeg() const { return m_rightLegParams; }
 	
+	bool hasResults() const { return m_results.count() != 0; }
 	float result(const Params<int>& indices, Part part) { return m_results.value(QPair<Params<int>, Part>(indices, part)); }
+	
+	void load();
+	void load(QSettings& settings);
+	void save() const;
+	void save(QSettings& settings) const;
 	
 private slots:
 	void leftLegFinished();

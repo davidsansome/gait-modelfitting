@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QtConcurrentMap>
 #include <QMutexLocker>
+#include <QPointF>
 
 #include <GL/glu.h>
 
@@ -90,6 +91,8 @@ FrameInfo::FrameInfo(const QString& filename)
 	connect(m_leftLegWatcher, SIGNAL(finished()), SLOT(leftLegFinished()));
 	connect(m_rightLegWatcher, SIGNAL(finished()), SLOT(rightLegFinished()));
 	
+	load();
+	
 	if (s_thighModel == NULL)
 	{
 		// Load model
@@ -123,6 +126,9 @@ void FrameInfo::leftLegFinished()
 	
 	m_leftLegParams = m_leftLegWatcher->future().result().params;
 	qDebug() << "Final params for left leg =" << m_leftLegParams;
+	
+	if (hasModelInformation())
+		save();
 }
 
 void FrameInfo::rightLegFinished()
@@ -132,6 +138,9 @@ void FrameInfo::rightLegFinished()
 	
 	m_rightLegParams = m_rightLegWatcher->future().result().params;
 	qDebug() << "Final params for right leg =" << m_rightLegParams;
+	
+	if (hasModelInformation())
+		save();
 }
 
 QList<MapReduceOperation> FrameInfo::update()
@@ -332,5 +341,56 @@ void FrameInfo::addResult(const Params<int>& indices, Part part, float energy)
 {
 	QMutexLocker locker(&m_resultMutex);
 	m_results[QPair<Params<int>, Part>(indices, part)] = energy;
+}
+
+void FrameInfo::save() const
+{
+	QSettings settings(m_filename + ".info", QSettings::IniFormat);
+	save(settings);
+}
+
+void FrameInfo::save(QSettings& settings) const
+{
+	settings.beginGroup("General");
+	settings.setValue("Highest", m_highest);
+	settings.setValue("CenterX", m_center[0]);
+	settings.setValue("CenterY", m_center[1]);
+	settings.setValue("XWidth", m_xWidth);
+	settings.endGroup();
+	
+	settings.beginGroup("LeftLeg");
+	m_leftLegParams.save(settings);
+	settings.endGroup();
+	
+	settings.beginGroup("RightLeg");
+	m_rightLegParams.save(settings);
+	settings.endGroup();
+}
+
+void FrameInfo::load()
+{
+	if (!QFile::exists(m_filename + ".info"))
+		return;
+	
+	QSettings settings(m_filename + ".info", QSettings::IniFormat);
+	load(settings);
+}
+
+void FrameInfo::load(QSettings& settings)
+{
+	settings.beginGroup("General");
+	m_highest = settings.value("Highest").toInt();
+	m_center[0] = settings.value("CenterX").toDouble();
+	m_center[1] = settings.value("CenterY").toDouble();
+	m_xWidth = settings.value("XWidth").toInt();
+	settings.endGroup();
+	
+	settings.beginGroup("LeftLeg");
+	m_leftLegParams = Params<float>(settings);
+	settings.endGroup();
+	
+	settings.beginGroup("RightLeg");
+	m_rightLegParams = Params<float>(settings);
+	settings.endGroup();
 }
 
