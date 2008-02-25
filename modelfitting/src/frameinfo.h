@@ -5,6 +5,7 @@
 
 #include <QFuture>
 #include <QMetaType>
+#include <QMutex>
 
 class Voxel_Space;
 class Convolution;
@@ -22,6 +23,11 @@ class Mesh;
 #define XEXTENT (MAXX*2)
 #define YEXTENT (MAXY*2)
 #define ZEXTENT (MAXZ*2)
+
+#define ALPHA_RANGE (M_PI/8.0)
+#define THETA_RANGE (M_PI/4.0)
+#define ALPHA_RESOLUTION 10
+#define THETA_RESOLUTION 20
 
 enum Limb
 {
@@ -42,12 +48,17 @@ public:
 	Params(float ta, float tt, float la, float lt);
 	Params(const Params& other);
 	
+	bool operator <(const Params& other) const;
+	bool operator ==(const Params& other) const;
+	
 	bool valid;
 	float thighAlpha;
 	float thighTheta;
 	float lowerLegAlpha;
 	float lowerLegTheta;
 };
+
+QDebug operator <<(QDebug s, const Params& p);
 
 typedef QPair<FrameInfo*, Part> MapArgs;
 typedef QPair<Params, MapArgs> MapType;
@@ -88,6 +99,8 @@ public:
 	Params leftLeg() const { return m_leftLegParams; }
 	Params rightLeg() const { return m_rightLegParams; }
 	
+	float result(const Params& params, Part part) { return m_results.value(QPair<Params, Part>(params, part)); }
+	
 private slots:
 	void leftLegFinished();
 	void rightLegFinished();
@@ -97,6 +110,7 @@ private:
 	float energy(Part part, const Params& params) const;
 	float modelEnergy(const Model* model, const Mat4& mat) const;
 	float doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) const;
+	void addResult(Part part, const ReduceType& result);
 	
 	QString m_filename;
 	Voxel_Space* m_vspace;
@@ -119,6 +133,9 @@ private:
 	Params m_rightLegParams;
 	
 	float* m_distanceCache;
+	
+	QMutex m_resultMutex;
+	QMap<QPair<Params, Part>, float> m_results;
 };
 
 #endif

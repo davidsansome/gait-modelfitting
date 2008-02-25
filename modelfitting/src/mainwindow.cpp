@@ -3,6 +3,7 @@
 #include <mesh.hh>
 #include "frameinfo.h"
 #include "mapreduceprogress.h"
+#include "graphplotter.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -23,8 +24,12 @@ MainWindow::MainWindow()
 	
 	connect(m_ui.fileList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(loadSelectedFile()));
 	
-	//m_progressDialog = new QProgressDialog("Running map-reduce", 0, 0, 100, this);
 	m_progressDialog = new MapReduceProgress(this);
+	
+	m_graphPlotter = new GraphPlotter(this);
+	connect(m_ui.graphLimb, SIGNAL(currentIndexChanged(int)), m_graphPlotter, SLOT(setLimb(int)));
+	connect(m_ui.graphSave, SIGNAL(clicked()), m_graphPlotter, SLOT(save()));
+	connect(m_ui.graphDisplay, SIGNAL(clicked()), m_graphPlotter, SLOT(display()));
 	
 	m_ui.front->setViewType(GLView::Front);
 	m_ui.side->setViewType(GLView::Side);
@@ -104,6 +109,8 @@ void MainWindow::loadSelectedFile()
 	m_ui.side->setFrameInfo(m_frameInfo);
 	m_ui.overhead->setFrameInfo(m_frameInfo);
 	m_ui.angle->setFrameInfo(m_frameInfo);
+	
+	m_graphPlotter->setFrameInfo(m_frameInfo);
 }
 
 void MainWindow::updateViews()

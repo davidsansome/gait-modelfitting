@@ -8,6 +8,7 @@
 class QTimer;
 class Mesh;
 class MapReduceProgress;
+class GraphPlotter;
 
 #include "ui_mainwindow.h"
 #include "types.h"
@@ -43,6 +44,7 @@ private:
 	FrameInfo* m_frameInfo;
 	
 	MapReduceProgress* m_progressDialog;
+	GraphPlotter* m_graphPlotter;
 };
 
 #endif

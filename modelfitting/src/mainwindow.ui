@@ -12,20 +12,11 @@
   <property name="windowTitle" >
    <string>Model Fitter</string>
   </property>
-  <layout class="QVBoxLayout" >
+  <layout class="QVBoxLayout" name="verticalLayout_3" >
    <property name="spacing" >
-    <number>4</number>
-   </property>
-   <property name="leftMargin" >
     <number>0</number>
    </property>
-   <property name="topMargin" >
-    <number>0</number>
-   </property>
-   <property name="rightMargin" >
-    <number>0</number>
-   </property>
-   <property name="bottomMargin" >
+   <property name="margin" >
     <number>0</number>
    </property>
    <item>
@@ -35,10 +26,7 @@
      </property>
      <widget class="QWidget" name="layoutWidget" >
       <layout class="QGridLayout" >
-       <property name="horizontalSpacing" >
-        <number>1</number>
-       </property>
-       <property name="verticalSpacing" >
+       <property name="spacing" >
         <number>1</number>
        </property>
        <item row="0" column="0" >
@@ -131,8 +119,8 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="layoutWidget" >
-      <layout class="QVBoxLayout" >
+     <widget class="QWidget" name="" >
+      <layout class="QVBoxLayout" name="verticalLayout_2" >
        <item>
         <widget class="QGroupBox" name="meshGroup" >
          <property name="title" >
@@ -248,14 +236,90 @@
         </widget>
        </item>
        <item>
+        <widget class="QGroupBox" name="groupBox_2" >
+         <property name="title" >
+          <string>View options</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout" >
+          <item>
+           <widget class="QCheckBox" name="showVoxelData" >
+            <property name="text" >
+             <string>Show voxel data</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="showModel" >
+            <property name="text" >
+             <string>Show model</string>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_3" >
+         <property name="title" >
+          <string>Graph plotting</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout" >
+          <item row="0" column="0" colspan="2" >
+           <widget class="QComboBox" name="graphLimb" >
+            <item>
+             <property name="text" >
+              <string>Left thigh</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Right thigh</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Left lower leg</string>
+             </property>
+            </item>
+            <item>
+             <property name="text" >
+              <string>Right lower leg</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QPushButton" name="graphDisplay" >
+            <property name="text" >
+             <string>Display</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" >
+           <widget class="QPushButton" name="graphSave" >
+            <property name="text" >
+             <string>Save</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
         <spacer>
          <property name="orientation" >
           <enum>Qt::Vertical</enum>
          </property>
-         <property name="sizeHint" >
+         <property name="sizeHint" stdset="0" >
           <size>
-           <width>355</width>
-           <height>381</height>
+           <width>238</width>
+           <height>17</height>
           </size>
          </property>
         </spacer>
@@ -274,6 +338,18 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>fileList</tabstop>
+  <tabstop>openButton</tabstop>
+  <tabstop>recalculateButton</tabstop>
+  <tabstop>recalculateAllButton</tabstop>
+  <tabstop>crossFrontSlider</tabstop>
+  <tabstop>crossSideSlider</tabstop>
+  <tabstop>crossTopSlider</tabstop>
+  <tabstop>showVoxelData</tabstop>
+  <tabstop>showModel</tabstop>
+  <tabstop>graphSave</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

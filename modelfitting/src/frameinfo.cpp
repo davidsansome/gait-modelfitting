@@ -7,6 +7,7 @@
 #include <QFutureWatcher>
 #include <QFile>
 #include <QtConcurrentMap>
+#include <QMutexLocker>
 
 #include <GL/glu.h>
 
@@ -17,9 +18,6 @@ const Model* FrameInfo::s_thighModel = NULL;
 quint32 FrameInfo::s_lookupElements = 0;
 char* FrameInfo::s_lookupData = NULL;
 char* FrameInfo::s_lookupEnd = NULL;
-
-#define ALPHA_RESOLUTION 10
-#define THETA_RESOLUTION 20
 
 
 Params::Params(float ta, float tt, float la, float lt)
@@ -38,6 +36,33 @@ Params::Params(const Params& other)
 	  lowerLegAlpha(other.lowerLegAlpha),
 	  lowerLegTheta(other.lowerLegTheta)
 {
+}
+
+bool Params::operator <(const Params& other) const
+{
+	if (thighAlpha != other.thighAlpha)
+		return thighAlpha < other.thighAlpha;
+	if (thighTheta != other.thighTheta)
+		return thighTheta < other.thighTheta;
+	if (lowerLegAlpha != other.lowerLegAlpha)
+		return lowerLegAlpha < other.lowerLegAlpha;
+	if (lowerLegTheta != other.lowerLegTheta)
+		return lowerLegTheta < other.lowerLegTheta;
+	return false;
+}
+
+bool Params::operator ==(const Params& other) const
+{
+	return thighAlpha == other.thighAlpha &&
+	       thighTheta == other.thighTheta &&
+	       lowerLegAlpha == other.lowerLegAlpha &&
+	       lowerLegTheta == other.lowerLegTheta;
+}
+
+QDebug operator <<(QDebug s, const Params& p)
+{
+	s.nospace() << "Params(" << p.thighAlpha << ", " << p.thighTheta << ", " << p.lowerLegAlpha << ", " << p.lowerLegTheta << ")";
+	return s.space();
 }
 
 
@@ -91,6 +116,7 @@ void FrameInfo::leftLegFinished()
 		return;
 	
 	m_leftLegParams = m_leftLegWatcher->future().result().first;
+	qDebug() << "Final params for left leg =" << m_leftLegParams;
 }
 
 void FrameInfo::rightLegFinished()
@@ -137,15 +163,16 @@ QList<MapReduceOperation> FrameInfo::update()
 	
 	if (m_distanceCache == NULL)
 		initDistanceCache();
+	m_results.clear();
 	
 	QList<MapReduceOperation> ret;
 	
 	// Construct list of potential parameters
 	QList<MapType> params;
-	for (float ta=-M_PI/8.0 ; ta<M_PI/8.0 ; ta+=M_PI_4/ALPHA_RESOLUTION)
-		for (float tt=-M_PI_4 ; tt<M_PI_4 ; tt+=M_PI_2/THETA_RESOLUTION)
-			for (float la=-M_PI/8.0 ; la<M_PI/8.0 ; la+=M_PI_4/ALPHA_RESOLUTION)
-				for (float lt=-M_PI_4 ; lt<M_PI_4 ; lt+=M_PI_2/THETA_RESOLUTION)
+	for (float ta=-ALPHA_RANGE ; ta<ALPHA_RANGE ; ta+=(2.0*ALPHA_RANGE)/ALPHA_RESOLUTION)
+		for (float tt=-THETA_RANGE ; tt<THETA_RANGE ; tt+=(2.0*THETA_RANGE)/THETA_RESOLUTION)
+			for (float la=-ALPHA_RANGE ; la<ALPHA_RANGE ; la+=(2.0*ALPHA_RANGE)/ALPHA_RESOLUTION)
+				for (float lt=-THETA_RANGE ; lt<THETA_RANGE ; lt+=(2.0*THETA_RANGE)/THETA_RESOLUTION)
 					params << MapType(Params(ta, tt, la, lt), MapArgs(this, LeftLeg));
 	
 	// Start the mapreduce
@@ -154,10 +181,10 @@ QList<MapReduceOperation> FrameInfo::update()
 	ret << MapReduceOperation("Left leg", future);
 	
 	params.clear();
-	for (float ta=-M_PI/8.0 ; ta<M_PI/8.0 ; ta+=M_PI_4/ALPHA_RESOLUTION)
-		for (float tt=-M_PI_4 ; tt<M_PI_4 ; tt+=M_PI_2/THETA_RESOLUTION)
-			for (float la=-M_PI/8.0 ; la<M_PI/8.0 ; la+=M_PI_4/ALPHA_RESOLUTION)
-				for (float lt=-M_PI_4 ; lt<M_PI_4 ; lt+=M_PI_2/THETA_RESOLUTION)
+	for (float ta=-ALPHA_RANGE ; ta<ALPHA_RANGE ; ta+=(2.0*ALPHA_RANGE)/ALPHA_RESOLUTION)
+		for (float tt=-THETA_RANGE ; tt<THETA_RANGE ; tt+=(2.0*THETA_RANGE)/THETA_RESOLUTION)
+			for (float la=-ALPHA_RANGE ; la<ALPHA_RANGE ; la+=(2.0*ALPHA_RANGE)/ALPHA_RESOLUTION)
+				for (float lt=-THETA_RANGE ; lt<THETA_RANGE ; lt+=(2.0*THETA_RANGE)/THETA_RESOLUTION)
 					params << MapType(Params(ta, tt, la, lt), MapArgs(this, RightLeg));
 	
 	// Start the mapreduce
@@ -174,7 +201,10 @@ ReduceType correlateMap(const MapType& p)
 	FrameInfo* info = p.second.first;
 	Part part = p.second.second;
 	
-	return ReduceType(params, info->energy(part, params));
+	ReduceType ret(params, info->energy(part, params));
+	info->addResult(part, ret);
+	
+	return ret;
 }
 
 void correlateReduce(ReduceType& result, const ReduceType& intermediate)
@@ -260,7 +290,6 @@ Mat4 FrameInfo::limbMatrix(Part part, Limb limb, const Params& p) const
 	matrix = HScale4(Vec3(scale2, scale2, scale2)) * matrix; // Scale up to voxel space
 	if (limb == LowerLeg)
 	{
-		
 		matrix = HRot4(Vec3(1.0, 0.0, 0.0), params.lowerLegTheta) * matrix; // Apply both theta rotations
 		matrix = HRot4(Vec3(0.0, 1.0, 0.0), params.lowerLegAlpha) * matrix; // Apply both alpha rotations
 		matrix = HTrans4(Vec3(0.0, 0.0, -scale2)) * matrix; // Go down the thigh to the lower leg position
@@ -289,3 +318,10 @@ void FrameInfo::initDistanceCache()
 	while (p != end)
 		*(p++) = inf;
 }
+
+void FrameInfo::addResult(Part part, const ReduceType& result)
+{
+	QMutexLocker locker(&m_resultMutex);
+	m_results[QPair<Params, Part>(result.first, part)] = result.second;
+}
+

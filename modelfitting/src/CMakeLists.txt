@@ -9,6 +9,7 @@ SET(MODELFITTING-SOURCES
 	modelloader.cpp
 	types.cpp
 	mapreduceprogress.cpp
+	graphplotter.cpp
 )
 
 # Header files that have Q_OBJECT in
@@ -17,6 +18,7 @@ SET(MODELFITTING-MOC-HEADERS
 	glview.h
 	frameinfo.h
 	mapreduceprogress.h
+	graphplotter.h
 )
 
 # UI files

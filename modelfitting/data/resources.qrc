@@ -1,5 +1,7 @@
 <RCC>
 	<qresource prefix="/" >
 		<file>meshsearch.lut</file>
+		<file>savegraph.g</file>
+		<file>showgraph.g</file>
 	</qresource>
 </RCC>
