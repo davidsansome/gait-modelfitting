@@ -14,7 +14,8 @@ MainWindow::MainWindow()
 	: QDialog(NULL),
 	  m_mesh(NULL),
 	  m_voxelSpace(NULL),
-	  m_frameInfo(NULL)
+	  m_frameInfo(NULL),
+	  m_paramUpdatesDisabled(false)
 {
 	m_ui.setupUi(this);
 	
@@ -48,6 +49,15 @@ MainWindow::MainWindow()
 	connect(m_ui.crossFrontSlider, SIGNAL(sliderMoved(int)), SLOT(sliderMoved(int)));
 	connect(m_ui.crossSideSlider, SIGNAL(sliderMoved(int)), SLOT(sliderMoved(int)));
 	connect(m_ui.crossTopSlider, SIGNAL(sliderMoved(int)), SLOT(sliderMoved(int)));
+	
+	connect(m_ui.leftThighAlpha, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
+	connect(m_ui.leftThighTheta, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
+	connect(m_ui.leftLowerAlpha, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
+	connect(m_ui.leftLowerTheta, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
+	connect(m_ui.rightThighAlpha, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
+	connect(m_ui.rightThighTheta, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
+	connect(m_ui.rightLowerAlpha, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
+	connect(m_ui.rightLowerTheta, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
 	
 	QList<int> sizes;
 	sizes.append(width());
@@ -127,6 +137,18 @@ void MainWindow::recalculate()
 {
 	m_progressDialog->addOperations(m_frameInfo->update());
 	m_progressDialog->exec("Fitting model to " + QFileInfo(m_frameInfo->filename()).fileName());
+	
+	m_paramUpdatesDisabled = true;
+	m_ui.leftThighAlpha->setValue(m_frameInfo->leftLeg().thighAlpha);
+	m_ui.leftThighTheta->setValue(m_frameInfo->leftLeg().thighTheta);
+	m_ui.leftLowerAlpha->setValue(m_frameInfo->leftLeg().lowerLegAlpha);
+	m_ui.leftLowerTheta->setValue(m_frameInfo->leftLeg().lowerLegTheta);
+	
+	m_ui.rightThighAlpha->setValue(m_frameInfo->rightLeg().thighAlpha);
+	m_ui.rightThighTheta->setValue(m_frameInfo->rightLeg().thighTheta);
+	m_ui.rightLowerAlpha->setValue(m_frameInfo->rightLeg().lowerLegAlpha);
+	m_ui.rightLowerTheta->setValue(m_frameInfo->rightLeg().lowerLegTheta);
+	m_paramUpdatesDisabled = false;
 }
 
 void MainWindow::recalculateAll()
@@ -166,5 +188,23 @@ void MainWindow::sliderMoved(int value)
 		label->setText(QString::number(value));
 	
 	view->setCrossSection(value);
+}
+
+void MainWindow::updateParameters()
+{
+	if (!m_frameInfo || m_paramUpdatesDisabled)
+		return;
+	
+	Params left(m_ui.leftThighAlpha->value(),
+	            m_ui.leftThighTheta->value(),
+	            m_ui.leftLowerAlpha->value(),
+	            m_ui.leftLowerTheta->value());
+	Params right(m_ui.rightThighAlpha->value(),
+	             m_ui.rightThighTheta->value(),
+	             m_ui.rightLowerAlpha->value(),
+	             m_ui.rightLowerTheta->value());
+	
+	m_frameInfo->setLeftLeg(left);
+	m_frameInfo->setRightLeg(right);
 }
 

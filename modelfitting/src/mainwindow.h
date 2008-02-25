@@ -31,6 +31,8 @@ private slots:
 	
 	void sliderMoved(int value);
 	
+	void updateParameters();
+	
 private:
 	void updateFileListing();
 	
@@ -45,6 +47,8 @@ private:
 	
 	MapReduceProgress* m_progressDialog;
 	GraphPlotter* m_graphPlotter;
+	
+	bool m_paramUpdatesDisabled;
 };
 
 #endif

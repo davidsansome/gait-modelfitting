@@ -88,6 +88,9 @@ public:
 	
 	Mat4 limbMatrix(Part part, Limb limb, const Params& p = Params()) const;
 	
+	void setLeftLeg(const Params& p) { m_leftLegParams = p; }
+	void setRightLeg(const Params& p) { m_rightLegParams = p; }
+	
 	QString filename() const { return m_filename; }
 	const Voxel_Space* vspace() const { return m_vspace; }
 	const Voxel_Space* edgeVspace() const { return m_edgeVspace; }
