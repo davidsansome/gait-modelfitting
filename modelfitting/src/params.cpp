@@ -1,18 +1,6 @@
 #include "params.h"
 
-#ifndef Q_WS_WIN
-
-template <typename T>
-Params<T>::Params(QSettings& settings)
-	: valid(true)
-{
-	thighAlpha = settings.value("ThighAlpha", 0.0).value<T>();
-	thighTheta = settings.value("ThighTheta", 0.0).value<T>();
-	lowerLegAlpha = settings.value("LowerLegAlpha", 0.0).value<T>();
-	lowerLegTheta = settings.value("LowerLegTheta", 0.0).value<T>();
-}
-
-#else
+#ifdef Q_WS_WIN
 
 // These constructors are specalized because QVariant::value<T> doesn't seem to work on Windows...
 
