@@ -58,6 +58,11 @@ for function in functions:
 cpp.write("""
 void setupWinGLFunctions()
 {
+	static bool alreadySetup = false;
+	if (alreadySetup)
+		return;
+	alreadySetup = true;
+	
 """)
 
 for function in functions:

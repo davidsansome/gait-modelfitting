@@ -66,7 +66,10 @@ MainWindow::MainWindow()
 	
 	m_openDir = m_settings.value("OpenDir", QDir::homePath()).toString();
 	
-	updateFileListing();
+	// We do this in a single shot timer so that initalizeGL() gets called on the GLViews before creating any
+	// FrameInfo objects.  FrameInfo objects call Mesh::draw_init() which needs to have had
+	// setupWinGLFunctions() run beforehand
+	QTimer::singleShot(0, this, SLOT(updateFileListing()));
 }
 
 MainWindow::~MainWindow()

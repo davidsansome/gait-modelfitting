@@ -31,11 +31,12 @@ private slots:
 	
 	void sliderMoved(int value);
 	
+	void updateFileListing();
+	
 	void setInfoParams();
 	void getInfoParams();
 	
 private:
-	void updateFileListing();
 	void setupSpinBox(QDoubleSpinBox* spinner, double range, double step);
 	
 	Ui_MainWindow m_ui;

@@ -1,6 +1,7 @@
 #include "glview.h"
 #include "frameinfo.h"
 #include "model.h"
+#include "glwin.h"
 
 #include <QDebug>
 #include <QMouseEvent>
@@ -35,6 +36,8 @@ void GLView::setViewType(ViewType type)
 
 void GLView::initializeGL()
 {
+	setupWinGLFunctions();
+	
 	glEnable(GL_NORMALIZE);
 	//glEnable(GL_CULL_FACE);
 	

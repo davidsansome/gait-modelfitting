@@ -1,6 +1,8 @@
 #include <QApplication>
+#include <QtDebug>
 
 #include "mainwindow.h"
+#include "glwin.h"
 
 int main(int argc, char** argv)
 {
