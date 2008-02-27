@@ -23,7 +23,12 @@ void printHelp(const char* appName)
 int main(int argc, char** argv)
 {
 	// Work out if we should be using the GUI
+#ifdef Q_WS_X11
 	bool gui = getenv("DISPLAY") != 0;
+#else
+	bool gui = true;
+#endif
+
 	bool filesOnCommandLine = false;
 	for (int i=1 ; i<argc ; ++i)
 	{
