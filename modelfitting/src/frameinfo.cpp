@@ -77,7 +77,8 @@ bool ReduceType::operator <(const ReduceType& other) const
 
 FrameInfo::FrameInfo(const QString& filename)
 	: m_distanceCache(NULL),
-	  m_filename(filename)
+	  m_filename(filename),
+	  m_distanceCacheSize(-1)
 {
 	m_vspace = new Voxel_Space(filename.toAscii().data());
 	m_mesh = new Mesh(*m_vspace);
@@ -267,10 +268,13 @@ float FrameInfo::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) co
 {
 	// See if this search has already been done, and the answer is available
 	int cacheLoc = (x + y*voxelSpace.x_size + z*(voxelSpace.x_size*voxelSpace.y_size))*2;
-	if (&voxelSpace == m_edgeVspace)
-		cacheLoc++;
-	if (m_distanceCache[cacheLoc] != std::numeric_limits<float>::infinity())
-		return m_distanceCache[cacheLoc];
+	if (cacheLoc >= 0 && cacheLoc < m_distanceCacheSize)
+	{
+		if (&voxelSpace == m_edgeVspace)
+			cacheLoc++;
+		if (m_distanceCache[cacheLoc] != std::numeric_limits<float>::infinity())
+			return m_distanceCache[cacheLoc];
+	}
 	
 	// Not in the cache - so calculate it
 	float ret = 500.0;
@@ -288,7 +292,8 @@ float FrameInfo::doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) co
 	
 	// Store it in the cache.  Another thread might have done this already, but it doesn't
 	// matter since both threads will get the same answer and we'll only be overwriting the value.
-	m_distanceCache[cacheLoc] = ret;
+	if (cacheLoc >= 0 && cacheLoc < m_distanceCacheSize)
+		m_distanceCache[cacheLoc] = ret;
 	
 	return 500.0; // TODO: Store this value in the lookup file
 }
@@ -326,10 +331,10 @@ Mat4 FrameInfo::limbMatrix(Part part, Limb limb, const Params<float>& p) const
 void FrameInfo::initDistanceCache()
 {
 	// Init all elements of the cache to +ve infinity
-	int size = m_vspace->x_size * m_vspace->y_size * m_vspace->z_size * 2;
-	m_distanceCache = new float[size];
+	m_distanceCacheSize = m_vspace->x_size * m_vspace->y_size * m_vspace->z_size * 2;
+	m_distanceCache = new float[m_distanceCacheSize];
 	
-	float* end = m_distanceCache + size;
+	float* end = m_distanceCache + m_distanceCacheSize;
 	float* p = m_distanceCache;
 	float inf = std::numeric_limits<float>::infinity();
 	

@@ -154,6 +154,7 @@ private:
 	Params<float> m_rightLegParams;
 	
 	float* m_distanceCache;
+	int m_distanceCacheSize;
 	
 	QMutex m_resultMutex;
 	QMap<QPair<Params<int>, Part>, float> m_results;
