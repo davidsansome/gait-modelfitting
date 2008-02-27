@@ -167,9 +167,9 @@ ImageRGB::ImageRGB( char * filename )
     timestamp_entry("ImageRGB(filename):\n");
     data = NULL;
     
-    if (strcasestr(filename, ".ppm") != NULL)
+    if (strstr(filename, ".ppm") != NULL)
         load_ppm(filename);
-    else if (strcasestr(filename, ".png") != NULL)
+    else if (strstr(filename, ".png") != NULL)
         load_png(filename);
     else
     {
@@ -809,9 +809,9 @@ ImageL::ImageL( char * filename )
     timestamp_entry("ImageL(filename):\n");
     data = NULL;
     
-    if (strcasestr(filename, ".pgm") != NULL)
+    if (strstr(filename, ".pgm") != NULL)
         load_ppm(filename);
-    else if (strcasestr(filename, ".png") != NULL)
+    else if (strstr(filename, ".png") != NULL)
         load_png(filename);
     else
     {

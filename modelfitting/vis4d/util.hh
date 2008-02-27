@@ -8,8 +8,6 @@ extern bool _debug;
 
 #define IF_DEBUG if (_debug) 
 
-enum { SUCCESS=0, ERROR_CONFIG_MISMATCH, ERROR_NOT_FOUND, ERROR_NULL_ARG, ERROR_BAD_ARG, ERROR_NOT_INITIALISED, EXIT_DB_ERROR, ERROR_OTHER };
-
 typedef struct _Point_XYZ {
     float x;
     float y;

@@ -2,6 +2,7 @@
 #define PARAMS_H
 
 #include <QSettings>
+#include <QVariant>
 #include <QtDebug>
 
 template <typename T>
@@ -56,16 +57,6 @@ template <typename T>
 Params<T>::Params(const Params& other)
 {
 	*this = other;
-}
-
-template <typename T>
-Params<T>::Params(QSettings& settings)
-	: valid(true)
-{
-	thighAlpha = settings.value("ThighAlpha", 0.0).value<T>();
-	thighTheta = settings.value("ThighTheta", 0.0).value<T>();
-	lowerLegAlpha = settings.value("LowerLegAlpha", 0.0).value<T>();
-	lowerLegTheta = settings.value("LowerLegTheta", 0.0).value<T>();
 }
 
 template <typename T>

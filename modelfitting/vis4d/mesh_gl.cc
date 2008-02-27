@@ -2,17 +2,15 @@
 // Contains the functions for drawing the Mesh (using openGL)
 // Richard Seely 2007
 
+#include "glwin.h"
+#include <GL/gl.h>
+#include <GL/glext.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
 #include "mesh.hh"
-
-#define GL_GLEXT_PROTOTYPES 1
-#include <GL/gl.h>
-#include <GL/glext.h>
-#include <GL/freeglut_std.h>
-#include <GL/freeglut_ext.h>
 
 
 

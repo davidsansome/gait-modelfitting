@@ -8,7 +8,7 @@ FIND_PACKAGE(PNG REQUIRED)
 INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIR})
 
-SET(SRC_FILES image.cc image_png.cc mesh.cc mesh_scene.cc points.cc scene.cc util.cc vfield.cc vspace.cc mesh_gl.cc)
+SET(SRC_FILES image.cc image_png.cc mesh.cc mesh_scene.cc points.cc scene.cc util.cc vfield.cc vspace.cc mesh_gl.cc glwin.cpp)
 IF (USE_OPTIMISED_MORPHOLOGY)
     MESSAGE(INFO, "Using optimised morphology routines")
     SET (SRC_FILES ${SRC_FILES} vspace_fast_dilate.cc vspace_fast_erode.cc) 

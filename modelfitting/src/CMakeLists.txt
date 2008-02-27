@@ -10,6 +10,7 @@ SET(MODELFITTING-SOURCES
 	types.cpp
 	mapreduceprogress.cpp
 	graphplotter.cpp
+	params.cpp
 )
 
 # Header files that have Q_OBJECT in
@@ -60,6 +61,7 @@ TARGET_LINK_LIBRARIES(modelfitting
 	${CG_LIBRARY}
 	${CG_GL_LIBRARY}
 	${OPENGL_LIBRARIES}
+	${ZLIB_LIBRARY}
 )
 
 INSTALL(TARGETS modelfitting
