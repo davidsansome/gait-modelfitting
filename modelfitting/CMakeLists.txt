@@ -4,15 +4,6 @@ PROJECT (modelfitting)
 FIND_PACKAGE(Qt4 REQUIRED)
 FIND_PACKAGE(OpenGL REQUIRED)
 
-# Include our custom cmake modules
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
-
-FIND_PACKAGE(CG)
-
-IF (NOT CG_FOUND)
-	MESSAGE(FATAL_ERROR "The NVIDIA Cg toolkit was not found.  Download it from http://developer.nvidia.com/object/cg_toolkit.html")
-ENDIF (NOT CG_FOUND)
-
 # Find Qt stuff
 ADD_DEFINITIONS(${QT_DEFINITIONS})
 LINK_DIRECTORIES(${QT_LIBRARY_DIR})
