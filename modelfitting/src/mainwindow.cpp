@@ -147,10 +147,10 @@ void MainWindow::updateViews()
 	m_redrawTimer->start(30);
 }
 
-void MainWindow::recalculate()
+bool MainWindow::recalculate()
 {
 	m_progressDialog->addOperations(m_frameInfo->update());
-	m_progressDialog->exec("Fitting model to " + QFileInfo(m_frameInfo->filename()).fileName());
+	int ret = m_progressDialog->exec("Fitting model to " + QFileInfo(m_frameInfo->filename()).fileName());
 	
 	m_paramUpdatesDisabled = true;
 	m_ui.leftThighAlpha->setValue(m_frameInfo->leftLeg().thighAlpha);
@@ -167,10 +167,18 @@ void MainWindow::recalculate()
 	m_ui.graphGroup->setEnabled(m_frameInfo->hasModelInformation());
 	m_ui.leftLegGroup->setEnabled(m_frameInfo->hasModelInformation());
 	m_ui.rightLegGroup->setEnabled(m_frameInfo->hasModelInformation());
+	
+	return ret == QDialog::Accepted;
 }
 
 void MainWindow::recalculateAll()
 {
+	for (int i=0 ; i<m_ui.fileList->count() ; i++)
+	{
+		m_ui.fileList->setCurrentRow(i);
+		if (!recalculate())
+			break;
+	}
 }
 
 void MainWindow::initializeGL()

@@ -24,7 +24,7 @@ public:
 private slots:
 	void initializeGL();
 	void openDirectory();
-	void recalculate();
+	bool recalculate();
 	void recalculateAll();
 	void updateViews();
 	void loadSelectedFile();
