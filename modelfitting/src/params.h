@@ -8,7 +8,7 @@ template <typename T>
 class Params
 {
 public:
-	Params() : valid(false) {}
+	Params();
 	Params(T ta, T tt, T la, T lt);
 	Params(const Params& other);
 	Params(QSettings& settings);
@@ -30,6 +30,16 @@ QDebug operator <<(QDebug s, const Params<T>& p)
 {
 	s.nospace() << "Params(" << p.thighAlpha << ", " << p.thighTheta << ", " << p.lowerLegAlpha << ", " << p.lowerLegTheta << ")";
 	return s.space();
+}
+
+template <typename T>
+Params<T>::Params()
+	: valid(false),
+	  thighAlpha(0),
+	  thighTheta(0),
+	  lowerLegAlpha(0),
+	  lowerLegTheta(0)
+{
 }
 
 template <typename T>

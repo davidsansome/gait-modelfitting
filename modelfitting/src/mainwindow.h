@@ -31,7 +31,8 @@ private slots:
 	
 	void sliderMoved(int value);
 	
-	void updateParameters();
+	void setInfoParams();
+	void getInfoParams();
 	
 private:
 	void updateFileListing();

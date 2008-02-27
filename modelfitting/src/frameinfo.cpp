@@ -309,7 +309,7 @@ Mat4 FrameInfo::limbMatrix(Part part, Limb limb, const Params<float>& p) const
 	if (limb == LowerLeg)
 	{
 		matrix = HRot4(Vec3(1.0, 0.0, 0.0), params.lowerLegTheta - params.thighTheta) * matrix; // Apply lower leg theta rotations
-		matrix = HRot4(Vec3(0.0, 1.0, 0.0), params.lowerLegAlpha - params.thighTheta) * matrix; // Apply lower leg alpha rotations
+		matrix = HRot4(Vec3(0.0, 1.0, 0.0), params.lowerLegAlpha - params.thighAlpha) * matrix; // Apply lower leg alpha rotations
 		matrix = HTrans4(Vec3(0.0, 0.0, -scale2)) * matrix; // Go down the thigh to the lower leg position
 	}
 	matrix = HRot4(Vec3(1.0, 0.0, 0.0), params.thighTheta) * matrix; // Apply thigh theta rotation
@@ -393,4 +393,5 @@ void FrameInfo::load(QSettings& settings)
 	m_rightLegParams = Params<float>(settings);
 	settings.endGroup();
 }
+
 

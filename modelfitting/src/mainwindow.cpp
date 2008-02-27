@@ -76,7 +76,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupSpinBox(QDoubleSpinBox* spinner, double range, double step)
 {
-	connect(spinner, SIGNAL(valueChanged(double)), SLOT(updateParameters()));
+	connect(spinner, SIGNAL(valueChanged(double)), SLOT(setInfoParams()));
 	spinner->setDecimals(5);
 	spinner->setMinimum(-range);
 	spinner->setMaximum(range);
@@ -135,6 +135,8 @@ void MainWindow::loadSelectedFile()
 	m_ui.angle->setFrameInfo(m_frameInfo);
 	
 	m_graphPlotter->setFrameInfo(m_frameInfo);
+	
+	getInfoParams();
 }
 
 void MainWindow::updateViews()
@@ -152,17 +154,7 @@ bool MainWindow::recalculate()
 	m_progressDialog->addOperations(m_frameInfo->update());
 	int ret = m_progressDialog->exec("Fitting model to " + QFileInfo(m_frameInfo->filename()).fileName());
 	
-	m_paramUpdatesDisabled = true;
-	m_ui.leftThighAlpha->setValue(m_frameInfo->leftLeg().thighAlpha);
-	m_ui.leftThighTheta->setValue(m_frameInfo->leftLeg().thighTheta);
-	m_ui.leftLowerAlpha->setValue(m_frameInfo->leftLeg().lowerLegAlpha);
-	m_ui.leftLowerTheta->setValue(m_frameInfo->leftLeg().lowerLegTheta);
-	
-	m_ui.rightThighAlpha->setValue(m_frameInfo->rightLeg().thighAlpha);
-	m_ui.rightThighTheta->setValue(m_frameInfo->rightLeg().thighTheta);
-	m_ui.rightLowerAlpha->setValue(m_frameInfo->rightLeg().lowerLegAlpha);
-	m_ui.rightLowerTheta->setValue(m_frameInfo->rightLeg().lowerLegTheta);
-	m_paramUpdatesDisabled = false;
+	getInfoParams();
 	
 	m_ui.graphGroup->setEnabled(m_frameInfo->hasModelInformation());
 	m_ui.leftLegGroup->setEnabled(m_frameInfo->hasModelInformation());
@@ -216,7 +208,7 @@ void MainWindow::sliderMoved(int value)
 	view->setCrossSection(value);
 }
 
-void MainWindow::updateParameters()
+void MainWindow::setInfoParams()
 {
 	if (!m_frameInfo || m_paramUpdatesDisabled)
 		return;
@@ -232,5 +224,20 @@ void MainWindow::updateParameters()
 	
 	m_frameInfo->setLeftLeg(left);
 	m_frameInfo->setRightLeg(right);
+}
+
+void MainWindow::getInfoParams()
+{
+	m_paramUpdatesDisabled = true;
+	m_ui.leftThighAlpha->setValue(m_frameInfo->leftLeg().thighAlpha);
+	m_ui.leftThighTheta->setValue(m_frameInfo->leftLeg().thighTheta);
+	m_ui.leftLowerAlpha->setValue(m_frameInfo->leftLeg().lowerLegAlpha);
+	m_ui.leftLowerTheta->setValue(m_frameInfo->leftLeg().lowerLegTheta);
+	
+	m_ui.rightThighAlpha->setValue(m_frameInfo->rightLeg().thighAlpha);
+	m_ui.rightThighTheta->setValue(m_frameInfo->rightLeg().thighTheta);
+	m_ui.rightLowerAlpha->setValue(m_frameInfo->rightLeg().lowerLegAlpha);
+	m_ui.rightLowerTheta->setValue(m_frameInfo->rightLeg().lowerLegTheta);
+	m_paramUpdatesDisabled = false;
 }
 
