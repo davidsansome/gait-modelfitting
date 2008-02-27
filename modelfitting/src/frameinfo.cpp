@@ -9,6 +9,7 @@
 #include <QtConcurrentMap>
 #include <QMutexLocker>
 #include <QPointF>
+#include <QApplication>
 
 #include <GL/glu.h>
 
@@ -82,7 +83,8 @@ FrameInfo::FrameInfo(const QString& filename)
 {
 	m_vspace = new Voxel_Space(filename.toAscii().data());
 	m_mesh = new Mesh(*m_vspace);
-	m_mesh->draw_init(true);
+	if (QApplication::type() != QApplication::Tty)
+		m_mesh->draw_init(true);
 	
 	m_edgeVspace = new Voxel_Space(*m_vspace);
 	m_edgeVspace->edge_detect();
@@ -113,7 +115,9 @@ FrameInfo::FrameInfo(const QString& filename)
 
 FrameInfo::~FrameInfo()
 {
-	m_mesh->draw_destroy();
+	if (QApplication::type() != QApplication::Tty)
+		m_mesh->draw_destroy();
+	
 	delete m_mesh;
 	delete m_vspace;
 	delete m_edgeVspace;
@@ -126,7 +130,7 @@ void FrameInfo::leftLegFinished()
 		return;
 	
 	m_leftLegParams = m_leftLegWatcher->future().result().params;
-	qDebug() << "Final params for left leg =" << m_leftLegParams;
+	//qDebug() << "Final params for left leg =" << m_leftLegParams;
 	
 	if (hasModelInformation())
 		save();
@@ -138,7 +142,7 @@ void FrameInfo::rightLegFinished()
 		return;
 	
 	m_rightLegParams = m_rightLegWatcher->future().result().params;
-	qDebug() << "Final params for right leg =" << m_rightLegParams;
+	//qDebug() << "Final params for right leg =" << m_rightLegParams;
 	
 	if (hasModelInformation())
 		save();

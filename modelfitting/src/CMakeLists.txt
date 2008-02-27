@@ -11,6 +11,7 @@ SET(MODELFITTING-SOURCES
 	mapreduceprogress.cpp
 	graphplotter.cpp
 	params.cpp
+	batchmode.cpp
 )
 
 # Header files that have Q_OBJECT in

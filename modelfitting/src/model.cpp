@@ -9,7 +9,6 @@ Model::Model(const QString& name)
 	: m_name(name)
 {
 	ModelLoader::instance()->addModel(this);
-	qDebug() << "Adding model" << name;
 }
 
 void Model::setVertices(int count, const Vertex* data)

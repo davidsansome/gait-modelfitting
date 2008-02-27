@@ -3,6 +3,7 @@
 // Richard Seely 2007
 
 #include "glwin.h"
+#define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
 #include <GL/glext.h>
 
@@ -11,8 +12,6 @@
 #include <iostream>
 #include <fstream>
 #include "mesh.hh"
-
-
 
 void Mesh::draw_slow( ) const
 {
