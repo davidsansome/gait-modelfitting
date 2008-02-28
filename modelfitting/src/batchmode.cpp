@@ -3,6 +3,7 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QSignalMapper>
+#include <QDir>
 
 #include <iostream>
 
@@ -52,7 +53,16 @@ bool BatchMode::parseFileList()
 			std::cerr << arg.toAscii().data() << ": file does not exist" << std::endl;
 			return false;
 		}
-		if (!info.isFile())
+		if (info.isDir())
+		{
+			std::cout << "Adding all Zspc files in directory: " << arg.toAscii().data() << std::endl;
+			QDir dir(arg);
+			QStringList entries(dir.entryList(QStringList() << "*.Zspc", QDir::Files | QDir::Readable));
+			foreach (QString entry, entries)
+				m_files << arg + QDir::separator() + entry;
+			continue;
+		}
+		else if (!info.isFile())
 		{
 			std::cerr << arg.toAscii().data() << ": is not a file" << std::endl;
 			return false;
