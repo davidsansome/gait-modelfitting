@@ -1,5 +1,7 @@
 #include "energyplotter.h"
 
+#include <QFileInfo>
+
 #define ROUND(x) int((x) + ((x) > 0.0 ? 0.5 : -0.5))
 
 EnergyPlotter::EnergyPlotter(QWidget* parent)
@@ -22,20 +24,6 @@ void EnergyPlotter::plotData(const QString& outFilename, const QString& extensio
 	if (m_ui.rightLowerLeg->isChecked()) plotData(3, outFilename + "-rightlower" + extension);
 }
 
-void EnergyPlotter::replaceTokens(QByteArray& commands)
-{
-	QString limbName;
-	switch (m_limb)
-	{
-		case 0: limbName = "Left thigh";      break;
-		case 1: limbName = "Right thigh";     break;
-		case 2: limbName = "Left lower leg";  break;
-		case 3: limbName = "Right lower leg"; break;
-	}
-	
-	commands.replace("__LIMB__", limbName.toAscii());
-}
-
 void EnergyPlotter::plotData(int limb, const QString& outFilename)
 {
 	QTextStream& s = openTempFile();
@@ -50,6 +38,21 @@ void EnergyPlotter::plotData(int limb, const QString& outFilename)
 	
 	m_limb = limb;
 	saveGraph(outFilename);
+}
+
+void EnergyPlotter::replaceTokens(QByteArray& commands)
+{
+	QString limbName;
+	switch (m_limb)
+	{
+		case 0: limbName = "Left thigh";      break;
+		case 1: limbName = "Right thigh";     break;
+		case 2: limbName = "Left lower leg";  break;
+		case 3: limbName = "Right lower leg"; break;
+	}
+	
+	commands.replace("__LIMB__", limbName.toAscii());
+	commands.replace("__VOXEL_FILENAME__", QFileInfo(info()->filename()).fileName().toAscii());
 }
 
 QTextStream& EnergyPlotter::writeThighData(Part part, const Params<float>& initialParams, QTextStream& s)

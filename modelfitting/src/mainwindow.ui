@@ -150,7 +150,7 @@
     <addaction name="actionRecalculateAll" />
     <addaction name="separator" />
     <addaction name="actionPlotEnergyGraphs" />
-    <addaction name="actionPlotParamsOverTime" />
+    <addaction name="actionPlotTimeGraphs" />
    </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
@@ -588,7 +588,7 @@
     <string>Recalculate all</string>
    </property>
   </action>
-  <action name="actionPlotParamsOverTime" >
+  <action name="actionPlotTimeGraphs" >
    <property name="text" >
     <string>Plot params over time...</string>
    </property>

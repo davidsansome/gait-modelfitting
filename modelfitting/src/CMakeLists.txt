@@ -13,6 +13,7 @@ SET(MODELFITTING-SOURCES
 	params.cpp
 	batchmode.cpp
 	energyplotter.cpp
+	timeplotter.cpp
 )
 
 # Header files that have Q_OBJECT in

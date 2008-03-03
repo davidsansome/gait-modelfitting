@@ -18,10 +18,14 @@ GraphPlotter::GraphPlotter(QWidget* parent)
 	m_settings.beginGroup("GraphPlotter");
 }
 
+GraphPlotter::~GraphPlotter()
+{
+	delete m_tempFile;
+	m_tempFile = NULL;
+}
+
 void GraphPlotter::exec()
 {
-	qDebug() << __PRETTY_FUNCTION__;
-	
 	load();
 	QDialog::exec();
 	save();
@@ -74,7 +78,6 @@ void GraphPlotter::saveGraph(const QString& filename)
 	commands.replace("__DATA_FILENAME__", m_tempFileName.toAscii());
 	commands.replace("__OUT_FILENAME__", filename.toAscii());
 	commands.replace("__TERM_TYPE__", m_termType.toAscii());
-	commands.replace("__VOXEL_FILENAME__", QFileInfo(m_info->filename()).fileName().toAscii());
 	replaceTokens(commands);
 	qDebug() << commands;
 	

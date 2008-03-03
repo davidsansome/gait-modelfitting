@@ -3,5 +3,6 @@
 		<file>meshsearch.lut</file>
 		<file>savegraph.g</file>
 		<file>showgraph.g</file>
+		<file>showtime.g</file>
 	</qresource>
 </RCC>

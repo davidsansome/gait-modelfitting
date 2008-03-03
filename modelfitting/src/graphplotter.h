@@ -16,7 +16,7 @@ class GraphPlotter : public QDialog
 	Q_OBJECT
 public:
 	GraphPlotter(QWidget* parent = 0);
-	virtual ~GraphPlotter() {};
+	virtual ~GraphPlotter();
 	
 	FrameInfo* info() const { return m_info; }
 	

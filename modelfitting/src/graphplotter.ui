@@ -73,7 +73,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_2" >
+    <widget class="QGroupBox" name="filesGroupBox" >
      <property name="enabled" >
       <bool>false</bool>
      </property>
@@ -168,7 +168,7 @@
   <connection>
    <sender>displayOnly</sender>
    <signal>toggled(bool)</signal>
-   <receiver>groupBox_2</receiver>
+   <receiver>filesGroupBox</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >

@@ -9,6 +9,7 @@ class QTimer;
 class Mesh;
 class MapReduceProgress;
 class EnergyPlotter;
+class TimePlotter;
 
 #include "ui_mainwindow.h"
 #include "types.h"
@@ -50,6 +51,7 @@ private:
 	
 	MapReduceProgress* m_progressDialog;
 	EnergyPlotter* m_energyPlotter;
+	TimePlotter* m_timePlotter;
 	
 	bool m_paramUpdatesDisabled;
 };

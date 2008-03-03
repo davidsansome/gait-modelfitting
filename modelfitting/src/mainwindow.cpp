@@ -4,6 +4,7 @@
 #include "frameinfo.h"
 #include "mapreduceprogress.h"
 #include "energyplotter.h"
+#include "timeplotter.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -30,6 +31,9 @@ MainWindow::MainWindow()
 	
 	m_energyPlotter = new EnergyPlotter(this);
 	connect(m_ui.actionPlotEnergyGraphs, SIGNAL(triggered(bool)), m_energyPlotter, SLOT(exec()));
+	
+	m_timePlotter = new TimePlotter(this);
+	connect(m_ui.actionPlotTimeGraphs, SIGNAL(triggered(bool)), m_timePlotter, SLOT(exec()));
 	
 	m_ui.front->setViewType(GLView::Front);
 	m_ui.side->setViewType(GLView::Side);
@@ -145,6 +149,7 @@ void MainWindow::loadSelectedFile()
 	m_ui.angle->setFrameInfo(m_frameInfo);
 	
 	m_energyPlotter->setFrameInfo(m_frameInfo);
+	m_timePlotter->setFrameInfo(m_frameInfo);
 	
 	getInfoParams();
 }
