@@ -8,52 +8,84 @@
 
 #define ROUND(x) int((x) + ((x) > 0.0 ? 0.5 : -0.5))
 
-GraphPlotter::GraphPlotter(QObject* parent)
-	: QObject(parent),
-	  m_limb(0),
+GraphPlotter::GraphPlotter(QWidget* parent)
+	: QDialog(parent),
 	  m_info(NULL)
 {
+	m_ui.setupUi(this);
+	
+	connect(m_ui.buttonBox, SIGNAL(accepted()), SLOT(okClicked()));
+	
 	m_settings.beginGroup("GraphPlotter");
-	m_saveDirectory = m_settings.value("SaveDir", QDir::homePath()).toString();
+	load();
 }
 
 GraphPlotter::~GraphPlotter()
 {
 }
 
-void GraphPlotter::display()
+void GraphPlotter::okClicked()
 {
-	if (m_info == NULL || !m_info->hasResults())
+	QString templateFilename = (m_ui.displayOnly->isChecked()) ? ":showgraph.g" : ":savegraph.g";
+	
+	QString extension;
+	QString termType;
+	switch (m_ui.fileFormat->currentIndex())
 	{
-		QMessageBox::warning(NULL, "Error", "You need to recalculate the frame's model information");
+		case 0: extension = ".png"; termType = "png";        break;
+		case 1: extension = ".jpg"; termType = "jpeg";       break;
+		case 2: extension = ".ps";  termType = "postscript"; break;
+		case 3: extension = ".pdf"; termType = "pdf";        break;
+	}
+	
+	QString outFilename = m_ui.destDir->text() + QDir::separator() + m_ui.baseFilename->text();
+	
+	if (!QFileInfo(m_ui.destDir->text()).isDir())
+	{
+		QMessageBox::warning(this, "Error", "\"" + m_ui.destDir->text() + "\" is not a directory");
 		return;
 	}
 	
-	plot(":showgraph.g");
+	if (m_ui.leftThigh->isChecked())     plot(templateFilename, 0, outFilename + "-leftthigh"  + extension, termType);
+	if (m_ui.rightThigh->isChecked())    plot(templateFilename, 1, outFilename + "-rightthigh" + extension, termType);
+	if (m_ui.leftLowerLeg->isChecked())  plot(templateFilename, 2, outFilename + "-leftlower"  + extension, termType);
+	if (m_ui.rightLowerLeg->isChecked()) plot(templateFilename, 3, outFilename + "-rightlower" + extension, termType);
+	
+	save();
+	accept();
+}
+
+void GraphPlotter::load()
+{
+	m_ui.destDir->setText(m_settings.value("SaveDir", QDir::homePath()).toString());
+	m_ui.baseFilename->setText(m_settings.value("BaseName", "graph").toString());
+	m_ui.fileFormat->setCurrentIndex(m_settings.value("FileFormat", 0).toInt());
+	m_ui.displayOnly->setChecked(m_settings.value("DisplayOnly", true).toBool());
+	m_ui.leftThigh->setChecked(m_settings.value("LeftThigh", true). toBool());
+	m_ui.leftLowerLeg->setChecked(m_settings.value("LeftLowerLeg", true). toBool());
+	m_ui.rightThigh->setChecked(m_settings.value("RightThigh", true). toBool());
+	m_ui.rightLowerLeg->setChecked(m_settings.value("RightLowerLeg", true). toBool());
 }
 
 void GraphPlotter::save()
 {
-	if (m_info == NULL || !m_info->hasResults())
-	{
-		QMessageBox::warning(NULL, "Error", "You need to recalculate the frame's model information");
-		return;
-	}
-	
-	QPair<QString, QString> ret(getFilename());
-	if (ret.first.isNull())
-		return;
-	
-	plot(":savegraph.g", ret.first, ret.second);
+	m_settings.setValue("SaveDir", m_ui.destDir->text());
+	m_settings.setValue("BaseName", m_ui.baseFilename->text());
+	m_settings.setValue("FileFormat", m_ui.fileFormat->currentIndex());
+	m_settings.setValue("DisplayOnly", m_ui.displayOnly->isChecked());
+	m_settings.setValue("LeftThigh", m_ui.leftThigh->isChecked());
+	m_settings.setValue("LeftLowerLeg", m_ui.leftLowerLeg->isChecked());
+	m_settings.setValue("RightThigh", m_ui.rightThigh->isChecked());
+	m_settings.setValue("RightLowerLeg", m_ui.rightLowerLeg->isChecked());
 }
 
-void GraphPlotter::plot(const QString& templateFilename, const QString& outFilename, const QString& termType)
+void GraphPlotter::plot(const QString& templateFilename, int limb, const QString& outFilename, const QString& termType)
 {
 	QTemporaryFile data;
 	data.open();
 	QTextStream s(&data);
 	
-	switch (m_limb)
+	switch (limb)
 	{
 	case 0: writeThighData   (LeftLeg,  m_info->leftLeg(),  s); break;
 	case 1: writeThighData   (RightLeg, m_info->rightLeg(), s); break;
@@ -69,7 +101,7 @@ void GraphPlotter::plot(const QString& templateFilename, const QString& outFilen
 	commands.replace("__OUT_FILENAME__", outFilename.toAscii());
 	commands.replace("__TERM_TYPE__", termType.toAscii());
 	commands.replace("__VOXEL_FILENAME__", QFileInfo(m_info->filename()).fileName().toAscii());
-	commands.replace("__LIMB__", limbName(m_limb).toAscii());
+	commands.replace("__LIMB__", limbName(limb).toAscii());
 	qDebug() << commands;
 	
 	data.close();
@@ -132,39 +164,5 @@ QString GraphPlotter::limbName(int t)
 		case 2: return "Left lower leg";
 		case 3: return "Right lower leg";
 	}
-}
-
-QPair<QString, QString> GraphPlotter::getFilename()
-{
-	QString filters = "PNG image (*.png);;"
-	                  "JPEG image (*.jpeg *.jpg);;"
-	                  "Postscript document (*.ps);;"
-	                  "PDF document (*.pdf);;"
-	                  "LaTeX document (*.tex)";
-	
-	QString outFilename;
-	QString termType;
-	while (true)
-	{
-		outFilename = QFileDialog::getSaveFileName(NULL, "Save graph", m_saveDirectory, filters);
-		if (outFilename.isNull())
-			return QPair<QString, QString>();
-		
-		if      (outFilename.endsWith(".png")) termType = "png";
-		else if (outFilename.endsWith(".ps"))  termType = "postscript";
-		else if (outFilename.endsWith(".pdf")) termType = "pdf";
-		else if (outFilename.endsWith(".tex")) termType = "latex";
-		else if (outFilename.endsWith(".jpg") || outFilename.endsWith(".jpeg")) termType = "jpeg";
-		else
-		{
-			QMessageBox::warning(NULL, "Error", "Please use a supported file extension");
-			continue;
-		}
-		break;
-	}
-	m_saveDirectory = QFileInfo(outFilename).path();
-	m_settings.setValue("SaveDir", m_saveDirectory);
-	
-	return QPair<QString, QString>(outFilename, termType);
 }
 

@@ -1,0 +1,201 @@
+<ui version="4.0" >
+ <class>GraphPlotter</class>
+ <widget class="QDialog" name="GraphPlotter" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>378</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Graph Plotter</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2" >
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Graphs to plot</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout" >
+      <item>
+       <widget class="QCheckBox" name="leftThigh" >
+        <property name="text" >
+         <string>Left thigh</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="leftLowerLeg" >
+        <property name="text" >
+         <string>Left lower leg</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="rightThigh" >
+        <property name="text" >
+         <string>Right thigh</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="rightLowerLeg" >
+        <property name="text" >
+         <string>Right lower leg</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="displayOnly" >
+     <property name="text" >
+      <string>Display only</string>
+     </property>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+     <property name="title" >
+      <string>Destination files</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string>Directory</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QLineEdit" name="destDir" />
+      </item>
+      <item row="0" column="2" >
+       <widget class="QPushButton" name="destDirBrowse" >
+        <property name="text" >
+         <string>Browse...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_4" >
+        <property name="text" >
+         <string>Base filename</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2" >
+       <widget class="QLineEdit" name="baseFilename" />
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label_5" >
+        <property name="text" >
+         <string>File format</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2" >
+       <widget class="QComboBox" name="fileFormat" >
+        <item>
+         <property name="text" >
+          <string>PNG</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>JPEG</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Postscript</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>PDF</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>leftThigh</tabstop>
+  <tabstop>leftLowerLeg</tabstop>
+  <tabstop>rightThigh</tabstop>
+  <tabstop>rightLowerLeg</tabstop>
+  <tabstop>displayOnly</tabstop>
+  <tabstop>destDir</tabstop>
+  <tabstop>destDirBrowse</tabstop>
+  <tabstop>baseFilename</tabstop>
+  <tabstop>fileFormat</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>displayOnly</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>groupBox_2</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>65</x>
+     <y>185</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>51</x>
+     <y>210</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>GraphPlotter</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>189</x>
+     <y>353</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>-1</x>
+     <y>291</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

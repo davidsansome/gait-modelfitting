@@ -27,6 +27,7 @@ SET(MODELFITTING-MOC-HEADERS
 SET(MODELFITTING-UI
 	mainwindow.ui
 	mapreduceprogress.ui
+	graphplotter.ui
 )
 
 # Resource files

@@ -29,9 +29,7 @@ MainWindow::MainWindow()
 	m_progressDialog = new MapReduceProgress(this);
 	
 	m_graphPlotter = new GraphPlotter(this);
-	/*connect(m_ui.graphLimb, SIGNAL(currentIndexChanged(int)), m_graphPlotter, SLOT(setLimb(int)));
-	connect(m_ui.graphSave, SIGNAL(clicked()), m_graphPlotter, SLOT(save()));
-	connect(m_ui.graphDisplay, SIGNAL(clicked()), m_graphPlotter, SLOT(display()));*/
+	connect(m_ui.actionPlotEnergyGraphs, SIGNAL(triggered(bool)), m_graphPlotter, SLOT(exec()));
 	
 	m_ui.front->setViewType(GLView::Front);
 	m_ui.side->setViewType(GLView::Side);
