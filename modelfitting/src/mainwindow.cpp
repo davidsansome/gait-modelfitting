@@ -9,9 +9,10 @@
 #include <QTimer>
 #include <QDebug>
 #include <QTime>
+#include <QMessageBox>
 
 MainWindow::MainWindow()
-	: QDialog(NULL),
+	: QMainWindow(NULL),
 	  m_mesh(NULL),
 	  m_voxelSpace(NULL),
 	  m_frameInfo(NULL),
@@ -19,18 +20,18 @@ MainWindow::MainWindow()
 {
 	m_ui.setupUi(this);
 	
-	connect(m_ui.openButton, SIGNAL(clicked()), SLOT(openDirectory()));
-	connect(m_ui.recalculateButton, SIGNAL(clicked()), SLOT(recalculate()));
-	connect(m_ui.recalculateAllButton, SIGNAL(clicked()), SLOT(recalculateAll()));
+	connect(m_ui.actionOpenDirectory, SIGNAL(triggered(bool)), SLOT(openDirectory()));
+	connect(m_ui.actionRecalculate, SIGNAL(triggered(bool)), SLOT(recalculate()));
+	connect(m_ui.actionRecalculateAll, SIGNAL(triggered(bool)), SLOT(recalculateAll()));
 	
 	connect(m_ui.fileList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(loadSelectedFile()));
 	
 	m_progressDialog = new MapReduceProgress(this);
 	
 	m_graphPlotter = new GraphPlotter(this);
-	connect(m_ui.graphLimb, SIGNAL(currentIndexChanged(int)), m_graphPlotter, SLOT(setLimb(int)));
+	/*connect(m_ui.graphLimb, SIGNAL(currentIndexChanged(int)), m_graphPlotter, SLOT(setLimb(int)));
 	connect(m_ui.graphSave, SIGNAL(clicked()), m_graphPlotter, SLOT(save()));
-	connect(m_ui.graphDisplay, SIGNAL(clicked()), m_graphPlotter, SLOT(display()));
+	connect(m_ui.graphDisplay, SIGNAL(clicked()), m_graphPlotter, SLOT(display()));*/
 	
 	m_ui.front->setViewType(GLView::Front);
 	m_ui.side->setViewType(GLView::Side);
@@ -50,6 +51,19 @@ MainWindow::MainWindow()
 	connect(m_ui.crossSideSlider, SIGNAL(sliderMoved(int)), SLOT(sliderMoved(int)));
 	connect(m_ui.crossTopSlider, SIGNAL(sliderMoved(int)), SLOT(sliderMoved(int)));
 	
+	connect(m_ui.actionShowModel, SIGNAL(toggled(bool)), m_ui.front, SLOT(setModelVisible(bool)));
+	connect(m_ui.actionShowModel, SIGNAL(toggled(bool)), m_ui.side, SLOT(setModelVisible(bool)));
+	connect(m_ui.actionShowModel, SIGNAL(toggled(bool)), m_ui.overhead, SLOT(setModelVisible(bool)));
+	connect(m_ui.actionShowModel, SIGNAL(toggled(bool)), m_ui.angle, SLOT(setModelVisible(bool)));
+	
+	connect(m_ui.actionShowVoxelData, SIGNAL(toggled(bool)), m_ui.front, SLOT(setVoxelDataVisible(bool)));
+	connect(m_ui.actionShowVoxelData, SIGNAL(toggled(bool)), m_ui.side, SLOT(setVoxelDataVisible(bool)));
+	connect(m_ui.actionShowVoxelData, SIGNAL(toggled(bool)), m_ui.overhead, SLOT(setVoxelDataVisible(bool)));
+	connect(m_ui.actionShowVoxelData, SIGNAL(toggled(bool)), m_ui.angle, SLOT(setVoxelDataVisible(bool)));
+	
+	connect(m_ui.actionAboutQt, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(aboutQt()));
+	connect(m_ui.actionQuit, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
+	
 	setupSpinBox(m_ui.leftThighAlpha, ALPHA_RANGE, ALPHA_STEP);
 	setupSpinBox(m_ui.leftThighTheta, THETA_RANGE, THETA_STEP);
 	setupSpinBox(m_ui.leftLowerAlpha, ALPHA_RANGE, ALPHA_STEP);
@@ -58,11 +72,6 @@ MainWindow::MainWindow()
 	setupSpinBox(m_ui.rightThighTheta, THETA_RANGE, THETA_STEP);
 	setupSpinBox(m_ui.rightLowerAlpha, ALPHA_RANGE, ALPHA_STEP);
 	setupSpinBox(m_ui.rightLowerTheta, THETA_RANGE, THETA_STEP);
-	
-	QList<int> sizes;
-	sizes.append(width());
-	sizes.append(100);
-	m_ui.splitter->setSizes(sizes);
 	
 	m_openDir = m_settings.value("OpenDir", QDir::homePath()).toString();
 	
@@ -114,8 +123,8 @@ void MainWindow::updateFileListing()
 	if (m_ui.fileList->count() > 0)
 		m_ui.fileList->setCurrentRow(0);
 	
-	m_ui.recalculateButton->setEnabled(m_ui.fileList->count() > 0);
-	m_ui.recalculateAllButton->setEnabled(m_ui.fileList->count() > 0);
+	m_ui.actionRecalculate->setEnabled(m_ui.fileList->count() > 0);
+	m_ui.actionRecalculateAll->setEnabled(m_ui.fileList->count() > 0);
 }
 
 void MainWindow::loadSelectedFile()
@@ -128,7 +137,7 @@ void MainWindow::loadSelectedFile()
 	delete m_frameInfo;
 	m_frameInfo = new FrameInfo(fileName);
 	
-	m_ui.graphGroup->setEnabled(false);
+	m_ui.actionPlotEnergyGraphs->setEnabled(false);
 	m_ui.leftLegGroup->setEnabled(m_frameInfo->hasModelInformation());
 	m_ui.rightLegGroup->setEnabled(m_frameInfo->hasModelInformation());
 	
@@ -159,7 +168,7 @@ bool MainWindow::recalculate()
 	
 	getInfoParams();
 	
-	m_ui.graphGroup->setEnabled(m_frameInfo->hasModelInformation());
+	m_ui.actionPlotEnergyGraphs->setEnabled(m_frameInfo->hasModelInformation());
 	m_ui.leftLegGroup->setEnabled(m_frameInfo->hasModelInformation());
 	m_ui.rightLegGroup->setEnabled(m_frameInfo->hasModelInformation());
 	
@@ -243,4 +252,3 @@ void MainWindow::getInfoParams()
 	m_ui.rightLowerTheta->setValue(m_frameInfo->rightLeg().lowerLegTheta);
 	m_paramUpdatesDisabled = false;
 }
-

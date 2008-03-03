@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QDialog>
+#include <QMainWindow>
 #include <QSettings>
 #include <QFutureWatcher>
 
@@ -14,7 +14,7 @@ class GraphPlotter;
 #include "types.h"
 #include "frameinfo.h"
 
-class MainWindow : public QDialog
+class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 public:
