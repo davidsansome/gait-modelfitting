@@ -12,6 +12,7 @@ SET(MODELFITTING-SOURCES
 	graphplotter.cpp
 	params.cpp
 	batchmode.cpp
+	energyplotter.cpp
 )
 
 # Header files that have Q_OBJECT in

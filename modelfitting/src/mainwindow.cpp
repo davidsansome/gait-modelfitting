@@ -3,7 +3,7 @@
 #include <mesh.hh>
 #include "frameinfo.h"
 #include "mapreduceprogress.h"
-#include "graphplotter.h"
+#include "energyplotter.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -28,8 +28,8 @@ MainWindow::MainWindow()
 	
 	m_progressDialog = new MapReduceProgress(this);
 	
-	m_graphPlotter = new GraphPlotter(this);
-	connect(m_ui.actionPlotEnergyGraphs, SIGNAL(triggered(bool)), m_graphPlotter, SLOT(exec()));
+	m_energyPlotter = new EnergyPlotter(this);
+	connect(m_ui.actionPlotEnergyGraphs, SIGNAL(triggered(bool)), m_energyPlotter, SLOT(exec()));
 	
 	m_ui.front->setViewType(GLView::Front);
 	m_ui.side->setViewType(GLView::Side);
@@ -144,7 +144,7 @@ void MainWindow::loadSelectedFile()
 	m_ui.overhead->setFrameInfo(m_frameInfo);
 	m_ui.angle->setFrameInfo(m_frameInfo);
 	
-	m_graphPlotter->setFrameInfo(m_frameInfo);
+	m_energyPlotter->setFrameInfo(m_frameInfo);
 	
 	getInfoParams();
 }

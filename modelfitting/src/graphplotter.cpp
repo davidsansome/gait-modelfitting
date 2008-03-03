@@ -6,53 +6,92 @@
 #include <QFileInfo>
 #include <QFileDialog>
 
-#define ROUND(x) int((x) + ((x) > 0.0 ? 0.5 : -0.5))
-
 GraphPlotter::GraphPlotter(QWidget* parent)
 	: QDialog(parent),
-	  m_info(NULL)
+	  m_info(NULL),
+	  m_tempFile(NULL)
 {
 	m_ui.setupUi(this);
 	
 	connect(m_ui.buttonBox, SIGNAL(accepted()), SLOT(okClicked()));
 	
 	m_settings.beginGroup("GraphPlotter");
-	load();
 }
 
-GraphPlotter::~GraphPlotter()
+void GraphPlotter::exec()
 {
+	qDebug() << __PRETTY_FUNCTION__;
+	
+	load();
+	QDialog::exec();
+	save();
 }
 
 void GraphPlotter::okClicked()
 {
-	QString templateFilename = (m_ui.displayOnly->isChecked()) ? ":showgraph.g" : ":savegraph.g";
-	
 	QString extension;
-	QString termType;
 	switch (m_ui.fileFormat->currentIndex())
 	{
-		case 0: extension = ".png"; termType = "png";        break;
-		case 1: extension = ".jpg"; termType = "jpeg";       break;
-		case 2: extension = ".ps";  termType = "postscript"; break;
-		case 3: extension = ".pdf"; termType = "pdf";        break;
+		case 0: extension = ".png"; m_termType = "png";        break;
+		case 1: extension = ".jpg"; m_termType = "jpeg";       break;
+		case 2: extension = ".ps";  m_termType = "postscript"; break;
+		case 3: extension = ".pdf"; m_termType = "pdf";        break;
 	}
 	
-	QString outFilename = m_ui.destDir->text() + QDir::separator() + m_ui.baseFilename->text();
-	
-	if (!QFileInfo(m_ui.destDir->text()).isDir())
+	QString outFilename;
+	if (!m_ui.displayOnly->isChecked())
 	{
-		QMessageBox::warning(this, "Error", "\"" + m_ui.destDir->text() + "\" is not a directory");
-		return;
+		if (!QFileInfo(m_ui.destDir->text()).isDir())
+		{
+			QMessageBox::warning(this, "Error", "\"" + m_ui.destDir->text() + "\" is not a directory");
+			return;
+		}
+		
+		outFilename = m_ui.destDir->text() + QDir::separator() + m_ui.baseFilename->text();
 	}
 	
-	if (m_ui.leftThigh->isChecked())     plot(templateFilename, 0, outFilename + "-leftthigh"  + extension, termType);
-	if (m_ui.rightThigh->isChecked())    plot(templateFilename, 1, outFilename + "-rightthigh" + extension, termType);
-	if (m_ui.leftLowerLeg->isChecked())  plot(templateFilename, 2, outFilename + "-leftlower"  + extension, termType);
-	if (m_ui.rightLowerLeg->isChecked()) plot(templateFilename, 3, outFilename + "-rightlower" + extension, termType);
-	
-	save();
+	plotData(outFilename, extension);
 	accept();
+}
+
+QTextStream& GraphPlotter::openTempFile()
+{
+	delete m_tempFile;
+	m_tempFile = new QTemporaryFile();
+	m_tempFile->open();
+	m_tempFileName = m_tempFile->fileName();
+	
+	m_stream.setDevice(m_tempFile);
+	return m_stream;
+}
+
+void GraphPlotter::saveGraph(const QString& filename)
+{
+	QFile templateFile(templateName(m_ui.displayOnly->isChecked()));
+	templateFile.open(QIODevice::ReadOnly);
+	QByteArray commands(templateFile.readAll());
+	
+	commands.replace("__DATA_FILENAME__", m_tempFileName.toAscii());
+	commands.replace("__OUT_FILENAME__", filename.toAscii());
+	commands.replace("__TERM_TYPE__", m_termType.toAscii());
+	commands.replace("__VOXEL_FILENAME__", QFileInfo(m_info->filename()).fileName().toAscii());
+	replaceTokens(commands);
+	qDebug() << commands;
+	
+	m_tempFile->close();
+	
+	QProcess gnuplot;
+	gnuplot.setProcessChannelMode(QProcess::MergedChannels);
+	
+	gnuplot.start("gnuplot");
+	gnuplot.write(commands);
+	
+	gnuplot.waitForFinished();
+	
+	qDebug() << gnuplot.readAll();
+	
+	delete m_tempFile;
+	m_tempFile = NULL;
 }
 
 void GraphPlotter::load()
@@ -78,91 +117,3 @@ void GraphPlotter::save()
 	m_settings.setValue("RightThigh", m_ui.rightThigh->isChecked());
 	m_settings.setValue("RightLowerLeg", m_ui.rightLowerLeg->isChecked());
 }
-
-void GraphPlotter::plot(const QString& templateFilename, int limb, const QString& outFilename, const QString& termType)
-{
-	QTemporaryFile data;
-	data.open();
-	QTextStream s(&data);
-	
-	switch (limb)
-	{
-	case 0: writeThighData   (LeftLeg,  m_info->leftLeg(),  s); break;
-	case 1: writeThighData   (RightLeg, m_info->rightLeg(), s); break;
-	case 2: writeLowerLegData(LeftLeg,  m_info->leftLeg(),  s); break;
-	case 3: writeLowerLegData(RightLeg, m_info->rightLeg(), s); break;
-	}
-	
-	QFile templateFile(templateFilename);
-	templateFile.open(QIODevice::ReadOnly);
-	QByteArray commands(templateFile.readAll());
-	
-	commands.replace("__DATA_FILENAME__", data.fileName().toAscii());
-	commands.replace("__OUT_FILENAME__", outFilename.toAscii());
-	commands.replace("__TERM_TYPE__", termType.toAscii());
-	commands.replace("__VOXEL_FILENAME__", QFileInfo(m_info->filename()).fileName().toAscii());
-	commands.replace("__LIMB__", limbName(limb).toAscii());
-	qDebug() << commands;
-	
-	data.close();
-	
-	QProcess gnuplot;
-	gnuplot.setProcessChannelMode(QProcess::MergedChannels);
-	
-	gnuplot.start("gnuplot");
-	gnuplot.write(commands);
-	
-	gnuplot.waitForFinished();
-	
-	qDebug() << gnuplot.readAll();
-}
-
-QTextStream& GraphPlotter::writeThighData(Part part, const Params<float>& initialParams, QTextStream& s)
-{
-	Params<int> p(0,
-	              0,
-	              ROUND(initialParams.lowerLegAlpha / ALPHA_STEP),
-	              ROUND(initialParams.lowerLegTheta / THETA_STEP));
-	
-	for (p.thighAlpha=-ALPHA_RESOLUTION ; p.thighAlpha<=ALPHA_RESOLUTION ; p.thighAlpha++)
-	{
-		for (p.thighTheta=-THETA_RESOLUTION ; p.thighTheta<=THETA_RESOLUTION ; p.thighTheta++)
-		{
-			s << float(p.thighTheta) * THETA_STEP << " " << float(p.thighAlpha) * ALPHA_STEP << " " << m_info->result(p, part) << "\n";
-		}
-		s << "\n";
-	}
-	
-	return s;
-}
-
-QTextStream& GraphPlotter::writeLowerLegData(Part part, const Params<float>& initialParams, QTextStream& s)
-{
-	Params<int> p(ROUND(initialParams.thighAlpha / ALPHA_STEP),
-	              ROUND(initialParams.thighTheta / THETA_STEP),
-	              0,
-	              0);
-	
-	for (p.lowerLegAlpha=-ALPHA_RESOLUTION ; p.lowerLegAlpha<=ALPHA_RESOLUTION ; p.lowerLegAlpha++)
-	{
-		for (p.lowerLegTheta=-THETA_RESOLUTION ; p.lowerLegTheta<=THETA_RESOLUTION ; p.lowerLegTheta++)
-		{
-			s << float(p.lowerLegTheta) * THETA_STEP << " " << float(p.lowerLegAlpha) * ALPHA_STEP << " " << m_info->result(p, part) << "\n";
-		}
-		s << "\n";
-	}
-	
-	return s;
-}
-
-QString GraphPlotter::limbName(int t)
-{
-	switch (t)
-	{
-		case 0: return "Left thigh";
-		case 1: return "Right thigh";
-		case 2: return "Left lower leg";
-		case 3: return "Right lower leg";
-	}
-}
-
