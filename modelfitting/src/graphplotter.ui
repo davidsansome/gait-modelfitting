@@ -265,6 +265,11 @@
           <string>PDF</string>
          </property>
         </item>
+        <item>
+         <property name="text" >
+          <string>LaTeX</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>

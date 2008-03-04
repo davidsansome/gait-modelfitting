@@ -40,6 +40,7 @@ void GraphPlotter::okClicked()
 		case 1: extension = ".jpg"; m_termType = "jpeg";       break;
 		case 2: extension = ".ps";  m_termType = "postscript"; break;
 		case 3: extension = ".pdf"; m_termType = "pdf";        break;
+		case 4: extension = ".tex"; m_termType = "latex";      break;
 	}
 	
 	QString outFilename;

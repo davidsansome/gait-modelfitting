@@ -52,7 +52,7 @@ void TimePlotter::plotData(const QString& outFilename, const QString& extension)
 		s << cols.join(" ") << "\n";
 	}
 	
-	saveGraph(outFilename);
+	saveGraph(outFilename + extension);
 }
 
 void TimePlotter::replaceTokens(QByteArray& commands)
