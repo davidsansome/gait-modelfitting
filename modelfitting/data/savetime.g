@@ -4,7 +4,8 @@ set ylabel "Value"
 #unset key
 
 # Plot to an X11 window
-set term x11 persist title "Params over time - graph"
+set output '__OUT_FILENAME__'
+set term __TERM_TYPE__
 plot __PLOTS__
 
 exit

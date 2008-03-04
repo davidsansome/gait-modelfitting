@@ -75,10 +75,10 @@ void GraphPlotter::saveGraph(const QString& filename)
 	templateFile.open(QIODevice::ReadOnly);
 	QByteArray commands(templateFile.readAll());
 	
+	replaceTokens(commands);
 	commands.replace("__DATA_FILENAME__", m_tempFileName.toAscii());
 	commands.replace("__OUT_FILENAME__", filename.toAscii());
 	commands.replace("__TERM_TYPE__", m_termType.toAscii());
-	replaceTokens(commands);
 	qDebug() << commands;
 	
 	m_tempFile->close();
@@ -103,10 +103,21 @@ void GraphPlotter::load()
 	m_ui.baseFilename->setText(m_settings.value("BaseName", "graph").toString());
 	m_ui.fileFormat->setCurrentIndex(m_settings.value("FileFormat", 0).toInt());
 	m_ui.displayOnly->setChecked(m_settings.value("DisplayOnly", true).toBool());
+	
 	m_ui.leftThigh->setChecked(m_settings.value("LeftThigh", true). toBool());
 	m_ui.leftLowerLeg->setChecked(m_settings.value("LeftLowerLeg", true). toBool());
 	m_ui.rightThigh->setChecked(m_settings.value("RightThigh", true). toBool());
 	m_ui.rightLowerLeg->setChecked(m_settings.value("RightLowerLeg", true). toBool());
+	
+	m_ui.leftThighAlpha->setChecked(m_settings.value("LeftThighAlpha", true). toBool());
+	m_ui.leftLowerAlpha->setChecked(m_settings.value("LeftLowerAlpha", true). toBool());
+	m_ui.leftThighTheta->setChecked(m_settings.value("LeftThighTheta", true). toBool());
+	m_ui.leftLowerTheta->setChecked(m_settings.value("LeftLowerTheta", true). toBool());
+	
+	m_ui.rightThighAlpha->setChecked(m_settings.value("RightThighAlpha", true). toBool());
+	m_ui.rightLowerAlpha->setChecked(m_settings.value("RightLowerAlpha", true). toBool());
+	m_ui.rightThighTheta->setChecked(m_settings.value("RightThighTheta", true). toBool());
+	m_ui.rightLowerTheta->setChecked(m_settings.value("RightLowerTheta", true). toBool());
 }
 
 void GraphPlotter::save()
@@ -115,8 +126,19 @@ void GraphPlotter::save()
 	m_settings.setValue("BaseName", m_ui.baseFilename->text());
 	m_settings.setValue("FileFormat", m_ui.fileFormat->currentIndex());
 	m_settings.setValue("DisplayOnly", m_ui.displayOnly->isChecked());
+	
 	m_settings.setValue("LeftThigh", m_ui.leftThigh->isChecked());
 	m_settings.setValue("LeftLowerLeg", m_ui.leftLowerLeg->isChecked());
 	m_settings.setValue("RightThigh", m_ui.rightThigh->isChecked());
 	m_settings.setValue("RightLowerLeg", m_ui.rightLowerLeg->isChecked());
+	
+	m_settings.setValue("LeftThighAlpha", m_ui.leftThighAlpha->isChecked());
+	m_settings.setValue("LeftLowerAlpha", m_ui.leftLowerAlpha->isChecked());
+	m_settings.setValue("LeftThighTheta", m_ui.leftThighTheta->isChecked());
+	m_settings.setValue("LeftLowerTheta", m_ui.leftLowerTheta->isChecked());
+	
+	m_settings.setValue("RightThighAlpha", m_ui.rightThighAlpha->isChecked());
+	m_settings.setValue("RightLowerAlpha", m_ui.rightLowerAlpha->isChecked());
+	m_settings.setValue("RightThighTheta", m_ui.rightThighTheta->isChecked());
+	m_settings.setValue("RightLowerTheta", m_ui.rightLowerTheta->isChecked());
 }

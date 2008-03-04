@@ -4,5 +4,6 @@
 		<file>savegraph.g</file>
 		<file>showgraph.g</file>
 		<file>showtime.g</file>
+		<file>savetime.g</file>
 	</qresource>
 </RCC>

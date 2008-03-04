@@ -7,6 +7,7 @@
 EnergyPlotter::EnergyPlotter(QWidget* parent)
 	: GraphPlotter(parent)
 {
+	m_ui.stackedWidget->setCurrentWidget(m_ui.energyPage);
 }
 
 QString EnergyPlotter::templateName(bool displayOnly) const
