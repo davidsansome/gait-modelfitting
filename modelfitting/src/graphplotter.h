@@ -26,7 +26,7 @@ public slots:
 	
 protected:
 	virtual QString templateName(bool displayOnly) const = 0;
-	virtual void plotData(const QString& outFilename, const QString& extension) = 0;
+	virtual void plotData(const QString& outFilename) = 0;
 	virtual void replaceTokens(QByteArray& commands) = 0;
 	
 	QTextStream& openTempFile();
@@ -51,6 +51,7 @@ private:
 	QTemporaryFile* m_tempFile;
 	QString m_tempFileName;
 	QString m_termType;
+	QString m_extension;
 };
 
 #endif

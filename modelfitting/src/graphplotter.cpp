@@ -33,14 +33,13 @@ void GraphPlotter::exec()
 
 void GraphPlotter::okClicked()
 {
-	QString extension;
 	switch (m_ui.fileFormat->currentIndex())
 	{
-		case 0: extension = ".png"; m_termType = "png";        break;
-		case 1: extension = ".jpg"; m_termType = "jpeg";       break;
-		case 2: extension = ".ps";  m_termType = "postscript"; break;
-		case 3: extension = ".pdf"; m_termType = "pdf";        break;
-		case 4: extension = ".tex"; m_termType = "latex";      break;
+		case 0: m_extension = ".png"; m_termType = "png";        break;
+		case 1: m_extension = ".jpg"; m_termType = "jpeg";       break;
+		case 2: m_extension = ".ps";  m_termType = "postscript"; break;
+		case 3: m_extension = ".pdf"; m_termType = "pdf";        break;
+		case 4: m_extension = ".tex"; m_termType = "latex";      break;
 	}
 	
 	QString outFilename;
@@ -49,13 +48,20 @@ void GraphPlotter::okClicked()
 		if (!QFileInfo(m_ui.destDir->text()).isDir())
 		{
 			QMessageBox::warning(this, "Error", "\"" + m_ui.destDir->text() + "\" is not a directory");
+			m_ui.destDir->setFocus(Qt::OtherFocusReason);
+			return;
+		}
+		if (m_ui.baseFilename->text().isEmpty())
+		{
+			QMessageBox::warning(this, "Error", "Please enter a base filename");
+			m_ui.baseFilename->setFocus(Qt::OtherFocusReason);
 			return;
 		}
 		
-		outFilename = m_ui.destDir->text() + QDir::separator() + m_ui.baseFilename->text();
+		outFilename = m_ui.baseFilename->text();
 	}
 	
-	plotData(outFilename, extension);
+	plotData(outFilename);
 	accept();
 }
 
@@ -78,21 +84,26 @@ void GraphPlotter::saveGraph(const QString& filename)
 	
 	replaceTokens(commands);
 	commands.replace("__DATA_FILENAME__", m_tempFileName.toAscii());
-	commands.replace("__OUT_FILENAME__", filename.toAscii());
+	commands.replace("__OUT_FILENAME__", (m_ui.destDir->text() + QDir::separator() + filename + m_extension).toAscii());
 	commands.replace("__TERM_TYPE__", m_termType.toAscii());
 	qDebug() << commands;
 	
-	m_tempFile->close();
-	
-	QProcess gnuplot;
-	gnuplot.setProcessChannelMode(QProcess::MergedChannels);
-	
-	gnuplot.start("gnuplot");
-	gnuplot.write(commands);
-	
-	gnuplot.waitForFinished();
-	
-	qDebug() << gnuplot.readAll();
+	if (m_ui.saveData->isChecked())
+		m_tempFile->copy(m_ui.destDir->text() + QDir::separator() + filename + ".dat"); // This also closes the temp file
+	else
+	{
+		m_tempFile->close();
+		
+		QProcess gnuplot;
+		gnuplot.setProcessChannelMode(QProcess::MergedChannels);
+		
+		gnuplot.start("gnuplot");
+		gnuplot.write(commands);
+		
+		gnuplot.waitForFinished();
+		
+		qDebug() << gnuplot.readAll();
+	}
 	
 	delete m_tempFile;
 	m_tempFile = NULL;

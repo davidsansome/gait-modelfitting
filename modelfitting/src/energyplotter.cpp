@@ -17,12 +17,12 @@ QString EnergyPlotter::templateName(bool displayOnly) const
 	return ":savegraph.g";
 }
 
-void EnergyPlotter::plotData(const QString& outFilename, const QString& extension)
+void EnergyPlotter::plotData(const QString& outFilename)
 {
-	if (m_ui.leftThigh->isChecked())     plotData(0, outFilename + "-leftthigh"  + extension);
-	if (m_ui.rightThigh->isChecked())    plotData(1, outFilename + "-rightthigh" + extension);
-	if (m_ui.leftLowerLeg->isChecked())  plotData(2, outFilename + "-leftlower"  + extension);
-	if (m_ui.rightLowerLeg->isChecked()) plotData(3, outFilename + "-rightlower" + extension);
+	if (m_ui.leftThigh->isChecked())     plotData(0, outFilename + "-leftthigh");
+	if (m_ui.rightThigh->isChecked())    plotData(1, outFilename + "-rightthigh");
+	if (m_ui.leftLowerLeg->isChecked())  plotData(2, outFilename + "-leftlower");
+	if (m_ui.rightLowerLeg->isChecked()) plotData(3, outFilename + "-rightlower");
 }
 
 void EnergyPlotter::plotData(int limb, const QString& outFilename)

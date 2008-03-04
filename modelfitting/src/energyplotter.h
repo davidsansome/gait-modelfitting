@@ -10,7 +10,7 @@ public:
 	
 protected:
 	QString templateName(bool displayOnly) const;
-	void plotData(const QString& outFilename, const QString& extension);
+	void plotData(const QString& outFilename);
 	void replaceTokens(QByteArray& commands);
 
 private:

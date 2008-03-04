@@ -18,7 +18,7 @@ QString TimePlotter::templateName(bool displayOnly) const
 	return ":savetime.g";
 }
 
-void TimePlotter::plotData(const QString& outFilename, const QString& extension)
+void TimePlotter::plotData(const QString& outFilename)
 {
 	QTextStream& s = openTempFile();
 	
@@ -52,7 +52,7 @@ void TimePlotter::plotData(const QString& outFilename, const QString& extension)
 		s << cols.join(" ") << "\n";
 	}
 	
-	saveGraph(outFilename + extension);
+	saveGraph(outFilename);
 }
 
 void TimePlotter::replaceTokens(QByteArray& commands)
