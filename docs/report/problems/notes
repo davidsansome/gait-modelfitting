@@ -1,0 +1,33 @@
+Looking at frame 96.  Large jump from previous value.
+Should be -0.1 on the graph.  Looks to be closer to 0
+Is actually 0.23
+
+Original minimum:
+1653
+At left thigh 0.235619 -0.392699
+At left lower 0 -0.0785398
+
+"Better" minimum:
+2476
+At left thigh -0.15708 -0.0785398
+left lower -0.785398 -0.0785398
+
+Distance between minima:
+2476 - 1653 = 823
+
+Distance between points:
+sqrt((0.235619 - (-0.15708))^2 + (-0.392699 - (-0.0785398))^2 + (0 - (-0.785398))^2 + (-0.0785398 - (-0.0785398))^2)
+ = 0.932608453
+
+
+
+
+For just 2 units apart:
+sqrt(0.157079633^2 + 0.157079633^2 + 0.157079633^2 + 0.157079633^2)
+ = 0.314159266
+
+
+
+
+For 2000 between minima at 1.0 away, and 0ish at 0.3 away...
+x^6 * 2000
