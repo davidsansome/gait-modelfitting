@@ -47,6 +47,7 @@ private:
 	
 	Voxel_Space* m_voxelSpace;
 	Mesh* m_mesh;
+	FrameSet* m_frameSet;
 	FrameInfo* m_frameInfo;
 	
 	MapReduceProgress* m_progressDialog;

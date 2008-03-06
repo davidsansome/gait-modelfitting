@@ -1,4 +1,5 @@
 #include "batchmode.h"
+#include "frameset.h"
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -8,11 +9,13 @@
 #include <iostream>
 
 BatchMode::BatchMode()
+	: m_frameSet(NULL)
 {
 }
 
 BatchMode::~BatchMode()
 {
+	delete m_frameSet;
 }
 
 int BatchMode::exec()
@@ -20,11 +23,11 @@ int BatchMode::exec()
 	if (!parseFileList())
 		return 1;
 	
-	foreach (QString file, m_files)
+	for (int i=0 ; i<m_frameSet->count() ; ++i)
 	{
-		std::cout << "Processing " << file.toAscii().data() << std::endl;
+		std::cout << "Processing " << m_frameSet->name(i).toAscii().data() << std::endl;
 		
-		FrameInfo* info = new FrameInfo(file);
+		FrameInfo* info = m_frameSet->loadFrame(i);
 		std::cout << "    - Loaded mesh" << std::endl;
 		if (info->hasModelInformation())
 			std::cout << "    - Frame already has model information, recalculating" << std::endl;
@@ -55,22 +58,17 @@ bool BatchMode::parseFileList()
 		}
 		if (info.isDir())
 		{
-			std::cout << "Adding all Zspc files in directory: " << arg.toAscii().data() << std::endl;
-			QDir dir(arg);
-			QStringList entries(dir.entryList(QStringList() << "*.Zspc", QDir::Files | QDir::Readable));
-			foreach (QString entry, entries)
-				m_files << arg + QDir::separator() + entry;
-			continue;
+			std::cout << "Using directory: " << arg.toAscii().data() << std::endl;
+			m_frameSet = new FrameSet(arg);
+			return true;
 		}
-		else if (!info.isFile())
+		else
 		{
-			std::cerr << arg.toAscii().data() << ": is not a file" << std::endl;
+			std::cerr << arg.toAscii().data() << ": is not a directory" << std::endl;
 			return false;
 		}
-		
-		m_files << arg;
 	}
-	return true;
+	return false;
 }
 
 void BatchMode::waitForOperations(const QList<MapReduceOperation>& operations)

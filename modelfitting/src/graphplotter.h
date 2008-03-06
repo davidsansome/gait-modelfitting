@@ -18,7 +18,7 @@ public:
 	GraphPlotter(QWidget* parent = 0);
 	virtual ~GraphPlotter();
 	
-	FrameInfo* info() const { return m_info; }
+	FrameInfo* frameInfo() const { return m_info; }
 	
 public slots:
 	void setFrameInfo(FrameInfo* info) { m_info = info; }

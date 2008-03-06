@@ -76,11 +76,23 @@ bool ReduceType::operator <(const ReduceType& other) const
 
 
 
-FrameInfo::FrameInfo(const QString& filename)
+FrameInfo::FrameInfo(FrameSet* frameSet, const QString& filename, bool loadInfoOnly)
 	: m_distanceCache(NULL),
 	  m_filename(filename),
-	  m_distanceCacheSize(-1)
+	  m_distanceCacheSize(-1),
+	  m_frameSet(frameSet),
+	  m_vspace(NULL),
+	  m_mesh(NULL),
+	  m_edgeVspace(NULL),
+	  m_leftLegWatcher(NULL),
+	  m_rightLegWatcher(NULL)
 {
+	if (loadInfoOnly)
+	{
+		load();
+		return;
+	}
+	
 	m_vspace = new Voxel_Space(filename.toAscii().data());
 	m_mesh = new Mesh(*m_vspace);
 	if (QApplication::type() != QApplication::Tty)
@@ -115,7 +127,7 @@ FrameInfo::FrameInfo(const QString& filename)
 
 FrameInfo::~FrameInfo()
 {
-	if (QApplication::type() != QApplication::Tty)
+	if (m_mesh && QApplication::type() != QApplication::Tty)
 		m_mesh->draw_destroy();
 	
 	delete m_mesh;

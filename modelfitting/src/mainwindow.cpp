@@ -5,6 +5,7 @@
 #include "mapreduceprogress.h"
 #include "energyplotter.h"
 #include "timeplotter.h"
+#include "frameset.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -17,7 +18,8 @@ MainWindow::MainWindow()
 	  m_mesh(NULL),
 	  m_voxelSpace(NULL),
 	  m_frameInfo(NULL),
-	  m_paramUpdatesDisabled(false)
+	  m_paramUpdatesDisabled(false),
+	  m_frameSet(NULL)
 {
 	m_ui.setupUi(this);
 	
@@ -86,6 +88,7 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
 	delete m_frameInfo;
+	delete m_frameSet;
 }
 
 void MainWindow::setupSpinBox(QDoubleSpinBox* spinner, double range, double step)
@@ -116,11 +119,11 @@ void MainWindow::updateFileListing()
 	if (m_openDir.isNull())
 		return;
 	
-	QDir dir(m_openDir);
-	QStringList fileNames(dir.entryList(QStringList() << "*.Zspc", QDir::Files | QDir::NoDotAndDotDot | QDir::Readable, QDir::Name));
+	delete m_frameSet;
+	m_frameSet = new FrameSet(m_openDir);
 	
 	m_ui.fileList->clear();
-	m_ui.fileList->addItems(fileNames);
+	m_ui.fileList->addItems(m_frameSet->allNames());
 	
 	if (m_ui.fileList->count() > 0)
 		m_ui.fileList->setCurrentRow(0);
@@ -134,10 +137,8 @@ void MainWindow::loadSelectedFile()
 	if (m_ui.fileList->currentItem() == NULL)
 		return;
 	
-	QString fileName = m_openDir + QDir::separator() + m_ui.fileList->currentItem()->text();
-	
 	delete m_frameInfo;
-	m_frameInfo = new FrameInfo(fileName);
+	m_frameInfo = m_frameSet->loadFrame(m_ui.fileList->currentRow());
 	
 	m_ui.actionPlotEnergyGraphs->setEnabled(false);
 	m_ui.leftLegGroup->setEnabled(m_frameInfo->hasModelInformation());

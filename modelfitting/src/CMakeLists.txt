@@ -14,6 +14,8 @@ SET(MODELFITTING-SOURCES
 	batchmode.cpp
 	energyplotter.cpp
 	timeplotter.cpp
+	errorcorrection.cpp
+	frameset.cpp
 )
 
 # Header files that have Q_OBJECT in
@@ -23,6 +25,7 @@ SET(MODELFITTING-MOC-HEADERS
 	frameinfo.h
 	mapreduceprogress.h
 	graphplotter.h
+	errorcorrection.h
 )
 
 # UI files
@@ -30,6 +33,7 @@ SET(MODELFITTING-UI
 	mainwindow.ui
 	mapreduceprogress.ui
 	graphplotter.ui
+	errorcorrection.ui
 )
 
 # Resource files

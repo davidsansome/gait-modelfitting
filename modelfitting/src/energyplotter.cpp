@@ -31,10 +31,10 @@ void EnergyPlotter::plotData(int limb, const QString& outFilename)
 	
 	switch (limb)
 	{
-		case 0: writeThighData   (LeftLeg,  info()->leftLeg(),  s); break;
-		case 1: writeThighData   (RightLeg, info()->rightLeg(), s); break;
-		case 2: writeLowerLegData(LeftLeg,  info()->leftLeg(),  s); break;
-		case 3: writeLowerLegData(RightLeg, info()->rightLeg(), s); break;
+		case 0: writeThighData   (LeftLeg,  frameInfo()->leftLeg(),  s); break;
+		case 1: writeThighData   (RightLeg, frameInfo()->rightLeg(), s); break;
+		case 2: writeLowerLegData(LeftLeg,  frameInfo()->leftLeg(),  s); break;
+		case 3: writeLowerLegData(RightLeg, frameInfo()->rightLeg(), s); break;
 	}
 	
 	m_limb = limb;
@@ -53,7 +53,7 @@ void EnergyPlotter::replaceTokens(QByteArray& commands)
 	}
 	
 	commands.replace("__LIMB__", limbName.toAscii());
-	commands.replace("__VOXEL_FILENAME__", QFileInfo(info()->filename()).fileName().toAscii());
+	commands.replace("__VOXEL_FILENAME__", QFileInfo(frameInfo()->filename()).fileName().toAscii());
 }
 
 QTextStream& EnergyPlotter::writeThighData(Part part, const Params<float>& initialParams, QTextStream& s)
@@ -67,7 +67,7 @@ QTextStream& EnergyPlotter::writeThighData(Part part, const Params<float>& initi
 	{
 		for (p.thighTheta=-THETA_RESOLUTION ; p.thighTheta<=THETA_RESOLUTION ; p.thighTheta++)
 		{
-			s << float(p.thighTheta) * THETA_STEP << " " << float(p.thighAlpha) * ALPHA_STEP << " " << info()->result(p, part) << "\n";
+			s << float(p.thighTheta) * THETA_STEP << " " << float(p.thighAlpha) * ALPHA_STEP << " " << frameInfo()->result(p, part) << "\n";
 		}
 		s << "\n";
 	}
@@ -86,7 +86,7 @@ QTextStream& EnergyPlotter::writeLowerLegData(Part part, const Params<float>& in
 	{
 		for (p.lowerLegTheta=-THETA_RESOLUTION ; p.lowerLegTheta<=THETA_RESOLUTION ; p.lowerLegTheta++)
 		{
-			s << float(p.lowerLegTheta) * THETA_STEP << " " << float(p.lowerLegAlpha) * ALPHA_STEP << " " << info()->result(p, part) << "\n";
+			s << float(p.lowerLegTheta) * THETA_STEP << " " << float(p.lowerLegAlpha) * ALPHA_STEP << " " << frameInfo()->result(p, part) << "\n";
 		}
 		s << "\n";
 	}

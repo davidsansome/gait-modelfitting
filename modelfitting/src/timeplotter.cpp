@@ -1,4 +1,5 @@
 #include "timeplotter.h"
+#include "frameset.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -22,34 +23,27 @@ void TimePlotter::plotData(const QString& outFilename)
 {
 	QTextStream& s = openTempFile();
 	
-	QRegExp timeRegexp("(\\d+)");
-	
-	QDir dir(QFileInfo(info()->filename()).dir());
-	QStringList rows(dir.entryList(QStringList() << "*.info", QDir::Files | QDir::NoDotAndDotDot, QDir::Name));
-	foreach (QString row, rows)
+	for (int i=0 ; i<frameInfo()->frameSet()->count() ; ++i)
 	{
-		// Should really put the frame number inside the info file
-		if (timeRegexp.indexIn(row) == -1)
+		if (!frameInfo()->frameSet()->hasModelInformation(i))
 			continue;
 		
-		QStringList cols;
-		cols << timeRegexp.cap(1);
+		FrameInfo* info = frameInfo()->frameSet()->loadFrame(i, true);
 		
-		QSettings settings(dir.path() + QDir::separator() + row, QSettings::IniFormat);
-		settings.beginGroup("LeftLeg");
-		cols << settings.value("ThighAlpha").toString();
-		cols << settings.value("ThighTheta").toString();
-		cols << settings.value("LowerLegAlpha").toString();
-		cols << settings.value("LowerLegTheta").toString();
-		settings.endGroup();
-		settings.beginGroup("RightLeg");
-		cols << settings.value("ThighAlpha").toString();
-		cols << settings.value("ThighTheta").toString();
-		cols << settings.value("LowerLegAlpha").toString();
-		cols << settings.value("LowerLegTheta").toString();
-		settings.endGroup();
+		QStringList cols;
+		cols << QString::number(i);
+		cols << QString::number(info->leftLeg().thighAlpha, 'f');
+		cols << QString::number(info->leftLeg().thighTheta, 'f');
+		cols << QString::number(info->leftLeg().lowerLegAlpha, 'f');
+		cols << QString::number(info->leftLeg().lowerLegTheta, 'f');
+		cols << QString::number(info->rightLeg().thighAlpha, 'f');
+		cols << QString::number(info->rightLeg().thighTheta, 'f');
+		cols << QString::number(info->rightLeg().lowerLegAlpha, 'f');
+		cols << QString::number(info->rightLeg().lowerLegTheta, 'f');
 		
 		s << cols.join(" ") << "\n";
+		
+		delete info;
 	}
 	
 	saveGraph(outFilename);

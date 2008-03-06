@@ -10,14 +10,14 @@
 
 void printHelp(const char* appName)
 {
-	std::cout << "Usage: " << appName << " [options] [voxelspace files]" << std::endl;
+	std::cout << "Usage: " << appName << " [options] [directory]" << std::endl;
 	std::cout << std::endl;
 	std::cout << "Options:" << std::endl;
 	std::cout << "    -h  --help    Displays this message" << std::endl;
 	std::cout << std::endl;
-	std::cout << "If any filenames are specified on the commandline the GUI will not be shown and" << std::endl;
-	std::cout << "the application will operate in batch mode.  Each of the files specified will" << std::endl;
-	std::cout << "be processed and a corresponding .info file produced." << std::endl;
+	std::cout << "If a directory is specified on the commandline the GUI will not be shown and" << std::endl;
+	std::cout << "the application will operate in batch mode.  Each of the files inside the" << std::endl;
+	std::cout << "directory will be processed and a corresponding .info file produced." << std::endl;
 }
 
 int main(int argc, char** argv)

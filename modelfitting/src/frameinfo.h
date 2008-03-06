@@ -13,6 +13,7 @@ class Voxel_Space;
 class Convolution;
 class Model;
 class FrameInfo;
+class FrameSet;
 class Mesh;
 
 #define MAXX 38.0
@@ -92,8 +93,10 @@ class FrameInfo : public QObject
 public:
 	static const Model* thighModel() { return s_thighModel; }
 	
-	FrameInfo(const QString& filename);
+	FrameInfo(FrameSet* frameSet, const QString& filename, bool loadInfoOnly = false);
 	~FrameInfo();
+	
+	FrameSet* frameSet() const { return m_frameSet; }
 	
 	bool hasModelInformation() const { return m_leftLegParams.valid && m_rightLegParams.valid; }
 	QList<MapReduceOperation> update();
@@ -133,6 +136,7 @@ private:
 	float doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) const;
 	void addResult(const Params<int>& indices, Part part, float energy);
 	
+	FrameSet* m_frameSet;
 	QString m_filename;
 	Voxel_Space* m_vspace;
 	Voxel_Space* m_edgeVspace;

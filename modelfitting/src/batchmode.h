@@ -6,6 +6,7 @@
 #include "frameinfo.h"
 
 class QSignalMapper;
+class FrameSet;
 
 class BatchMode
 {
@@ -19,7 +20,7 @@ private:
 	bool parseFileList();
 	void waitForOperations(const QList<MapReduceOperation>& operations);
 	
-	QStringList m_files;
+	FrameSet* m_frameSet;
 	QSignalMapper* m_sigMapper;
 };
 
