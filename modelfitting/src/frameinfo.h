@@ -27,7 +27,7 @@ class Mesh;
 #define YEXTENT (MAXY*2)
 #define ZEXTENT (MAXZ*2)
 
-#define ALPHA_RANGE (M_PI/8.0)
+#define ALPHA_RANGE (M_PI/16.0)
 #define THETA_RANGE (M_PI/4.0)
 #define ALPHA_RESOLUTION 5
 #define THETA_RESOLUTION 10
