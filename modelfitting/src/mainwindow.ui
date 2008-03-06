@@ -148,6 +148,7 @@
     </property>
     <addaction name="actionRecalculate" />
     <addaction name="actionRecalculateAll" />
+    <addaction name="actionErrorCorrection" />
     <addaction name="separator" />
     <addaction name="actionPlotEnergyGraphs" />
     <addaction name="actionPlotTimeGraphs" />
@@ -591,6 +592,11 @@
   <action name="actionPlotTimeGraphs" >
    <property name="text" >
     <string>Plot params over time...</string>
+   </property>
+  </action>
+  <action name="actionErrorCorrection" >
+   <property name="text" >
+    <string>Error correction...</string>
    </property>
   </action>
  </widget>

@@ -6,6 +6,7 @@
 #include "energyplotter.h"
 #include "timeplotter.h"
 #include "frameset.h"
+#include "errorcorrection.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -36,6 +37,9 @@ MainWindow::MainWindow()
 	
 	m_timePlotter = new TimePlotter(this);
 	connect(m_ui.actionPlotTimeGraphs, SIGNAL(triggered(bool)), m_timePlotter, SLOT(exec()));
+	
+	m_errorCorrection = new ErrorCorrection(this);
+	connect(m_ui.actionErrorCorrection, SIGNAL(triggered(bool)), m_errorCorrection, SLOT(exec()));
 	
 	m_ui.front->setViewType(GLView::Front);
 	m_ui.side->setViewType(GLView::Side);
@@ -121,6 +125,8 @@ void MainWindow::updateFileListing()
 	
 	delete m_frameSet;
 	m_frameSet = new FrameSet(m_openDir);
+	
+	m_errorCorrection->setFrameSet(m_frameSet);
 	
 	m_ui.fileList->clear();
 	m_ui.fileList->addItems(m_frameSet->allNames());
