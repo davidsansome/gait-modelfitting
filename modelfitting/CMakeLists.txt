@@ -1,8 +1,15 @@
 PROJECT (modelfitting)
 
+# Include our custom cmake modules
+SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/CMake)
+
+MARK_AS_ADVANCED(USE_FFTWD)
+OPTION(USE_FFTWD "Use double precision FFTW if found" ON)
+
 # Find Qt
 FIND_PACKAGE(Qt4 REQUIRED)
 FIND_PACKAGE(OpenGL REQUIRED)
+FIND_PACKAGE(FFTW REQUIRED)
 
 # Find Qt stuff
 ADD_DEFINITIONS(${QT_DEFINITIONS})
