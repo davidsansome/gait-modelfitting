@@ -7,6 +7,7 @@
 #include "timeplotter.h"
 #include "frameset.h"
 #include "errorcorrection.h"
+#include "fftplotter.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -37,6 +38,9 @@ MainWindow::MainWindow()
 	
 	m_timePlotter = new TimePlotter(this);
 	connect(m_ui.actionPlotTimeGraphs, SIGNAL(triggered(bool)), m_timePlotter, SLOT(exec()));
+	
+	m_fftPlotter = new FftPlotter(this);
+	connect(m_ui.actionPlotFftGraphs, SIGNAL(triggered(bool)), m_fftPlotter, SLOT(exec()));
 	
 	m_errorCorrection = new ErrorCorrection(this);
 	connect(m_ui.actionErrorCorrection, SIGNAL(triggered(bool)), m_errorCorrection, SLOT(exec()));
@@ -157,6 +161,7 @@ void MainWindow::loadSelectedFile()
 	
 	m_energyPlotter->setFrameInfo(m_frameInfo);
 	m_timePlotter->setFrameInfo(m_frameInfo);
+	m_fftPlotter->setFrameInfo(m_frameInfo);
 	
 	getInfoParams();
 }

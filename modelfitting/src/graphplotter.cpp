@@ -6,12 +6,14 @@
 #include <QFileInfo>
 #include <QFileDialog>
 
-GraphPlotter::GraphPlotter(QWidget* parent)
+GraphPlotter::GraphPlotter(const QString& title, QWidget* parent)
 	: QDialog(parent),
 	  m_info(NULL),
 	  m_tempFile(NULL)
 {
 	m_ui.setupUi(this);
+	setWindowTitle(title);
+	adjustSize();
 	
 	connect(m_ui.buttonBox, SIGNAL(accepted()), SLOT(okClicked()));
 	
@@ -26,6 +28,7 @@ GraphPlotter::~GraphPlotter()
 
 void GraphPlotter::exec()
 {
+	aboutToShow();
 	load();
 	QDialog::exec();
 	save();
@@ -130,6 +133,9 @@ void GraphPlotter::load()
 	m_ui.rightLowerAlpha->setChecked(m_settings.value("RightLowerAlpha", true). toBool());
 	m_ui.rightThighTheta->setChecked(m_settings.value("RightThighTheta", true). toBool());
 	m_ui.rightLowerTheta->setChecked(m_settings.value("RightLowerTheta", true). toBool());
+	
+	m_ui.dataSetMin->setValue(m_settings.value("DataSetMin", m_ui.dataSetMin->minimum()).toInt());
+	m_ui.dataSetMax->setValue(m_settings.value("DataSetMax", m_ui.dataSetMax->maximum()).toInt());
 }
 
 void GraphPlotter::save()

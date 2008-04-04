@@ -15,7 +15,7 @@ class GraphPlotter : public QDialog
 {
 	Q_OBJECT
 public:
-	GraphPlotter(QWidget* parent = 0);
+	GraphPlotter(const QString& title, QWidget* parent = 0);
 	virtual ~GraphPlotter();
 	
 	FrameInfo* frameInfo() const { return m_info; }
@@ -25,6 +25,7 @@ public slots:
 	void exec();
 	
 protected:
+	virtual void aboutToShow() {}
 	virtual QString templateName(bool displayOnly) const = 0;
 	virtual void plotData(const QString& outFilename) = 0;
 	virtual void replaceTokens(QByteArray& commands) = 0;

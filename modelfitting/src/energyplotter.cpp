@@ -5,9 +5,11 @@
 #define ROUND(x) int((x) + ((x) > 0.0 ? 0.5 : -0.5))
 
 EnergyPlotter::EnergyPlotter(QWidget* parent)
-	: GraphPlotter(parent)
+	: GraphPlotter("Energy graph plotter", parent)
 {
 	m_ui.stackedWidget->setCurrentWidget(m_ui.energyPage);
+	m_ui.dataSetBox->hide();
+	adjustSize();
 }
 
 QString EnergyPlotter::templateName(bool displayOnly) const

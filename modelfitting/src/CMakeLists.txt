@@ -16,6 +16,7 @@ SET(MODELFITTING-SOURCES
 	timeplotter.cpp
 	errorcorrection.cpp
 	frameset.cpp
+	fftplotter.cpp
 )
 
 # Header files that have Q_OBJECT in
@@ -71,6 +72,7 @@ TARGET_LINK_LIBRARIES(modelfitting
 	${ZLIB_LIBRARY}
 	-lcommon
 	${OPENGL_LIBRARIES}
+	${FFTWD_LIB}
 )
 
 INSTALL(TARGETS modelfitting

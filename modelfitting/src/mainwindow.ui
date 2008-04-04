@@ -16,9 +16,9 @@
    <property name="geometry" >
     <rect>
      <x>262</x>
-     <y>53</y>
+     <y>60</y>
      <width>538</width>
-     <height>547</height>
+     <height>540</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout" >
@@ -124,7 +124,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -152,6 +152,7 @@
     <addaction name="separator" />
     <addaction name="actionPlotEnergyGraphs" />
     <addaction name="actionPlotTimeGraphs" />
+    <addaction name="actionPlotFftGraphs" />
    </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
@@ -168,9 +169,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>53</y>
+     <y>60</y>
      <width>256</width>
-     <height>206</height>
+     <height>161</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -189,9 +190,9 @@
     <property name="geometry" >
      <rect>
       <x>0</x>
-      <y>21</y>
+      <y>23</y>
       <width>256</width>
-      <height>185</height>
+      <height>138</height>
      </rect>
     </property>
     <property name="sizePolicy" >
@@ -221,9 +222,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>24</y>
-     <width>226</width>
-     <height>29</height>
+     <y>27</y>
+     <width>235</width>
+     <height>33</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -242,9 +243,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>265</y>
+     <y>227</y>
      <width>256</width>
-     <height>121</height>
+     <height>139</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -266,9 +267,9 @@
     <property name="geometry" >
      <rect>
       <x>0</x>
-      <y>21</y>
+      <y>23</y>
       <width>256</width>
-      <height>100</height>
+      <height>116</height>
      </rect>
     </property>
     <layout class="QGridLayout" >
@@ -325,9 +326,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>392</y>
+     <y>372</y>
      <width>256</width>
-     <height>121</height>
+     <height>139</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -346,9 +347,9 @@
     <property name="geometry" >
      <rect>
       <x>0</x>
-      <y>21</y>
+      <y>23</y>
       <width>256</width>
-      <height>100</height>
+      <height>116</height>
      </rect>
     </property>
     <layout class="QGridLayout" >
@@ -404,10 +405,10 @@
   <widget class="QToolBar" name="toolBar_2" >
    <property name="geometry" >
     <rect>
-     <x>226</x>
-     <y>24</y>
-     <width>574</width>
-     <height>29</height>
+     <x>235</x>
+     <y>27</y>
+     <width>565</width>
+     <height>33</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -426,9 +427,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>519</y>
+     <y>517</y>
      <width>256</width>
-     <height>81</height>
+     <height>83</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -447,7 +448,7 @@
     <property name="geometry" >
      <rect>
       <x>0</x>
-      <y>21</y>
+      <y>23</y>
       <width>256</width>
       <height>60</height>
      </rect>
@@ -597,6 +598,11 @@
   <action name="actionErrorCorrection" >
    <property name="text" >
     <string>Error correction...</string>
+   </property>
+  </action>
+  <action name="actionPlotFftGraphs" >
+   <property name="text" >
+    <string>Plot FFT graphs...</string>
    </property>
   </action>
  </widget>

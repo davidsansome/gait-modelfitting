@@ -1,4 +1,4 @@
-#include "timeplotter.h"
+#include "fftplotter.h"
 #include "frameset.h"
 
 #include <QFileInfo>
@@ -6,22 +6,37 @@
 
 #define ROUND(x) int((x) + ((x) > 0.0 ? 0.5 : -0.5))
 
-TimePlotter::TimePlotter(QWidget* parent)
-	: GraphPlotter("Params-over-time plotter", parent)
+FftPlotter::FftPlotter(QWidget* parent)
+	: GraphPlotter("FFT graph plotter", parent)
 {
 	m_ui.stackedWidget->setCurrentWidget(m_ui.timePage);
-	m_ui.dataSetBox->hide();
-	adjustSize();
 }
 
-QString TimePlotter::templateName(bool displayOnly) const
+void FftPlotter::aboutToShow()
+{
+	int min = std::numeric_limits<int>::max();
+	int max = std::numeric_limits<int>::min();
+	
+	for (int i=0 ; i<frameInfo()->frameSet()->count() ; ++i)
+	{
+		if (!frameInfo()->frameSet()->hasModelInformation(i))
+			continue;
+		min = qMin(min, i);
+		max = qMax(max, i);
+	}
+	
+	m_ui.dataSetMin->setRange(min, max);
+	m_ui.dataSetMax->setRange(min, max);
+}
+
+QString FftPlotter::templateName(bool displayOnly) const
 {
 	if (displayOnly)
 		return ":showtime.g";
 	return ":savetime.g";
 }
 
-void TimePlotter::plotData(const QString& outFilename)
+void FftPlotter::plotData(const QString& outFilename)
 {
 	QTextStream& s = openTempFile();
 	
@@ -51,7 +66,7 @@ void TimePlotter::plotData(const QString& outFilename)
 	saveGraph(outFilename);
 }
 
-void TimePlotter::replaceTokens(QByteArray& commands)
+void FftPlotter::replaceTokens(QByteArray& commands)
 {
 	QStringList plots;
 	

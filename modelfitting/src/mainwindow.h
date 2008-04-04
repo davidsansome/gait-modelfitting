@@ -10,6 +10,7 @@ class Mesh;
 class MapReduceProgress;
 class EnergyPlotter;
 class TimePlotter;
+class FftPlotter;
 class ErrorCorrection;
 
 #include "ui_mainwindow.h"
@@ -54,6 +55,7 @@ private:
 	MapReduceProgress* m_progressDialog;
 	EnergyPlotter* m_energyPlotter;
 	TimePlotter* m_timePlotter;
+	FftPlotter* m_fftPlotter;
 	ErrorCorrection* m_errorCorrection;
 	
 	bool m_paramUpdatesDisabled;
