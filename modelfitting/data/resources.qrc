@@ -5,5 +5,7 @@
 		<file>showgraph.g</file>
 		<file>showtime.g</file>
 		<file>savetime.g</file>
+		<file>showfft.g</file>
+		<file>savefft.g</file>
 	</qresource>
 </RCC>

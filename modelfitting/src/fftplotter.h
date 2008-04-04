@@ -3,6 +3,9 @@
 
 #include "graphplotter.h"
 
+#include <fftw3.h>
+#include <complex>
+
 class FftPlotter : public GraphPlotter
 {
 public:
@@ -13,6 +16,27 @@ protected:
 	QString templateName(bool displayOnly) const;
 	void plotData(const QString& outFilename);
 	void replaceTokens(QByteArray& commands);
+
+private:
+	enum Type
+	{
+		LeftThighAlpha,
+		LeftThighTheta,
+		LeftLowerAlpha,
+		LeftLowerTheta,
+		RightThighAlpha,
+		RightThighTheta,
+		RightLowerAlpha,
+		RightLowerTheta
+	};
+	
+	void initData(Type type);
+	void runAndPlot(Type type, const QString& outFilename);
+	
+	int m_dataSize;
+	double* m_data;
+	std::complex<double>* m_results;
+	fftw_plan m_plan;
 };
 
 #endif
