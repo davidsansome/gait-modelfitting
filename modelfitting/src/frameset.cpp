@@ -53,7 +53,12 @@ bool FrameSet::hasModelInformation(int index) const
 
 FrameInfo* FrameSet::loadFrame(int index, bool loadInfoOnly)
 {
-	return new FrameInfo(this, m_directory + QDir::separator() + name(index), loadInfoOnly);
+	QString fileName(m_directory + QDir::separator() + name(index));
+	
+	if (!QFile::exists(fileName))
+		return NULL;
+	
+	return new FrameInfo(this, fileName, loadInfoOnly);
 }
 
 QStringList FrameSet::allNames() const

@@ -147,8 +147,15 @@ void MainWindow::loadSelectedFile()
 	if (m_ui.fileList->currentItem() == NULL)
 		return;
 	
+	FrameInfo* newFrameInfo = m_frameSet->loadFrame(m_ui.fileList->currentRow());
+	if (newFrameInfo == NULL)
+	{
+		QMessageBox::warning(this, "Error", "Could not load the frame " + m_ui.fileList->currentItem()->text() + ".  Perhaps the file no longer exists?");
+		return;
+	}
+	
 	delete m_frameInfo;
-	m_frameInfo = m_frameSet->loadFrame(m_ui.fileList->currentRow());
+	m_frameInfo = newFrameInfo;
 	
 	m_ui.actionPlotEnergyGraphs->setEnabled(false);
 	m_ui.leftLegGroup->setEnabled(m_frameInfo->hasModelInformation());

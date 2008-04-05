@@ -33,6 +33,7 @@ int BatchMode::exec()
 			std::cout << "    - Frame already has model information, recalculating" << std::endl;
 		
 		waitForOperations(info->update());
+		info->save();
 		
 		std::cout << "    - Finished calculating" << std::endl;
 		

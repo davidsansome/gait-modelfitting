@@ -7,7 +7,7 @@
 #include "util.hh"
 
 int _indent_level = 0;
-bool _debug = true;
+bool _debug = false;
 
 void timestamp(void) {
     float tme;
