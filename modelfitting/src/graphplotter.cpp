@@ -13,6 +13,10 @@ GraphPlotter::GraphPlotter(const QString& title, QWidget* parent)
 {
 	m_ui.setupUi(this);
 	setWindowTitle(title);
+	
+	m_ui.fftBox->hide();
+	m_ui.dataSetBox->hide();
+	
 	adjustSize();
 	
 	connect(m_ui.buttonBox, SIGNAL(accepted()), SLOT(okClicked()));
@@ -119,23 +123,27 @@ void GraphPlotter::load()
 	m_ui.fileFormat->setCurrentIndex(m_settings.value("FileFormat", 0).toInt());
 	m_ui.displayOnly->setChecked(m_settings.value("DisplayOnly", true).toBool());
 	
-	m_ui.leftThigh->setChecked(m_settings.value("LeftThigh", true). toBool());
-	m_ui.leftLowerLeg->setChecked(m_settings.value("LeftLowerLeg", true). toBool());
-	m_ui.rightThigh->setChecked(m_settings.value("RightThigh", true). toBool());
-	m_ui.rightLowerLeg->setChecked(m_settings.value("RightLowerLeg", true). toBool());
+	m_ui.leftThigh->setChecked(m_settings.value("LeftThigh", true).toBool());
+	m_ui.leftLowerLeg->setChecked(m_settings.value("LeftLowerLeg", true).toBool());
+	m_ui.rightThigh->setChecked(m_settings.value("RightThigh", true).toBool());
+	m_ui.rightLowerLeg->setChecked(m_settings.value("RightLowerLeg", true).toBool());
 	
-	m_ui.leftThighAlpha->setChecked(m_settings.value("LeftThighAlpha", true). toBool());
-	m_ui.leftLowerAlpha->setChecked(m_settings.value("LeftLowerAlpha", true). toBool());
-	m_ui.leftThighTheta->setChecked(m_settings.value("LeftThighTheta", true). toBool());
-	m_ui.leftLowerTheta->setChecked(m_settings.value("LeftLowerTheta", true). toBool());
+	m_ui.leftThighAlpha->setChecked(m_settings.value("LeftThighAlpha", true).toBool());
+	m_ui.leftLowerAlpha->setChecked(m_settings.value("LeftLowerAlpha", true).toBool());
+	m_ui.leftThighTheta->setChecked(m_settings.value("LeftThighTheta", true).toBool());
+	m_ui.leftLowerTheta->setChecked(m_settings.value("LeftLowerTheta", true).toBool());
 	
-	m_ui.rightThighAlpha->setChecked(m_settings.value("RightThighAlpha", true). toBool());
-	m_ui.rightLowerAlpha->setChecked(m_settings.value("RightLowerAlpha", true). toBool());
-	m_ui.rightThighTheta->setChecked(m_settings.value("RightThighTheta", true). toBool());
-	m_ui.rightLowerTheta->setChecked(m_settings.value("RightLowerTheta", true). toBool());
+	m_ui.rightThighAlpha->setChecked(m_settings.value("RightThighAlpha", true).toBool());
+	m_ui.rightLowerAlpha->setChecked(m_settings.value("RightLowerAlpha", true).toBool());
+	m_ui.rightThighTheta->setChecked(m_settings.value("RightThighTheta", true).toBool());
+	m_ui.rightLowerTheta->setChecked(m_settings.value("RightLowerTheta", true).toBool());
 	
 	m_ui.dataSetMin->setValue(m_settings.value("DataSetMin", m_ui.dataSetMin->minimum()).toInt());
 	m_ui.dataSetMax->setValue(m_settings.value("DataSetMax", m_ui.dataSetMax->maximum()).toInt());
+	
+	m_ui.phase->setChecked(m_settings.value("Phase", false).toBool());
+	m_ui.magnitude->setChecked(m_settings.value("Magnitude", false).toBool());
+	m_ui.phaseMagnitude->setChecked(m_settings.value("PhaseMagnitude", true).toBool());
 }
 
 void GraphPlotter::save()
@@ -159,4 +167,11 @@ void GraphPlotter::save()
 	m_settings.setValue("RightLowerAlpha", m_ui.rightLowerAlpha->isChecked());
 	m_settings.setValue("RightThighTheta", m_ui.rightThighTheta->isChecked());
 	m_settings.setValue("RightLowerTheta", m_ui.rightLowerTheta->isChecked());
+	
+	m_settings.setValue("DataSetMin", m_ui.dataSetMin->value());
+	m_settings.setValue("DataSetMax", m_ui.dataSetMax->value());
+	
+	m_settings.setValue("Phase", m_ui.phase->isChecked());
+	m_settings.setValue("Magnitude", m_ui.magnitude->isChecked());
+	m_settings.setValue("PhaseMagnitude", m_ui.phaseMagnitude->isChecked());
 }

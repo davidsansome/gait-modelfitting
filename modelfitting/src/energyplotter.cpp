@@ -8,8 +8,6 @@ EnergyPlotter::EnergyPlotter(QWidget* parent)
 	: GraphPlotter("Energy graph plotter", parent)
 {
 	m_ui.stackedWidget->setCurrentWidget(m_ui.energyPage);
-	m_ui.dataSetBox->hide();
-	adjustSize();
 }
 
 QString EnergyPlotter::templateName(bool displayOnly) const

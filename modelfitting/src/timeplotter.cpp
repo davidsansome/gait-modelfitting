@@ -10,8 +10,6 @@ TimePlotter::TimePlotter(QWidget* parent)
 	: GraphPlotter("Params-over-time plotter", parent)
 {
 	m_ui.stackedWidget->setCurrentWidget(m_ui.timePage);
-	m_ui.dataSetBox->hide();
-	adjustSize();
 }
 
 QString TimePlotter::templateName(bool displayOnly) const

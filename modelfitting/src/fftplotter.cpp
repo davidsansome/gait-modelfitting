@@ -11,6 +11,9 @@ FftPlotter::FftPlotter(QWidget* parent)
 	: GraphPlotter("FFT graph plotter", parent)
 {
 	m_ui.stackedWidget->setCurrentWidget(m_ui.timePage);
+	m_ui.dataSetBox->show();
+	m_ui.fftBox->show();
+	adjustSize();
 }
 
 void FftPlotter::aboutToShow()
@@ -107,6 +110,7 @@ void FftPlotter::runAndPlot(Type type, const QString& outFilename)
 		cols << QString::number(i);
 		cols << QString::number(magnitude, 'f');
 		cols << QString::number(phase, 'f');
+		cols << QString::number(phase * magnitude, 'f');
 		
 		s << cols.join(" ") << "\n";
 	}
@@ -116,4 +120,11 @@ void FftPlotter::runAndPlot(Type type, const QString& outFilename)
 
 void FftPlotter::replaceTokens(QByteArray& commands)
 {
+	QStringList plots;
+	
+	if (m_ui.magnitude->isChecked()) plots << "'__DATA_FILENAME__' using 1:2 title \"Magnitude\" with impulses lt 1";
+	if (m_ui.phase->isChecked()) plots << "'__DATA_FILENAME__' using 1:3 title \"Phase\" with impulses lt 3";
+	if (m_ui.phaseMagnitude->isChecked()) plots << "'__DATA_FILENAME__' using 1:4 title \"Phase * Magnitude\" with impulses lt 4";
+	
+	commands.replace("__PLOTS__", plots.join(", ").toAscii());
 }
