@@ -116,7 +116,7 @@ Voxel_Space::Voxel_Space( char * filename )
         gzread(gfle, &ps, sizeof(int));
         if (ps != sizeof(VSPC_DTYPE))
         {
-            fprintf(stderr, "info: this version of Voxel_Space is compiled for %d bit data, file is %d bit data, int is %d bit\n", sizeof(VSPC_DTYPE) * 8, ps * 8, sizeof(int) * 8);
+            //fprintf(stderr, "info: this version of Voxel_Space is compiled for %d bit data, file is %d bit data, int is %d bit\n", sizeof(VSPC_DTYPE) * 8, ps * 8, sizeof(int) * 8);
             data = NULL;
             alloc( );
             // fxs -> how many (ps bytes wide) words each row spans (in the file)

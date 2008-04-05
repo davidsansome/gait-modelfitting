@@ -27,6 +27,7 @@ SET(MODELFITTING-MOC-HEADERS
 	mapreduceprogress.h
 	graphplotter.h
 	errorcorrection.h
+	batchmode.h
 )
 
 # UI files

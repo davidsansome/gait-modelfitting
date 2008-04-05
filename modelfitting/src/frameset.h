@@ -16,6 +16,7 @@ public:
 	
 	void update();
 	
+	QString directory() const { return m_directory; }
 	int count() const { return m_frames.count(); }
 	QString name(int index) const;
 	bool hasModelInformation(int index) const;

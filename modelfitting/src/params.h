@@ -17,6 +17,8 @@ public:
 	bool operator <(const Params& other) const;
 	Params& operator =(const Params& other);
 	
+	void invalidate() { valid = false; }
+	
 	void save(QSettings& settings) const;
 	
 	bool valid;

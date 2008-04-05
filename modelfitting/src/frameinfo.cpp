@@ -197,6 +197,8 @@ QList<MapReduceOperation> FrameInfo::update()
 	if (m_distanceCache == NULL)
 		initDistanceCache();
 	m_results.clear();
+	m_leftLegParams.invalidate();
+	m_rightLegParams.invalidate();
 	
 	QList<MapReduceOperation> ret;
 	

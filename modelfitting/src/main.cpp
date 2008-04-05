@@ -13,7 +13,8 @@ void printHelp(const char* appName)
 	std::cout << "Usage: " << appName << " [options] [directory]" << std::endl;
 	std::cout << std::endl;
 	std::cout << "Options:" << std::endl;
-	std::cout << "    -h  --help    Displays this message" << std::endl;
+	std::cout << "    -h  --help      Displays this message" << std::endl;
+	std::cout << "    -j  --jobs=n    Specifies the number of frames to analyse at once" << std::endl;
 	std::cout << std::endl;
 	std::cout << "If a directory is specified on the commandline the GUI will not be shown and" << std::endl;
 	std::cout << "the application will operate in batch mode.  Each of the files inside the" << std::endl;
@@ -67,7 +68,10 @@ int main(int argc, char** argv)
 	else
 	{
 		BatchMode batch;
-		return batch.exec();
+		if (!batch.start())
+			return 1;
+		
+		return app.exec();
 	}
 }
 
