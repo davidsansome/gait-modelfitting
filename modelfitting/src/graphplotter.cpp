@@ -19,6 +19,7 @@ GraphPlotter::GraphPlotter(const QString& title, QWidget* parent)
 	
 	adjustSize();
 	
+	connect(m_ui.destDirBrowse, SIGNAL(clicked()), SLOT(browse()));
 	connect(m_ui.buttonBox, SIGNAL(accepted()), SLOT(okClicked()));
 	
 	m_settings.beginGroup("GraphPlotter");
@@ -174,4 +175,13 @@ void GraphPlotter::save()
 	m_settings.setValue("Phase", m_ui.phase->isChecked());
 	m_settings.setValue("Magnitude", m_ui.magnitude->isChecked());
 	m_settings.setValue("PhaseMagnitude", m_ui.phaseMagnitude->isChecked());
+}
+
+void GraphPlotter::browse()
+{
+	QString ret(QFileDialog::getExistingDirectory(this, "Browse", m_ui.destDir->text()));
+	if (ret.isNull())
+		return;
+	
+	m_ui.destDir->setText(ret);
 }

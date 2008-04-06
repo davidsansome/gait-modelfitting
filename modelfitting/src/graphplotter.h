@@ -37,6 +37,7 @@ protected:
 
 private slots:
 	void okClicked();
+	void browse();
 
 private:
 	void load();

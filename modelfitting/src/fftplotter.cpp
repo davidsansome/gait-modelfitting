@@ -53,7 +53,14 @@ void FftPlotter::plotData(const QString& outFilename)
 	m_results = (std::complex<double>*) fftw_malloc(sizeof(std::complex<double>) * (m_dataSize/2 + 1));
 	m_plan = fftw_plan_dft_r2c_1d(m_dataSize, m_data, reinterpret_cast<fftw_complex*>(m_results), FFTW_ESTIMATE | FFTW_DESTROY_INPUT);
 	
-	runAndPlot(LeftThighTheta, outFilename + "-leftthightheta");
+	if (m_ui.leftThighAlpha->isChecked())  runAndPlot(LeftThighAlpha,  outFilename + "-leftthighalpha");
+	if (m_ui.leftThighTheta->isChecked())  runAndPlot(LeftThighTheta,  outFilename + "-leftthightheta");
+	if (m_ui.leftLowerAlpha->isChecked())  runAndPlot(LeftLowerAlpha,  outFilename + "-leftloweralpha");
+	if (m_ui.leftLowerTheta->isChecked())  runAndPlot(LeftLowerTheta,  outFilename + "-leftlowertheta");
+	if (m_ui.rightThighAlpha->isChecked()) runAndPlot(RightThighAlpha, outFilename + "-rightthighalpha");
+	if (m_ui.rightThighTheta->isChecked()) runAndPlot(RightThighTheta, outFilename + "-rightthightheta");
+	if (m_ui.rightLowerAlpha->isChecked()) runAndPlot(RightLowerAlpha, outFilename + "-rightloweralpha");
+	if (m_ui.rightLowerTheta->isChecked()) runAndPlot(RightLowerTheta, outFilename + "-rightlowertheta");
 	
 	fftw_destroy_plan(m_plan);
 	fftw_free(m_data);
@@ -99,6 +106,15 @@ void FftPlotter::runAndPlot(Type type, const QString& outFilename)
 	initData(type);
 	fftw_execute(m_plan);
 	
+	if (m_ui.magnitude->isChecked())      plot("'__DATA_FILENAME__' using 1:2 title \"Magnitude\" with impulses lt 1",         outFilename + "-magnitude");
+	if (m_ui.phase->isChecked())          plot("'__DATA_FILENAME__' using 1:3 title \"Phase\" with impulses lt 3",             outFilename + "-phase");
+	if (m_ui.phaseMagnitude->isChecked()) plot("'__DATA_FILENAME__' using 1:4 title \"Phase * Magnitude\" with impulses lt 4", outFilename + "-phasemagnitude");
+}
+
+void FftPlotter::plot(const QString& plot, const QString& outFilename)
+{
+	m_plot = plot;
+	
 	QTextStream& s = openTempFile();
 	
 	for (int i=0 ; i<m_dataSize/2+1 ; ++i)
@@ -120,11 +136,5 @@ void FftPlotter::runAndPlot(Type type, const QString& outFilename)
 
 void FftPlotter::replaceTokens(QByteArray& commands)
 {
-	QStringList plots;
-	
-	if (m_ui.magnitude->isChecked()) plots << "'__DATA_FILENAME__' using 1:2 title \"Magnitude\" with impulses lt 1";
-	if (m_ui.phase->isChecked()) plots << "'__DATA_FILENAME__' using 1:3 title \"Phase\" with impulses lt 3";
-	if (m_ui.phaseMagnitude->isChecked()) plots << "'__DATA_FILENAME__' using 1:4 title \"Phase * Magnitude\" with impulses lt 4";
-	
-	commands.replace("__PLOTS__", plots.join(", ").toAscii());
+	commands.replace("__PLOTS__", m_plot.toAscii());
 }
