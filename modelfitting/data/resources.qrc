@@ -7,5 +7,10 @@
 		<file>savetime.g</file>
 		<file>showfft.g</file>
 		<file>savefft.g</file>
+		<file>exit.png</file>
+		<file>open.png</file>
+		<file>recalculate.png</file>
+		<file>viewdata.png</file>
+		<file>viewmodel.png</file>
 	</qresource>
 </RCC>
