@@ -19,6 +19,8 @@ SET(MODELFITTING-SOURCES
 	fftplotter.cpp
 	curvefitter.cpp
 	fft.cpp
+	classifydialog.cpp
+	people.cpp
 )
 
 # Header files that have Q_OBJECT in
@@ -30,6 +32,7 @@ SET(MODELFITTING-MOC-HEADERS
 	graphplotter.h
 	errorcorrection.h
 	batchmode.h
+	classifydialog.h
 )
 
 # UI files
@@ -38,6 +41,7 @@ SET(MODELFITTING-UI
 	mapreduceprogress.ui
 	graphplotter.ui
 	errorcorrection.ui
+	classifydialog.ui
 )
 
 # Resource files

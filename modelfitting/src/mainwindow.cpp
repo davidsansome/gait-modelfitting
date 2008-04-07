@@ -8,6 +8,7 @@
 #include "frameset.h"
 #include "errorcorrection.h"
 #include "fftplotter.h"
+#include "classifydialog.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -44,6 +45,9 @@ MainWindow::MainWindow()
 	
 	m_errorCorrection = new ErrorCorrection(this);
 	connect(m_ui.actionErrorCorrection, SIGNAL(triggered(bool)), m_errorCorrection, SLOT(exec()));
+	
+	m_classifyDialog = new ClassifyDialog(this);
+	connect(m_ui.actionClassify, SIGNAL(triggered(bool)), SLOT(classify()));
 	
 	m_ui.front->setViewType(GLView::Front);
 	m_ui.side->setViewType(GLView::Side);
@@ -85,7 +89,8 @@ MainWindow::MainWindow()
 	setupSpinBox(m_ui.rightLowerAlpha, ALPHA_RANGE, ALPHA_STEP);
 	setupSpinBox(m_ui.rightLowerTheta, THETA_RANGE, THETA_STEP);
 	
-	m_openDir = m_settings.value("OpenDir", QDir::homePath()).toString();
+	QSettings settings;
+	m_openDir = settings.value("OpenDir", QDir::homePath()).toString();
 	
 	// We do this in a single shot timer so that initalizeGL() gets called on the GLViews before creating any
 	// FrameInfo objects.  FrameInfo objects call Mesh::draw_init() which needs to have had
@@ -117,7 +122,8 @@ void MainWindow::openDirectory()
 		return;
 	
 	m_openDir = dirName;
-	m_settings.setValue("OpenDir", m_openDir);
+	QSettings settings;
+	settings.setValue("OpenDir", m_openDir);
 	
 	updateFileListing();
 }
@@ -273,4 +279,12 @@ void MainWindow::getInfoParams()
 	m_ui.rightLowerAlpha->setValue(m_frameInfo->rightLeg().lowerLegAlpha);
 	m_ui.rightLowerTheta->setValue(m_frameInfo->rightLeg().lowerLegTheta);
 	m_paramUpdatesDisabled = false;
+}
+
+void MainWindow::classify()
+{
+	m_frameSet->updateSignature();
+	
+	m_classifyDialog->setFrameSet(m_frameSet);
+	m_classifyDialog->exec();
 }

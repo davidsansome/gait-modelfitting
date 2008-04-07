@@ -12,6 +12,7 @@ class EnergyPlotter;
 class TimePlotter;
 class FftPlotter;
 class ErrorCorrection;
+class ClassifyDialog;
 
 #include "ui_mainwindow.h"
 #include "types.h"
@@ -29,6 +30,7 @@ private slots:
 	void openDirectory();
 	bool recalculate();
 	void recalculateAll();
+	void classify();
 	void updateViews();
 	void loadSelectedFile();
 	
@@ -45,7 +47,6 @@ private:
 	Ui_MainWindow m_ui;
 	QString m_openDir;
 	QTimer* m_redrawTimer;
-	QSettings m_settings;
 	
 	Voxel_Space* m_voxelSpace;
 	Mesh* m_mesh;
@@ -57,6 +58,7 @@ private:
 	TimePlotter* m_timePlotter;
 	FftPlotter* m_fftPlotter;
 	ErrorCorrection* m_errorCorrection;
+	ClassifyDialog* m_classifyDialog;
 	
 	bool m_paramUpdatesDisabled;
 };

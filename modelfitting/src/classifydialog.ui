@@ -1,0 +1,116 @@
+<ui version="4.0" >
+ <class>ClassifyDialog</class>
+ <widget class="QDialog" name="ClassifyDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>399</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Classify this person</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../data/resources.qrc" >
+    <normaloff>:/classify.png</normaloff>:/classify.png</iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QRadioButton" name="someoneNew" >
+     <property name="text" >
+      <string>Someone new:</string>
+     </property>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="newName" >
+     <property name="text" >
+      <string>Bob</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QRadioButton" name="seenBefore" >
+     <property name="text" >
+      <string>Someone I've seen before:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QListWidget" name="seenBeforeList" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../data/resources.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>someoneNew</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>newName</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>96</x>
+     <y>26</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>87</x>
+     <y>48</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>someoneNew</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>seenBeforeList</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>148</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>162</x>
+     <y>163</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>ClassifyDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>254</x>
+     <y>272</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>252</x>
+     <y>297</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -6,7 +6,8 @@
 Fft::Fft()
 	: m_data(NULL),
 	  m_results(NULL),
-	  m_frameSet(NULL)
+	  m_frameSet(NULL),
+	  m_plan(NULL)
 {
 	m_curveFitter = new CurveFitter;
 }
