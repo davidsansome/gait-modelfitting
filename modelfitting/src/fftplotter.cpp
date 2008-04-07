@@ -1,5 +1,6 @@
 #include "fftplotter.h"
 #include "frameset.h"
+#include "curvefitter.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -14,6 +15,13 @@ FftPlotter::FftPlotter(QWidget* parent)
 	m_ui.dataSetBox->show();
 	m_ui.fftBox->show();
 	adjustSize();
+	
+	m_curveFitter = new CurveFitter;
+}
+
+FftPlotter::~FftPlotter()
+{
+	delete m_curveFitter;
 }
 
 void FftPlotter::aboutToShow()
@@ -42,7 +50,26 @@ QString FftPlotter::templateName(bool displayOnly) const
 
 void FftPlotter::plotData(const QString& outFilename)
 {
-	m_dataSize = m_ui.dataSetMax->value() - m_ui.dataSetMin->value();
+	if (m_ui.dataSetAuto->isChecked())
+	{
+		m_curveFitter->setFrameSet(frameInfo()->frameSet());
+		FittingResult result(m_curveFitter->doFitting());
+		
+		float min = result.zeroCrossing();
+		while (min < 0.0)
+			min += result.period / 2.0;
+		
+		m_dataMin = ROUND(min);
+		m_dataMax = ROUND(min + result.period);
+		qDebug() << m_dataMin << "<= t <=" << m_dataMax;
+	}
+	else
+	{
+		m_dataMin = m_ui.dataSetMin->value();
+		m_dataMax = m_ui.dataSetMax->value();
+	}
+	
+	m_dataSize = m_dataMax - m_dataMin;
 	if (m_dataSize <= 0)
 	{
 		QMessageBox::warning(this, "Invalid data set range", "The maximum must be greater than the minimum");
@@ -72,7 +99,7 @@ void FftPlotter::initData(Type type)
 	const double* dataEnd = m_data + m_dataSize;
 	double* p = m_data;
 	
-	int i = m_ui.dataSetMin->value();
+	int i = m_dataMin;
 	while (p != dataEnd)
 	{
 		if (!frameInfo()->frameSet()->hasModelInformation(i))

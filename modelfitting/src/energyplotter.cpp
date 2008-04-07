@@ -2,8 +2,6 @@
 
 #include <QFileInfo>
 
-#define ROUND(x) int((x) + ((x) > 0.0 ? 0.5 : -0.5))
-
 EnergyPlotter::EnergyPlotter(QWidget* parent)
 	: GraphPlotter("Energy graph plotter", parent)
 {

@@ -4,8 +4,6 @@
 #include <QFileInfo>
 #include <QDir>
 
-#define ROUND(x) int((x) + ((x) > 0.0 ? 0.5 : -0.5))
-
 TimePlotter::TimePlotter(QWidget* parent)
 	: GraphPlotter("Params-over-time plotter", parent)
 {

@@ -5,8 +5,11 @@
 
 #include <QDialog>
 #include <QSettings>
+#include <QtDebug>
+#include <limits>
 
 class FrameSet;
+class CurveFitter;
 
 
 class ErrorCorrection : public QDialog
@@ -22,17 +25,10 @@ private slots:
 	void okClicked();
 
 private:
-	void initData();
-	float energy(float period, float phase);
-	
 	Ui_ErrorCorrection m_ui;
-	
 	QSettings m_settings;
 	
-	FrameSet* m_frameSet;
-	int m_dataSize;
-	float* m_data;
-	float* m_dataEnd;
+	CurveFitter* m_curveFitter;
 };
 
 #endif

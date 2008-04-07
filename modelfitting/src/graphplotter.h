@@ -8,6 +8,8 @@
 #include <QTextStream>
 #include <QSettings>
 
+#define ROUND(x) int((x) + ((x) > 0.0 ? 0.5 : -0.5))
+
 class FrameInfo;
 class QTemporaryFile;
 

@@ -17,6 +17,7 @@ SET(MODELFITTING-SOURCES
 	errorcorrection.cpp
 	frameset.cpp
 	fftplotter.cpp
+	curvefitter.cpp
 )
 
 # Header files that have Q_OBJECT in

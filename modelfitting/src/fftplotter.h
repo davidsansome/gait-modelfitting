@@ -6,10 +6,13 @@
 #include <fftw3.h>
 #include <complex>
 
+class CurveFitter;
+
 class FftPlotter : public GraphPlotter
 {
 public:
 	FftPlotter(QWidget* parent = 0);
+	~FftPlotter();
 	
 protected:
 	void aboutToShow();
@@ -34,7 +37,11 @@ private:
 	void runAndPlot(Type type, const QString& outFilename);
 	void plot(const QString& plot, const QString& outFilename);
 	
+	CurveFitter* m_curveFitter;
+	
 	int m_dataSize;
+	int m_dataMin;
+	int m_dataMax;
 	double* m_data;
 	std::complex<double>* m_results;
 	fftw_plan m_plan;
