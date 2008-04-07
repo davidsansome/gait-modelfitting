@@ -2,11 +2,7 @@
 #define FFTPLOTTER_H
 
 #include "graphplotter.h"
-
-#include <fftw3.h>
-#include <complex>
-
-class CurveFitter;
+#include "fft.h"
 
 class FftPlotter : public GraphPlotter
 {
@@ -21,30 +17,10 @@ protected:
 	void replaceTokens(QByteArray& commands);
 
 private:
-	enum Type
-	{
-		LeftThighAlpha,
-		LeftThighTheta,
-		LeftLowerAlpha,
-		LeftLowerTheta,
-		RightThighAlpha,
-		RightThighTheta,
-		RightLowerAlpha,
-		RightLowerTheta
-	};
-	
-	void initData(Type type);
-	void runAndPlot(Type type, const QString& outFilename);
+	void runAndPlot(Fft::Type type, const QString& outFilename);
 	void plot(const QString& plot, const QString& outFilename);
 	
-	CurveFitter* m_curveFitter;
-	
-	int m_dataSize;
-	int m_dataMin;
-	int m_dataMax;
-	double* m_data;
-	std::complex<double>* m_results;
-	fftw_plan m_plan;
+	Fft* m_fft;
 	
 	QString m_plot;
 };

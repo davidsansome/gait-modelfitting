@@ -16,9 +16,9 @@
    <property name="geometry" >
     <rect>
      <x>262</x>
-     <y>65</y>
+     <y>63</y>
      <width>538</width>
-     <height>535</height>
+     <height>537</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout" >
@@ -124,7 +124,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -153,6 +153,8 @@
     <addaction name="actionPlotEnergyGraphs" />
     <addaction name="actionPlotTimeGraphs" />
     <addaction name="actionPlotFftGraphs" />
+    <addaction name="separator" />
+    <addaction name="actionClassify" />
    </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
@@ -169,9 +171,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>65</y>
+     <y>63</y>
      <width>256</width>
-     <height>156</height>
+     <height>180</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -192,7 +194,7 @@
       <x>0</x>
       <y>23</y>
       <width>256</width>
-      <height>133</height>
+      <height>157</height>
      </rect>
     </property>
     <property name="sizePolicy" >
@@ -222,8 +224,8 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>27</y>
-     <width>291</width>
+     <y>25</y>
+     <width>285</width>
      <height>38</height>
     </rect>
    </property>
@@ -246,9 +248,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>227</y>
+     <y>249</y>
      <width>256</width>
-     <height>139</height>
+     <height>131</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -272,7 +274,7 @@
       <x>0</x>
       <y>23</y>
       <width>256</width>
-      <height>116</height>
+      <height>108</height>
      </rect>
     </property>
     <layout class="QGridLayout" >
@@ -329,9 +331,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>372</y>
+     <y>386</y>
      <width>256</width>
-     <height>139</height>
+     <height>131</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -352,7 +354,7 @@
       <x>0</x>
       <y>23</y>
       <width>256</width>
-      <height>116</height>
+      <height>108</height>
      </rect>
     </property>
     <layout class="QGridLayout" >
@@ -408,9 +410,9 @@
   <widget class="QToolBar" name="recalculateToolbar" >
    <property name="geometry" >
     <rect>
-     <x>291</x>
-     <y>27</y>
-     <width>509</width>
+     <x>285</x>
+     <y>25</y>
+     <width>515</width>
      <height>38</height>
     </rect>
    </property>
@@ -428,14 +430,15 @@
    </attribute>
    <addaction name="actionRecalculate" />
    <addaction name="actionRecalculateAll" />
+   <addaction name="actionClassify" />
   </widget>
   <widget class="QDockWidget" name="dockWidget_4" >
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>517</y>
+     <y>523</y>
      <width>256</width>
-     <height>83</height>
+     <height>77</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -456,7 +459,7 @@
       <x>0</x>
       <y>23</y>
       <width>256</width>
-      <height>60</height>
+      <height>54</height>
      </rect>
     </property>
     <layout class="QGridLayout" >
@@ -633,6 +636,15 @@
   <action name="actionPlotFftGraphs" >
    <property name="text" >
     <string>Plot FFT graphs...</string>
+   </property>
+  </action>
+  <action name="actionClassify" >
+   <property name="icon" >
+    <iconset resource="../data/resources.qrc" >
+     <normaloff>:/classify.png</normaloff>:/classify.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Classify this person...</string>
    </property>
   </action>
  </widget>

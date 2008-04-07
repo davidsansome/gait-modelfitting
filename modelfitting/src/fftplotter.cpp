@@ -16,12 +16,12 @@ FftPlotter::FftPlotter(QWidget* parent)
 	m_ui.fftBox->show();
 	adjustSize();
 	
-	m_curveFitter = new CurveFitter;
+	m_fft = new Fft;
 }
 
 FftPlotter::~FftPlotter()
 {
-	delete m_curveFitter;
+	delete m_fft;
 }
 
 void FftPlotter::aboutToShow()
@@ -50,88 +50,32 @@ QString FftPlotter::templateName(bool displayOnly) const
 
 void FftPlotter::plotData(const QString& outFilename)
 {
+	m_fft->setFrameSet(frameInfo()->frameSet());
 	if (m_ui.dataSetAuto->isChecked())
-	{
-		m_curveFitter->setFrameSet(frameInfo()->frameSet());
-		FittingResult result(m_curveFitter->doFitting());
-		
-		float min = result.zeroCrossing();
-		while (min < 0.0)
-			min += result.period / 2.0;
-		
-		m_dataMin = ROUND(min);
-		m_dataMax = ROUND(min + result.period);
-		qDebug() << m_dataMin << "<= t <=" << m_dataMax;
-	}
+		m_fft->init();
 	else
 	{
-		m_dataMin = m_ui.dataSetMin->value();
-		m_dataMax = m_ui.dataSetMax->value();
-	}
-	
-	m_dataSize = m_dataMax - m_dataMin;
-	if (m_dataSize <= 0)
-	{
-		QMessageBox::warning(this, "Invalid data set range", "The maximum must be greater than the minimum");
-		return;
-	}
-	
-	m_data = (double*) fftw_malloc(sizeof(double) * m_dataSize);
-	m_results = (std::complex<double>*) fftw_malloc(sizeof(std::complex<double>) * (m_dataSize/2 + 1));
-	m_plan = fftw_plan_dft_r2c_1d(m_dataSize, m_data, reinterpret_cast<fftw_complex*>(m_results), FFTW_ESTIMATE | FFTW_DESTROY_INPUT);
-	
-	if (m_ui.leftThighAlpha->isChecked())  runAndPlot(LeftThighAlpha,  outFilename + "-leftthighalpha");
-	if (m_ui.leftThighTheta->isChecked())  runAndPlot(LeftThighTheta,  outFilename + "-leftthightheta");
-	if (m_ui.leftLowerAlpha->isChecked())  runAndPlot(LeftLowerAlpha,  outFilename + "-leftloweralpha");
-	if (m_ui.leftLowerTheta->isChecked())  runAndPlot(LeftLowerTheta,  outFilename + "-leftlowertheta");
-	if (m_ui.rightThighAlpha->isChecked()) runAndPlot(RightThighAlpha, outFilename + "-rightthighalpha");
-	if (m_ui.rightThighTheta->isChecked()) runAndPlot(RightThighTheta, outFilename + "-rightthightheta");
-	if (m_ui.rightLowerAlpha->isChecked()) runAndPlot(RightLowerAlpha, outFilename + "-rightloweralpha");
-	if (m_ui.rightLowerTheta->isChecked()) runAndPlot(RightLowerTheta, outFilename + "-rightlowertheta");
-	
-	fftw_destroy_plan(m_plan);
-	fftw_free(m_data);
-	fftw_free(m_results);
-}
-
-void FftPlotter::initData(Type type)
-{
-	const double* dataEnd = m_data + m_dataSize;
-	double* p = m_data;
-	
-	int i = m_dataMin;
-	while (p != dataEnd)
-	{
-		if (!frameInfo()->frameSet()->hasModelInformation(i))
-			*p = 0.0;
-		else
+		if (m_ui.dataSetMax->value() - m_ui.dataSetMin->value() <= 0)
 		{
-			FrameInfo* info = frameInfo()->frameSet()->loadFrame(i, true);
-			
-			switch (type)
-			{
-				case LeftThighAlpha:  *p = info->leftLeg().thighAlpha;     break;
-				case LeftThighTheta:  *p = info->leftLeg().thighTheta;     break;
-				case LeftLowerAlpha:  *p = info->leftLeg().lowerLegAlpha;  break;
-				case LeftLowerTheta:  *p = info->leftLeg().lowerLegTheta;  break;
-				case RightThighAlpha: *p = info->rightLeg().thighAlpha;    break;
-				case RightThighTheta: *p = info->rightLeg().thighTheta;    break;
-				case RightLowerAlpha: *p = info->rightLeg().lowerLegAlpha; break;
-				case RightLowerTheta: *p = info->rightLeg().lowerLegTheta; break;
-			}
-			
-			delete info;
+			QMessageBox::warning(this, "Invalid data set range", "The maximum must be greater than the minimum");
+			return;
 		}
-		
-		i++;
-		p++;
+		m_fft->init(m_ui.dataSetMin->value(), m_ui.dataSetMax->value());
 	}
+	
+	if (m_ui.leftThighAlpha->isChecked())  runAndPlot(Fft::LeftThighAlpha,  outFilename + "-leftthighalpha");
+	if (m_ui.leftThighTheta->isChecked())  runAndPlot(Fft::LeftThighTheta,  outFilename + "-leftthightheta");
+	if (m_ui.leftLowerAlpha->isChecked())  runAndPlot(Fft::LeftLowerAlpha,  outFilename + "-leftloweralpha");
+	if (m_ui.leftLowerTheta->isChecked())  runAndPlot(Fft::LeftLowerTheta,  outFilename + "-leftlowertheta");
+	if (m_ui.rightThighAlpha->isChecked()) runAndPlot(Fft::RightThighAlpha, outFilename + "-rightthighalpha");
+	if (m_ui.rightThighTheta->isChecked()) runAndPlot(Fft::RightThighTheta, outFilename + "-rightthightheta");
+	if (m_ui.rightLowerAlpha->isChecked()) runAndPlot(Fft::RightLowerAlpha, outFilename + "-rightloweralpha");
+	if (m_ui.rightLowerTheta->isChecked()) runAndPlot(Fft::RightLowerTheta, outFilename + "-rightlowertheta");
 }
 
-void FftPlotter::runAndPlot(Type type, const QString& outFilename)
+void FftPlotter::runAndPlot(Fft::Type type, const QString& outFilename)
 {
-	initData(type);
-	fftw_execute(m_plan);
+	m_fft->run(type);
 	
 	if (m_ui.magnitude->isChecked())      plot("'__DATA_FILENAME__' using 1:2 title \"Magnitude\" with impulses lt 1",         outFilename + "-magnitude");
 	if (m_ui.phase->isChecked())          plot("'__DATA_FILENAME__' using 1:3 title \"Phase\" with impulses lt 3",             outFilename + "-phase");
@@ -144,10 +88,10 @@ void FftPlotter::plot(const QString& plot, const QString& outFilename)
 	
 	QTextStream& s = openTempFile();
 	
-	for (int i=0 ; i<m_dataSize/2+1 ; ++i)
+	for (int i=0 ; i<m_fft->resultSize() ; ++i)
 	{
-		double magnitude = std::abs(m_results[i]);
-		double phase = std::arg(m_results[i]);
+		double magnitude = std::abs(m_fft->result()[i]);
+		double phase = std::arg(m_fft->result()[i]);
 		
 		QStringList cols;
 		cols << QString::number(i);

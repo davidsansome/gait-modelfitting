@@ -18,6 +18,7 @@ SET(MODELFITTING-SOURCES
 	frameset.cpp
 	fftplotter.cpp
 	curvefitter.cpp
+	fft.cpp
 )
 
 # Header files that have Q_OBJECT in
