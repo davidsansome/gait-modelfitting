@@ -60,8 +60,8 @@ QTextStream& EnergyPlotter::writeThighData(Part part, const Params<float>& initi
 {
 	Params<int> p(0,
 	              0,
-	              ROUND(initialParams.lowerLegAlpha / ALPHA_STEP),
-	              ROUND(initialParams.lowerLegTheta / THETA_STEP));
+	              ROUND(initialParams.lowerLegAlpha / (ALPHA_STEP == 0 ? 1 : ALPHA_STEP)),
+	              ROUND(initialParams.lowerLegTheta / (THETA_STEP == 0 ? 1 : THETA_STEP)));
 	
 	for (p.thighAlpha=-ALPHA_RESOLUTION ; p.thighAlpha<=ALPHA_RESOLUTION ; p.thighAlpha++)
 	{
@@ -77,8 +77,8 @@ QTextStream& EnergyPlotter::writeThighData(Part part, const Params<float>& initi
 
 QTextStream& EnergyPlotter::writeLowerLegData(Part part, const Params<float>& initialParams, QTextStream& s)
 {
-	Params<int> p(ROUND(initialParams.thighAlpha / ALPHA_STEP),
-	              ROUND(initialParams.thighTheta / THETA_STEP),
+	Params<int> p(ROUND(initialParams.thighAlpha / (ALPHA_STEP == 0 ? 1 : ALPHA_STEP)),
+	              ROUND(initialParams.thighTheta / (THETA_STEP == 0 ? 1 : THETA_STEP)),
 	              0,
 	              0);
 	
