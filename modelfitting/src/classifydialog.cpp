@@ -29,6 +29,7 @@ void ClassifyDialog::setFrameSet(FrameSet* frameSet)
 {
 	m_frameSet = frameSet;
 	m_ui.seenBeforeList->clear();
+	m_ui.warning->hide();
 	
 	QList<Neighbour> neighbours;
 	QList<FrameSet*> sets;
@@ -39,7 +40,14 @@ void ClassifyDialog::setFrameSet(FrameSet* frameSet)
 		FrameSet* set = new FrameSet(dir, true);
 		sets << set;
 		
-		neighbours << Neighbour(distanceTo(set), set);
+		if (dir == m_frameSet->directory())
+		{
+			m_ui.warning->setText("<p align=center>You've already classified this person as <b>" + set->classification() + "</b>.<br>" +
+				"Entering a new classification will overwrite this existing one.</p>");
+			m_ui.warning->show();
+		}
+		else
+			neighbours << Neighbour(distanceTo(set), set);
 	}
 	
 	qSort(neighbours);
