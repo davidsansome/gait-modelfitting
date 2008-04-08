@@ -31,6 +31,7 @@ MainWindow::MainWindow()
 	connect(m_ui.actionRecalculateAll, SIGNAL(triggered(bool)), SLOT(recalculateAll()));
 	
 	connect(m_ui.fileList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(loadSelectedFile()));
+	connect(m_ui.dirList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(updateFileListing()));
 	
 	m_progressDialog = new MapReduceProgress(this);
 	
@@ -95,7 +96,7 @@ MainWindow::MainWindow()
 	// We do this in a single shot timer so that initalizeGL() gets called on the GLViews before creating any
 	// FrameInfo objects.  FrameInfo objects call Mesh::draw_init() which needs to have had
 	// setupWinGLFunctions() run beforehand
-	QTimer::singleShot(0, this, SLOT(updateFileListing()));
+	QTimer::singleShot(0, this, SLOT(updateDirListing()));
 }
 
 MainWindow::~MainWindow()
@@ -125,37 +126,64 @@ void MainWindow::openDirectory()
 	QSettings settings;
 	settings.setValue("OpenDir", m_openDir);
 	
-	updateFileListing();
+	updateDirListing();
 }
 
-void MainWindow::updateFileListing()
+void MainWindow::updateDirListing()
 {
 	if (m_openDir.isNull())
 		return;
 	
-	delete m_frameSet;
-	m_frameSet = new FrameSet(m_openDir);
+	updateFileListing();
+	setFrameInfo(NULL);
 	
-	m_errorCorrection->setFrameSet(m_frameSet);
-	
+	m_ui.dirList->clear();
 	m_ui.fileList->clear();
-	m_ui.fileList->addItems(m_frameSet->allNames());
 	
-	if (m_ui.fileList->count() > 0)
-		m_ui.fileList->setCurrentRow(0);
+	QDir dir(m_openDir);
+	QStringList subdirs(dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name));
+	
+	foreach (QString subdir, subdirs)
+		new QListWidgetItem(QIcon(":open.png"), subdir, m_ui.dirList);
+	
+	if (subdirs.count() > 0)
+		m_ui.dirList->setCurrentRow(0);
+}
+
+void MainWindow::updateFileListing()
+{
+	QString dir;
+	if (m_ui.dirList->currentItem() != NULL)
+		dir = m_openDir + QDir::separator() + m_ui.dirList->currentItem()->text();
+	
+	delete m_frameSet;
+	m_frameSet = NULL;
+	m_ui.fileList->clear();
+	
+	bool someFramesHaveInfo = false;
+	
+	if (!dir.isNull())
+	{
+		m_frameSet = new FrameSet(dir);
+		m_errorCorrection->setFrameSet(m_frameSet);
+		
+		m_ui.fileList->addItems(m_frameSet->allNames());
+		
+		if (m_ui.fileList->count() > 0)
+			m_ui.fileList->setCurrentRow(0);
+		
+		for (int i=0 ; i<m_frameSet->count() ; ++i)
+		{
+			if (m_frameSet->hasModelInformation(i))
+			{
+				someFramesHaveInfo = true;
+				break;
+			}
+		}
+	}
 	
 	m_ui.actionRecalculate->setEnabled(m_ui.fileList->count() > 0);
 	m_ui.actionRecalculateAll->setEnabled(m_ui.fileList->count() > 0);
-	
-	bool someFramesHaveInfo = false;
-	for (int i=0 ; i<m_frameSet->count() ; ++i)
-	{
-		if (m_frameSet->hasModelInformation(i))
-		{
-			someFramesHaveInfo = true;
-			break;
-		}
-	}
 	
 	m_ui.actionPlotTimeGraphs->setEnabled(someFramesHaveInfo);
 	m_ui.actionPlotFftGraphs->setEnabled(someFramesHaveInfo);
@@ -175,12 +203,17 @@ void MainWindow::loadSelectedFile()
 		return;
 	}
 	
+	setFrameInfo(newFrameInfo);
+}
+
+void MainWindow::setFrameInfo(FrameInfo* frameInfo)
+{
 	delete m_frameInfo;
-	m_frameInfo = newFrameInfo;
+	m_frameInfo = frameInfo;
 	
 	m_ui.actionPlotEnergyGraphs->setEnabled(false);
-	m_ui.leftLegGroup->setEnabled(m_frameInfo->hasModelInformation());
-	m_ui.rightLegGroup->setEnabled(m_frameInfo->hasModelInformation());
+	m_ui.leftLegGroup->setEnabled(m_frameInfo && m_frameInfo->hasModelInformation());
+	m_ui.rightLegGroup->setEnabled(m_frameInfo && m_frameInfo->hasModelInformation());
 	
 	m_ui.front->setFrameInfo(m_frameInfo);
 	m_ui.side->setFrameInfo(m_frameInfo);
@@ -191,7 +224,8 @@ void MainWindow::loadSelectedFile()
 	m_timePlotter->setFrameInfo(m_frameInfo);
 	m_fftPlotter->setFrameInfo(m_frameInfo);
 	
-	getInfoParams();
+	if (m_frameInfo)
+		getInfoParams();
 }
 
 void MainWindow::updateViews()

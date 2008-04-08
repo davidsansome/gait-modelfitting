@@ -36,6 +36,7 @@ private slots:
 	
 	void sliderMoved(int value);
 	
+	void updateDirListing();
 	void updateFileListing();
 	
 	void setInfoParams();
@@ -43,6 +44,7 @@ private slots:
 	
 private:
 	void setupSpinBox(QDoubleSpinBox* spinner, double range, double step);
+	void setFrameInfo(FrameInfo* frameInfo);
 	
 	Ui_MainWindow m_ui;
 	QString m_openDir;
