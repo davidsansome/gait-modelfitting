@@ -146,6 +146,21 @@ void MainWindow::updateFileListing()
 	
 	m_ui.actionRecalculate->setEnabled(m_ui.fileList->count() > 0);
 	m_ui.actionRecalculateAll->setEnabled(m_ui.fileList->count() > 0);
+	
+	bool someFramesHaveInfo = false;
+	for (int i=0 ; i<m_frameSet->count() ; ++i)
+	{
+		if (m_frameSet->hasModelInformation(i))
+		{
+			someFramesHaveInfo = true;
+			break;
+		}
+	}
+	
+	m_ui.actionPlotTimeGraphs->setEnabled(someFramesHaveInfo);
+	m_ui.actionPlotFftGraphs->setEnabled(someFramesHaveInfo);
+	m_ui.actionClassify->setEnabled(someFramesHaveInfo);
+	m_ui.actionErrorCorrection->setEnabled(someFramesHaveInfo);
 }
 
 void MainWindow::loadSelectedFile()
@@ -199,6 +214,14 @@ bool MainWindow::recalculate()
 	m_ui.actionPlotEnergyGraphs->setEnabled(m_frameInfo->hasModelInformation());
 	m_ui.leftLegGroup->setEnabled(m_frameInfo->hasModelInformation());
 	m_ui.rightLegGroup->setEnabled(m_frameInfo->hasModelInformation());
+	
+	if (m_frameInfo->hasModelInformation())
+	{
+		m_ui.actionPlotTimeGraphs->setEnabled(true);
+		m_ui.actionPlotFftGraphs->setEnabled(true);
+		m_ui.actionClassify->setEnabled(true);
+		m_ui.actionErrorCorrection->setEnabled(true);
+	}
 	
 	return ret == QDialog::Accepted;
 }

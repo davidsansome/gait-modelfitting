@@ -6,7 +6,6 @@
 #include <complex>
 
 class FrameInfo;
-class _Frame;
 
 // TODO: Make this into a QAbstractItemModel?
 class FrameSet
@@ -40,7 +39,7 @@ private:
 	void saveMetadata();
 	
 	QString m_directory;
-	QList<_Frame> m_frames;
+	QStringList m_frames;
 	
 	QString m_classification;
 	QList<std::complex<double> > m_signature;

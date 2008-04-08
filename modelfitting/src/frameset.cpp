@@ -4,13 +4,6 @@
 
 #include <QDir>
 
-class _Frame
-{
-public:
-	QString name;
-	bool hasModelInformation;
-};
-
 
 FrameSet::FrameSet()
 {
@@ -35,24 +28,17 @@ void FrameSet::update()
 	m_frames.clear();
 	
 	QDir dir(m_directory);
-	QStringList rows(dir.entryList(QStringList() << "*.Zspc", QDir::Files | QDir::NoDotAndDotDot, QDir::Name));
-	foreach (QString row, rows)
-	{
-		_Frame frame;
-		frame.name = row;
-		frame.hasModelInformation = QFile::exists(m_directory + QDir::separator() + row + ".info");
-		m_frames << frame;
-	}
+	m_frames = dir.entryList(QStringList() << "*.Zspc", QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
 }
 
 QString FrameSet::name(int index) const
 {
-	return m_frames[index].name;
+	return m_frames[index];
 }
 
 bool FrameSet::hasModelInformation(int index) const
 {
-	return m_frames[index].hasModelInformation;
+	return QFile::exists(m_directory + QDir::separator() + m_frames[index] + ".info");
 }
 
 FrameInfo* FrameSet::loadFrame(int index, bool loadInfoOnly)
@@ -67,10 +53,7 @@ FrameInfo* FrameSet::loadFrame(int index, bool loadInfoOnly)
 
 QStringList FrameSet::allNames() const
 {
-	QStringList ret;
-	foreach (_Frame frame, m_frames)
-		ret << frame.name;
-	return ret;
+	return m_frames;
 }
 
 void FrameSet::loadMetadata()
