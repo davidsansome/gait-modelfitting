@@ -85,7 +85,10 @@ double ClassifyDialog::distanceTo(FrameSet* other) const
 		double ourPhaseMag = abs(m_frameSet->signature()[i]) * arg(m_frameSet->signature()[i]);
 		double theirPhaseMag = abs(other->signature()[i]) * arg(other->signature()[i]);
 		
-		accum += std::abs(ourPhaseMag - theirPhaseMag);
+		accum += std::pow(ourPhaseMag - theirPhaseMag, 2);
+		// TODO: Normalize variance and mean
+		// Canonical analysis ??
+		// Include other leg as well.  And lower leg.
 	}
 	
 	return accum;
