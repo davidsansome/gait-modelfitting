@@ -57,6 +57,13 @@ void ClassifyDialog::setFrameSet(FrameSet* frameSet)
 	qDeleteAll(sets);
 	
 	m_ui.seenBefore->setDisabled(neighbours.count() == 0);
+	if (neighbours.count() == 0)
+		m_ui.someoneNew->setChecked(true);
+	
+	if (m_ui.someoneNew->isChecked())
+		m_ui.newName->setFocus(Qt::OtherFocusReason);
+	else
+		m_ui.seenBeforeList->setFocus(Qt::OtherFocusReason);
 }
 
 void ClassifyDialog::okClicked()

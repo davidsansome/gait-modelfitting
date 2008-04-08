@@ -11,7 +11,7 @@ FrameSet::FrameSet()
 }
 
 FrameSet::FrameSet(const QString& directory, bool loadInfoOnly)
-	: m_directory(directory)
+	: m_directory(QDir(directory).absolutePath())
 {
 	if (!loadInfoOnly)
 		update();
@@ -38,6 +38,9 @@ QString FrameSet::name(int index) const
 
 bool FrameSet::hasModelInformation(int index) const
 {
+	if (index >= m_frames.count())
+		return false;
+	
 	return QFile::exists(m_directory + QDir::separator() + m_frames[index] + ".info");
 }
 

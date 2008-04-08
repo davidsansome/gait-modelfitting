@@ -84,6 +84,13 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>someoneNew</tabstop>
+  <tabstop>newName</tabstop>
+  <tabstop>seenBefore</tabstop>
+  <tabstop>seenBeforeList</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../data/resources.qrc" />
  </resources>
