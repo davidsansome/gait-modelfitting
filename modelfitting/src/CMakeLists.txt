@@ -15,12 +15,12 @@ SET(MODELFITTING-SOURCES
 	energyplotter.cpp
 	timeplotter.cpp
 	errorcorrection.cpp
-	frameset.cpp
 	fftplotter.cpp
 	curvefitter.cpp
 	fft.cpp
 	classifydialog.cpp
 	people.cpp
+	listmodels.cpp
 )
 
 # Header files that have Q_OBJECT in

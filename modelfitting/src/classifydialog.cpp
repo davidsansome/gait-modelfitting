@@ -1,8 +1,8 @@
 #include "classifydialog.h"
-#include "frameset.h"
+#include "listmodels.h"
 #include "people.h"
 
-typedef QPair<double, FrameSet*> Neighbour;
+typedef QPair<double, QModelIndex> Neighbour;
 
 PersonItem::PersonItem(const QString& c, double d, QListWidget* parent)
 	: QListWidgetItem(parent),
@@ -12,9 +12,9 @@ PersonItem::PersonItem(const QString& c, double d, QListWidget* parent)
 	setText(c + " (distance " + QString::number(d) + ")");
 }
 
-ClassifyDialog::ClassifyDialog(QWidget* parent)
+ClassifyDialog::ClassifyDialog(FrameModel* model, QWidget* parent)
 	: QDialog(parent),
-	  m_frameSet(NULL)
+	  m_model(model)
 {
 	m_ui.setupUi(this);
 	
@@ -25,24 +25,25 @@ ClassifyDialog::~ClassifyDialog()
 {
 }
 
-void ClassifyDialog::setFrameSet(FrameSet* frameSet)
+void ClassifyDialog::setFrameSet(const QModelIndex& frameSet)
 {
-	m_frameSet = frameSet;
+	m_index = frameSet;
+	
 	m_ui.seenBeforeList->clear();
 	m_ui.warning->hide();
 	
 	QList<Neighbour> neighbours;
-	QList<FrameSet*> sets;
+	QList<QModelIndex> sets;
 	
 	QStringList people(People::withClassifications());
 	foreach (QString dir, people)
 	{
-		FrameSet* set = new FrameSet(dir, true);
+		QModelIndex set(m_model->index(dir));
 		sets << set;
 		
-		if (dir == m_frameSet->directory())
+		if (set == m_index)
 		{
-			m_ui.warning->setText("<p align=center>You've already classified this person as <b>" + set->classification() + "</b>.<br>" +
+			m_ui.warning->setText("<p align=center>You've already classified this person as <b>" + m_model->classification(set) + "</b>.<br>" +
 				"Entering a new classification will overwrite this existing one.</p>");
 			m_ui.warning->show();
 		}
@@ -52,9 +53,7 @@ void ClassifyDialog::setFrameSet(FrameSet* frameSet)
 	
 	qSort(neighbours);
 	foreach (Neighbour neighbour, neighbours)
-		new PersonItem(neighbour.second->classification(), neighbour.first, m_ui.seenBeforeList);
-	
-	qDeleteAll(sets);
+		new PersonItem(m_model->classification(neighbour.second), neighbour.first, m_ui.seenBeforeList);
 	
 	m_ui.seenBefore->setDisabled(neighbours.count() == 0);
 	if (neighbours.count() == 0)
@@ -70,27 +69,27 @@ void ClassifyDialog::okClicked()
 {
 	if (m_ui.someoneNew->isChecked())
 	{
-		m_frameSet->setClassification(m_ui.newName->text());
+		m_model->setClassification(m_index, m_ui.newName->text());
 	}
 	else
 	{
 		PersonItem* person = dynamic_cast<PersonItem*>(m_ui.seenBeforeList->currentItem());
-		m_frameSet->setClassification(person->classification());
+		m_model->setClassification(m_index, person->classification());
 	}
 	
-	People::add(m_frameSet->directory());
+	People::add(m_model->filePath(m_index));
 	accept();
 }
 
-double ClassifyDialog::distanceTo(FrameSet* other) const
+double ClassifyDialog::distanceTo(const QModelIndex& other) const
 {
 	double accum = 0.0;
 	
-	int count = qMin(other->signature().count(), m_frameSet->signature().count());
+	int count = qMin(m_model->signature(other).count(), m_model->signature(m_index).count());
 	for (int i=0 ; i<count ; ++i)
 	{
-		double ourPhaseMag = abs(m_frameSet->signature()[i]) * arg(m_frameSet->signature()[i]);
-		double theirPhaseMag = abs(other->signature()[i]) * arg(other->signature()[i]);
+		double ourPhaseMag = abs(m_model->signature(m_index)[i]) * arg(m_model->signature(m_index)[i]);
+		double theirPhaseMag = abs(m_model->signature(other)[i]) * arg(m_model->signature(other)[i]);
 		
 		accum += std::pow(ourPhaseMag - theirPhaseMag, 2);
 		// TODO: Normalize variance and mean

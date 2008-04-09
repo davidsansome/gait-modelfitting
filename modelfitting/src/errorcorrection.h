@@ -6,20 +6,22 @@
 #include <QDialog>
 #include <QSettings>
 #include <QtDebug>
+#include <QModelIndex>
 #include <limits>
 
-class FrameSet;
 class CurveFitter;
+class FrameModel;
+class FrameModelFilter;
 
 
 class ErrorCorrection : public QDialog
 {
 	Q_OBJECT
 public:
-	ErrorCorrection(QWidget* parent = 0);
+	ErrorCorrection(FrameModel* model, QWidget* parent = 0);
 	~ErrorCorrection();
 	
-	void setFrameSet(FrameSet* frameSet);
+	void setFrameSet(const QModelIndex& index);
 	
 private slots:
 	void okClicked();
@@ -29,6 +31,9 @@ private:
 	QSettings m_settings;
 	
 	CurveFitter* m_curveFitter;
+	
+	FrameModel* m_model;
+	FrameModelFilter* m_filter;
 };
 
 #endif

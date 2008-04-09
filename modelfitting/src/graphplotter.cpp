@@ -1,4 +1,5 @@
 #include "graphplotter.h"
+#include "listmodels.h"
 
 #include <QTemporaryFile>
 #include <QMessageBox>
@@ -6,16 +7,20 @@
 #include <QFileInfo>
 #include <QFileDialog>
 
-GraphPlotter::GraphPlotter(const QString& title, QWidget* parent)
+GraphPlotter::GraphPlotter(FrameModel* model, const QString& title, QWidget* parent)
 	: QDialog(parent),
 	  m_info(NULL),
-	  m_tempFile(NULL)
+	  m_tempFile(NULL),
+	  m_model(model)
 {
 	m_ui.setupUi(this);
 	setWindowTitle(title);
 	
 	m_ui.fftBox->hide();
 	m_ui.dataSetBox->hide();
+	
+	m_filter = new FrameModelFilter(this);
+	m_filter->setSourceModel(m_model);
 	
 	adjustSize();
 	
@@ -94,7 +99,7 @@ void GraphPlotter::saveGraph(const QString& filename)
 	commands.replace("__DATA_FILENAME__", m_tempFileName.toAscii());
 	commands.replace("__OUT_FILENAME__", (m_ui.destDir->text() + QDir::separator() + filename + m_extension).toAscii());
 	commands.replace("__TERM_TYPE__", m_termType.toAscii());
-	qDebug() << commands;
+	//qDebug() << commands;
 	
 	if (m_ui.saveData->isChecked())
 		m_tempFile->copy(m_ui.destDir->text() + QDir::separator() + filename + ".dat"); // This also closes the temp file

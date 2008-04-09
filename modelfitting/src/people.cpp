@@ -1,7 +1,9 @@
 #include "people.h"
-#include "frameset.h"
+#include "listmodels.h"
 
 #include <QSettings>
+
+const FrameModel* People::s_model = NULL;
 
 QStringList People::loadDirectories()
 {
@@ -38,10 +40,8 @@ QStringList People::withClassifications()
 	
 	foreach (QString dir, directories)
 	{
-		FrameSet* set = new FrameSet(dir, true);
-		if (set->hasClassification())
+		if (s_model->hasClassification(s_model->index(dir)))
 			ret << dir;
-		delete set;
 	}
 	
 	return ret;

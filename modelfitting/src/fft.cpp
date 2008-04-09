@@ -1,29 +1,33 @@
 #include "fft.h"
 #include "frameinfo.h"
-#include "frameset.h"
+#include "listmodels.h"
 #include "curvefitter.h"
 
-Fft::Fft()
+Fft::Fft(FrameModel* model)
 	: m_data(NULL),
 	  m_results(NULL),
-	  m_frameSet(NULL),
-	  m_plan(NULL)
+	  m_plan(NULL),
+	  m_model(model)
 {
-	m_curveFitter = new CurveFitter;
+	m_curveFitter = new CurveFitter(model);
+	m_filter = new FrameModelFilter;
+	m_filter->setSourceModel(model);
 }
 
 Fft::~Fft()
 {
 	delete m_curveFitter;
+	delete m_filter;
 	fftw_destroy_plan(m_plan);
 	fftw_free(m_data);
 	fftw_free(m_results);
 }
 
-void Fft::setFrameSet(FrameSet* frameSet)
+void Fft::setFrameSet(const QModelIndex& frameSet)
 {
-	m_frameSet = frameSet;
-	m_curveFitter->setFrameSet(frameSet);
+	m_index = frameSet;
+	m_filter->setRootIndex(m_index);
+	m_curveFitter->setFrameSet(m_index);
 }
 
 void Fft::init(int min, int max)
@@ -37,7 +41,6 @@ void Fft::init(int min, int max)
 	
 	if (min == -1 || max == -1)
 	{
-		m_curveFitter->setFrameSet(m_frameSet);
 		FittingResult result(m_curveFitter->doFitting());
 		
 		float zeroCrossing = result.zeroCrossing();
@@ -69,11 +72,12 @@ void Fft::run(Type type)
 	int i = m_dataMin;
 	while (p != dataEnd)
 	{
-		if (!m_frameSet->hasModelInformation(i))
+		QModelIndex index(m_filter->mapToSource(m_filter->mapFromSource(m_index).child(i, 0)));
+		if (!m_model->hasModelInformation(index))
 			*p = 0.0;
 		else
 		{
-			FrameInfo* info = m_frameSet->loadFrame(i, true);
+			FrameInfo* info = m_model->loadFrame(index, true);
 			
 			switch (type)
 			{

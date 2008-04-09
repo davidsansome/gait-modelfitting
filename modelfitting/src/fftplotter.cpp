@@ -1,5 +1,5 @@
 #include "fftplotter.h"
-#include "frameset.h"
+#include "listmodels.h"
 #include "curvefitter.h"
 
 #include <QFileInfo>
@@ -8,15 +8,15 @@
 
 #include <fftw3.h>
 
-FftPlotter::FftPlotter(QWidget* parent)
-	: GraphPlotter("FFT graph plotter", parent)
+FftPlotter::FftPlotter(FrameModel* model, QWidget* parent)
+	: GraphPlotter(model, "FFT graph plotter", parent)
 {
 	m_ui.stackedWidget->setCurrentWidget(m_ui.timePage);
 	m_ui.dataSetBox->show();
 	m_ui.fftBox->show();
 	adjustSize();
 	
-	m_fft = new Fft;
+	m_fft = new Fft(model);
 }
 
 FftPlotter::~FftPlotter()
@@ -29,9 +29,14 @@ void FftPlotter::aboutToShow()
 	int min = std::numeric_limits<int>::max();
 	int max = std::numeric_limits<int>::min();
 	
-	for (int i=0 ; i<frameInfo()->frameSet()->count() ; ++i)
+	filter()->setRootIndex(frameInfo()->index().parent());
+	QModelIndex filteredParent(filter()->mapFromSource(frameInfo()->index().parent()));
+	int childCount = filter()->rowCount(filteredParent);
+	
+	for (int i=0 ; i<childCount ; ++i)
 	{
-		if (!frameInfo()->frameSet()->hasModelInformation(i))
+		QModelIndex index = filter()->mapToSource(filteredParent.child(i, 0));
+		if (!model()->hasModelInformation(index))
 			continue;
 		min = qMin(min, i);
 		max = qMax(max, i);
@@ -50,7 +55,7 @@ QString FftPlotter::templateName(bool displayOnly) const
 
 void FftPlotter::plotData(const QString& outFilename)
 {
-	m_fft->setFrameSet(frameInfo()->frameSet());
+	m_fft->setFrameSet(frameInfo()->index().parent());
 	if (m_ui.dataSetAuto->isChecked())
 		m_fft->init();
 	else

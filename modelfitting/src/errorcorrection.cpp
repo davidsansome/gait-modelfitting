@@ -1,19 +1,22 @@
 #include "errorcorrection.h"
-#include "frameset.h"
 #include "frameinfo.h"
 #include "curvefitter.h"
+#include "listmodels.h"
 
 #include <cmath>
 
-ErrorCorrection::ErrorCorrection(QWidget* parent)
-	: QDialog(parent)
+ErrorCorrection::ErrorCorrection(FrameModel* model, QWidget* parent)
+	: QDialog(parent),
+	  m_model(model)
 {
 	m_ui.setupUi(this);
 	connect(m_ui.buttonBox, SIGNAL(accepted()), SLOT(okClicked()));
 	
 	m_settings.beginGroup("ErrorCorrection");
 	
-	m_curveFitter = new CurveFitter;
+	m_curveFitter = new CurveFitter(model);
+	m_filter = new FrameModelFilter(this);
+	m_filter->setSourceModel(model);
 }
 
 ErrorCorrection::~ErrorCorrection()
@@ -21,16 +24,19 @@ ErrorCorrection::~ErrorCorrection()
 	delete m_curveFitter;
 }
 
-void ErrorCorrection::setFrameSet(FrameSet* frameSet)
+void ErrorCorrection::setFrameSet(const QModelIndex& index)
 {
-	m_curveFitter->setFrameSet(frameSet);
+	m_curveFitter->setFrameSet(index);
+	m_filter->setRootIndex(index);
 	
 	int min = std::numeric_limits<int>::max();
 	int max = std::numeric_limits<int>::min();
 	
-	for (int i=0 ; i<frameSet->count() ; ++i)
+	QModelIndex mappedIndex(m_filter->mapFromSource(index));
+	int count = m_filter->rowCount(mappedIndex);
+	for (int i=0 ; i<count ; ++i)
 	{
-		if (!frameSet->hasModelInformation(i))
+		if (!m_model->hasModelInformation(m_filter->mapToSource(mappedIndex.child(i, 0))))
 			continue;
 		min = qMin(min, i);
 		max = qMax(max, i);
@@ -44,18 +50,18 @@ void ErrorCorrection::setFrameSet(FrameSet* frameSet)
 
 void ErrorCorrection::okClicked()
 {
-	if (m_ui.tMax->value() < m_ui.tMax->value())
+	/*if (m_ui.tMax->value() < m_ui.tMax->value())
 	{
 		reject();
 		return;
-	}
+	}*/
 	
-	FittingResult result(m_curveFitter->doFitting(m_ui.tMin->value(), m_ui.tMax->value()));
+	//FittingResult result;//m_curveFitter->doFitting(m_ui.tMin->value(), m_ui.tMax->value()));
 	
-	qDebug() << "Minimum:" << result;
+	/*qDebug() << "Minimum:" << result;
 	
 	m_settings.setValue("TMin", m_ui.tMin->value());
 	m_settings.setValue("TMax", m_ui.tMax->value());
-	accept();
+	accept();*/
 }
 

@@ -6,7 +6,7 @@
 class EnergyPlotter : public GraphPlotter
 {
 public:
-	EnergyPlotter(QWidget* parent = 0);
+	EnergyPlotter(FrameModel* model, QWidget* parent = 0);
 	
 protected:
 	QString templateName(bool displayOnly) const;

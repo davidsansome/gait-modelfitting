@@ -2,15 +2,17 @@
 #define FFT_H
 
 #include <complex>
+#include <QModelIndex>
 #include <fftw3.h>
 
-class FrameSet;
+class FrameModel;
+class FrameModelFilter;
 class CurveFitter;
 
 class Fft
 {
 public:
-	Fft();
+	Fft(FrameModel* model);
 	~Fft();
 	
 	enum Type
@@ -25,7 +27,7 @@ public:
 		RightLowerTheta
 	};
 	
-	void setFrameSet(FrameSet* frameSet);
+	void setFrameSet(const QModelIndex& frameSet);
 	void init(int min = -1, int max = -1);
 	void run(Type type);
 	
@@ -33,7 +35,10 @@ public:
 	const std::complex<double>* result() const { return m_results; }
 
 private:
-	FrameSet* m_frameSet;
+	QModelIndex m_index;
+	FrameModel* m_model;
+	FrameModelFilter* m_filter;
+	
 	CurveFitter* m_curveFitter;
 	
 	int m_dataSize;

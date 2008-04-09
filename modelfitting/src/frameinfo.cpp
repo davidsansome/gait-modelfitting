@@ -1,6 +1,7 @@
 #include "frameinfo.h"
 #include "model.h"
 #include "modelloader.h"
+#include "listmodels.h"
 
 #include <QDebug>
 #include <QTime>
@@ -76,11 +77,11 @@ bool ReduceType::operator <(const ReduceType& other) const
 
 
 
-FrameInfo::FrameInfo(FrameSet* frameSet, const QString& filename, bool loadInfoOnly)
+FrameInfo::FrameInfo(const FrameModel* frameModel, const QModelIndex& index, bool loadInfoOnly)
 	: m_distanceCache(NULL),
-	  m_filename(filename),
+	  m_index(index),
+	  m_fileName(frameModel->filePath(index)),
 	  m_distanceCacheSize(-1),
-	  m_frameSet(frameSet),
 	  m_vspace(NULL),
 	  m_mesh(NULL),
 	  m_edgeVspace(NULL),
@@ -93,7 +94,7 @@ FrameInfo::FrameInfo(FrameSet* frameSet, const QString& filename, bool loadInfoO
 		return;
 	}
 	
-	m_vspace = new Voxel_Space(filename.toAscii().data());
+	m_vspace = new Voxel_Space(m_fileName.toAscii().data());
 	m_mesh = new Mesh(*m_vspace);
 	if (QApplication::type() != QApplication::Tty)
 		m_mesh->draw_init(true);
@@ -368,7 +369,7 @@ void FrameInfo::addResult(const Params<int>& indices, Part part, float energy)
 
 void FrameInfo::save() const
 {
-	QSettings settings(m_filename + ".info", QSettings::IniFormat);
+	QSettings settings(m_fileName + ".info", QSettings::IniFormat);
 	save(settings);
 }
 
@@ -392,10 +393,10 @@ void FrameInfo::save(QSettings& settings) const
 
 void FrameInfo::load()
 {
-	if (!QFile::exists(m_filename + ".info"))
+	if (!QFile::exists(m_fileName + ".info"))
 		return;
 	
-	QSettings settings(m_filename + ".info", QSettings::IniFormat);
+	QSettings settings(m_fileName + ".info", QSettings::IniFormat);
 	load(settings);
 }
 

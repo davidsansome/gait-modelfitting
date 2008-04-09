@@ -1,16 +1,19 @@
 #include "curvefitter.h"
 #include "frameinfo.h"
-#include "frameset.h"
+#include "listmodels.h"
 
-CurveFitter::CurveFitter()
-	: m_frameSet(NULL),
-	  m_data(NULL)
+CurveFitter::CurveFitter(FrameModel* model)
+	: m_data(NULL),
+	  m_model(model)
 {
+	m_filter = new FrameModelFilter;
+	m_filter->setSourceModel(m_model);
 }
 
 CurveFitter::~CurveFitter()
 {
 	delete[] m_data;
+	delete m_filter;
 }
 
 void CurveFitter::initData(int min, int max)
@@ -25,14 +28,15 @@ void CurveFitter::initData(int min, int max)
 	int i = min;
 	while (p != m_dataEnd)
 	{
-		if (!m_frameSet->hasModelInformation(i))
+		QModelIndex index(m_filter->mapToSource(m_filter->mapFromSource(m_index).child(i, 0)));
+		if (!m_model->hasModelInformation(index))
 		{
 			p[0] = 0.0;
 			p[1] = 0.0;
 		}
 		else
 		{
-			FrameInfo* info = m_frameSet->loadFrame(i, true);
+			FrameInfo* info = m_model->loadFrame(index, true);
 			p[0] = info->leftLeg().thighTheta;
 			p[1] = info->rightLeg().thighTheta;
 			delete info;
@@ -65,7 +69,7 @@ FittingResult CurveFitter::doFitting(int min, int max)
 	if (min == -1)
 		min = 0;
 	if (max == -1)
-		max = m_frameSet->count() - 1;
+		max = m_filter->rowCount(m_filter->mapFromSource(m_index)) - 1;
 	
 	initData(min, max);
 	
@@ -88,6 +92,12 @@ FittingResult CurveFitter::doFitting(int min, int max)
 	m_data = NULL;
 	
 	return best;
+}
+
+void CurveFitter::setFrameSet(const QModelIndex& frameSet)
+{
+	m_index = frameSet;
+	m_filter->setRootIndex(frameSet);
 }
 
 float FittingResult::zeroCrossing() const

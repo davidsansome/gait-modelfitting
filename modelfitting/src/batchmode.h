@@ -8,9 +8,8 @@
 #include "frameinfo.h"
 
 class QSignalMapper;
-class FrameSet;
-
-typedef QPair<FrameSet*, int> QueuedFrame;
+class FrameModel;
+class FrameModelFilter;
 
 class BatchMode : public QObject
 {
@@ -30,8 +29,10 @@ private:
 	bool parseFileList();
 	bool startNextJob();
 	
-	QList<FrameSet*> m_frameSets;
-	QQueue<QueuedFrame> m_queue;
+	FrameModel* m_model;
+	FrameModelFilter* m_frameFilter;
+	
+	QQueue<QModelIndex> m_queue;
 	
 	QSignalMapper* m_signalMapper;
 	QList<QPair<QString, FrameInfo*> > m_activeOperations;

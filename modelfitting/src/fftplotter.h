@@ -7,7 +7,7 @@
 class FftPlotter : public GraphPlotter
 {
 public:
-	FftPlotter(QWidget* parent = 0);
+	FftPlotter(FrameModel* model, QWidget* parent = 0);
 	~FftPlotter();
 	
 protected:

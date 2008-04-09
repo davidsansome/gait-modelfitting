@@ -1,11 +1,11 @@
 #include "timeplotter.h"
-#include "frameset.h"
+#include "listmodels.h"
 
 #include <QFileInfo>
 #include <QDir>
 
-TimePlotter::TimePlotter(QWidget* parent)
-	: GraphPlotter("Params-over-time plotter", parent)
+TimePlotter::TimePlotter(FrameModel* model, QWidget* parent)
+	: GraphPlotter(model, "Params-over-time plotter", parent)
 {
 	m_ui.stackedWidget->setCurrentWidget(m_ui.timePage);
 }
@@ -21,12 +21,17 @@ void TimePlotter::plotData(const QString& outFilename)
 {
 	QTextStream& s = openTempFile();
 	
-	for (int i=0 ; i<frameInfo()->frameSet()->count() ; ++i)
+	filter()->setRootIndex(frameInfo()->index().parent());
+	QModelIndex filteredParent(filter()->mapFromSource(frameInfo()->index().parent()));
+	int childCount = filter()->rowCount(filteredParent);
+	
+	for (int i=0 ; i<childCount ; ++i)
 	{
-		if (!frameInfo()->frameSet()->hasModelInformation(i))
+		QModelIndex index = filter()->mapToSource(filteredParent.child(i, 0));
+		if (!model()->hasModelInformation(index))
 			continue;
 		
-		FrameInfo* info = frameInfo()->frameSet()->loadFrame(i, true);
+		FrameInfo* info = model()->loadFrame(index, true);
 		
 		QStringList cols;
 		cols << QString::number(i);

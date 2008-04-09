@@ -2,8 +2,8 @@
 
 #include <QFileInfo>
 
-EnergyPlotter::EnergyPlotter(QWidget* parent)
-	: GraphPlotter("Energy graph plotter", parent)
+EnergyPlotter::EnergyPlotter(FrameModel* model, QWidget* parent)
+	: GraphPlotter(model, "Energy graph plotter", parent)
 {
 	m_ui.stackedWidget->setCurrentWidget(m_ui.energyPage);
 }
@@ -51,7 +51,7 @@ void EnergyPlotter::replaceTokens(QByteArray& commands)
 	}
 	
 	commands.replace("__LIMB__", limbName.toAscii());
-	commands.replace("__VOXEL_FILENAME__", QFileInfo(frameInfo()->filename()).fileName().toAscii());
+	commands.replace("__VOXEL_FILENAME__", QFileInfo(frameInfo()->fileName()).fileName().toAscii());
 }
 
 QTextStream& EnergyPlotter::writeThighData(Part part, const Params<float>& initialParams, QTextStream& s)

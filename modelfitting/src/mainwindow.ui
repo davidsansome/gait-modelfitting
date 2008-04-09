@@ -249,7 +249,20 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QListWidget" name="dirList" />
+      <widget class="QTreeView" name="frameSetView" >
+       <property name="rootIsDecorated" >
+        <bool>false</bool>
+       </property>
+       <property name="itemsExpandable" >
+        <bool>false</bool>
+       </property>
+       <property name="sortingEnabled" >
+        <bool>true</bool>
+       </property>
+       <property name="headerHidden" >
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -290,17 +303,23 @@
       <verstretch>0</verstretch>
      </sizepolicy>
     </property>
-    <layout class="QVBoxLayout" >
+    <layout class="QVBoxLayout" name="verticalLayout_2" >
+     <property name="spacing" >
+      <number>0</number>
+     </property>
      <property name="margin" >
       <number>0</number>
      </property>
      <item>
-      <widget class="QListWidget" name="fileList" >
-       <property name="baseSize" >
-        <size>
-         <width>200</width>
-         <height>0</height>
-        </size>
+      <widget class="QTreeView" name="frameView" >
+       <property name="rootIsDecorated" >
+        <bool>false</bool>
+       </property>
+       <property name="sortingEnabled" >
+        <bool>true</bool>
+       </property>
+       <property name="headerHidden" >
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -646,11 +665,17 @@
    </property>
   </action>
   <action name="actionPlotEnergyGraphs" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Plot energy graphs...</string>
    </property>
   </action>
   <action name="actionRecalculate" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="../data/resources.qrc" >
      <normaloff>:/recalculate.png</normaloff>:/recalculate.png</iconset>
@@ -660,6 +685,9 @@
    </property>
   </action>
   <action name="actionRecalculateAll" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="../data/resources.qrc" >
      <normaloff>:/recalculate.png</normaloff>:/recalculate.png</iconset>
@@ -669,21 +697,33 @@
    </property>
   </action>
   <action name="actionPlotTimeGraphs" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Plot params over time...</string>
    </property>
   </action>
   <action name="actionErrorCorrection" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Error correction...</string>
    </property>
   </action>
   <action name="actionPlotFftGraphs" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="text" >
     <string>Plot FFT graphs...</string>
    </property>
   </action>
   <action name="actionClassify" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="../data/resources.qrc" >
      <normaloff>:/classify.png</normaloff>:/classify.png</iconset>

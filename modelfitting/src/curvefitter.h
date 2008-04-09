@@ -2,8 +2,10 @@
 #define CURVEFITTER_H
 
 #include <QtDebug>
+#include <QModelIndex>
 
-class FrameSet;
+class FrameModel;
+class FrameModelFilter;
 
 class FittingResult
 {
@@ -36,11 +38,11 @@ QDebug& operator <<(QDebug& s, const FittingResult& f);
 class CurveFitter
 {
 public:
-	CurveFitter();
+	CurveFitter(FrameModel* model);
 	~CurveFitter();
 	
-	void setFrameSet(FrameSet* frameSet) { m_frameSet = frameSet; }
-	FrameSet* frameSet() const { return m_frameSet; }
+	void setFrameSet(const QModelIndex& frameSet);
+	QModelIndex frameSet() const { return m_index; }
 	
 	FittingResult doFitting(int min = -1, int max = -1);
 
@@ -48,7 +50,10 @@ private:
 	void initData(int min, int max);
 	float energy(int min, float period, float phase);
 	
-	FrameSet* m_frameSet;
+	QModelIndex m_index;
+	FrameModel* m_model;
+	FrameModelFilter* m_filter;
+	
 	int m_dataSize;
 	float* m_data;
 	float* m_dataEnd;

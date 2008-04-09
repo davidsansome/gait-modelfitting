@@ -5,10 +5,11 @@
 #include "mapreduceprogress.h"
 #include "energyplotter.h"
 #include "timeplotter.h"
-#include "frameset.h"
 #include "errorcorrection.h"
 #include "fftplotter.h"
 #include "classifydialog.h"
+#include "listmodels.h"
+#include "people.h"
 
 #include <QFileDialog>
 #include <QTimer>
@@ -21,33 +22,43 @@ MainWindow::MainWindow()
 	  m_mesh(NULL),
 	  m_voxelSpace(NULL),
 	  m_frameInfo(NULL),
-	  m_paramUpdatesDisabled(false),
-	  m_frameSet(NULL)
+	  m_paramUpdatesDisabled(false)
 {
 	m_ui.setupUi(this);
+	
+	m_model = new FrameModel(this);
+	m_frameSetFilterModel = new FrameSetFilterModel(this);
+	m_frameSetFilterModel->setSourceModel(m_model);
+	m_frameFilterModel = new FrameModelFilter(this);
+	m_frameFilterModel->setSourceModel(m_model);
+	
+	m_ui.frameSetView->setModel(m_frameSetFilterModel);
+	m_ui.frameView->setModel(m_frameFilterModel);
+	
+	People::setModel(m_model);
 	
 	connect(m_ui.actionOpenDirectory, SIGNAL(triggered(bool)), SLOT(openDirectory()));
 	connect(m_ui.actionRecalculate, SIGNAL(triggered(bool)), SLOT(recalculate()));
 	connect(m_ui.actionRecalculateAll, SIGNAL(triggered(bool)), SLOT(recalculateAll()));
 	
-	connect(m_ui.fileList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(loadSelectedFile()));
-	connect(m_ui.dirList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), SLOT(updateFileListing()));
+	connect(m_ui.frameSetView->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), SLOT(frameSetActivated(const QModelIndex&)));
+	connect(m_ui.frameView->selectionModel(), SIGNAL(currentChanged(const QModelIndex&, const QModelIndex&)), SLOT(frameActivated(const QModelIndex&)));
 	
 	m_progressDialog = new MapReduceProgress(this);
 	
-	m_energyPlotter = new EnergyPlotter(this);
+	m_energyPlotter = new EnergyPlotter(m_model, this);
 	connect(m_ui.actionPlotEnergyGraphs, SIGNAL(triggered(bool)), m_energyPlotter, SLOT(exec()));
 	
-	m_timePlotter = new TimePlotter(this);
+	m_timePlotter = new TimePlotter(m_model, this);
 	connect(m_ui.actionPlotTimeGraphs, SIGNAL(triggered(bool)), m_timePlotter, SLOT(exec()));
 	
-	m_fftPlotter = new FftPlotter(this);
+	m_fftPlotter = new FftPlotter(m_model, this);
 	connect(m_ui.actionPlotFftGraphs, SIGNAL(triggered(bool)), m_fftPlotter, SLOT(exec()));
 	
-	m_errorCorrection = new ErrorCorrection(this);
+	m_errorCorrection = new ErrorCorrection(m_model, this);
 	connect(m_ui.actionErrorCorrection, SIGNAL(triggered(bool)), m_errorCorrection, SLOT(exec()));
 	
-	m_classifyDialog = new ClassifyDialog(this);
+	m_classifyDialog = new ClassifyDialog(m_model, this);
 	connect(m_ui.actionClassify, SIGNAL(triggered(bool)), SLOT(classify()));
 	
 	m_ui.front->setViewType(GLView::Front);
@@ -96,13 +107,12 @@ MainWindow::MainWindow()
 	// We do this in a single shot timer so that initalizeGL() gets called on the GLViews before creating any
 	// FrameInfo objects.  FrameInfo objects call Mesh::draw_init() which needs to have had
 	// setupWinGLFunctions() run beforehand
-	QTimer::singleShot(0, this, SLOT(updateDirListing()));
+	QTimer::singleShot(0, this, SLOT(openDirChanged()));
 }
 
 MainWindow::~MainWindow()
 {
 	delete m_frameInfo;
-	delete m_frameSet;
 }
 
 void MainWindow::setupSpinBox(QDoubleSpinBox* spinner, double range, double step)
@@ -126,84 +136,14 @@ void MainWindow::openDirectory()
 	QSettings settings;
 	settings.setValue("OpenDir", m_openDir);
 	
-	updateDirListing();
+	openDirChanged();
 }
 
-void MainWindow::updateDirListing()
+void MainWindow::openDirChanged()
 {
-	if (m_openDir.isNull())
-		return;
-	
-	updateFileListing();
-	setFrameInfo(NULL);
-	
-	m_ui.dirList->clear();
-	m_ui.fileList->clear();
-	
-	QDir dir(m_openDir);
-	QStringList subdirs(dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name));
-	
-	foreach (QString subdir, subdirs)
-		new QListWidgetItem(QIcon(":open.png"), subdir, m_ui.dirList);
-	
-	if (subdirs.count() > 0)
-		m_ui.dirList->setCurrentRow(0);
-}
-
-void MainWindow::updateFileListing()
-{
-	QString dir;
-	if (m_ui.dirList->currentItem() != NULL)
-		dir = m_openDir + QDir::separator() + m_ui.dirList->currentItem()->text();
-	
-	delete m_frameSet;
-	m_frameSet = NULL;
-	m_ui.fileList->clear();
-	
-	bool someFramesHaveInfo = false;
-	
-	if (!dir.isNull())
-	{
-		m_frameSet = new FrameSet(dir);
-		m_errorCorrection->setFrameSet(m_frameSet);
-		
-		m_ui.fileList->addItems(m_frameSet->allNames());
-		
-		if (m_ui.fileList->count() > 0)
-			m_ui.fileList->setCurrentRow(0);
-		
-		for (int i=0 ; i<m_frameSet->count() ; ++i)
-		{
-			if (m_frameSet->hasModelInformation(i))
-			{
-				someFramesHaveInfo = true;
-				break;
-			}
-		}
-	}
-	
-	m_ui.actionRecalculate->setEnabled(m_ui.fileList->count() > 0);
-	m_ui.actionRecalculateAll->setEnabled(m_ui.fileList->count() > 0);
-	
-	m_ui.actionPlotTimeGraphs->setEnabled(someFramesHaveInfo);
-	m_ui.actionPlotFftGraphs->setEnabled(someFramesHaveInfo);
-	m_ui.actionClassify->setEnabled(someFramesHaveInfo);
-	m_ui.actionErrorCorrection->setEnabled(someFramesHaveInfo);
-}
-
-void MainWindow::loadSelectedFile()
-{
-	if (m_ui.fileList->currentItem() == NULL)
-		return;
-	
-	FrameInfo* newFrameInfo = m_frameSet->loadFrame(m_ui.fileList->currentRow());
-	if (newFrameInfo == NULL)
-	{
-		QMessageBox::warning(this, "Error", "Could not load the frame " + m_ui.fileList->currentItem()->text() + ".  Perhaps the file no longer exists?");
-		return;
-	}
-	
-	setFrameInfo(newFrameInfo);
+	QModelIndex rootNode(m_frameSetFilterModel->mapFromSource(m_model->index(m_openDir)));
+	m_ui.frameSetView->setRootIndex(rootNode);
+	m_frameSetFilterModel->setRootIndex(rootNode);
 }
 
 void MainWindow::setFrameInfo(FrameInfo* frameInfo)
@@ -241,7 +181,7 @@ void MainWindow::updateViews()
 bool MainWindow::recalculate()
 {
 	m_progressDialog->addOperations(m_frameInfo->update());
-	int ret = m_progressDialog->exec("Fitting model to " + QFileInfo(m_frameInfo->filename()).fileName());
+	int ret = m_progressDialog->exec("Fitting model to " + QFileInfo(m_frameInfo->fileName()).fileName());
 	
 	getInfoParams();
 	
@@ -262,12 +202,12 @@ bool MainWindow::recalculate()
 
 void MainWindow::recalculateAll()
 {
-	for (int i=0 ; i<m_ui.fileList->count() ; i++)
+	/*for (int i=0 ; i<m_ui.fileList->count() ; i++)
 	{
 		m_ui.fileList->setCurrentRow(i);
 		if (!recalculate())
 			break;
-	}
+	}*/
 }
 
 void MainWindow::initializeGL()
@@ -340,8 +280,52 @@ void MainWindow::getInfoParams()
 
 void MainWindow::classify()
 {
-	m_frameSet->updateSignature();
+	m_model->updateSignature(m_frameInfo->index().parent());
 	
-	m_classifyDialog->setFrameSet(m_frameSet);
+	m_classifyDialog->setFrameSet(m_frameInfo->index().parent());
 	m_classifyDialog->exec();
+}
+
+void MainWindow::frameSetActivated(const QModelIndex& index)
+{
+	QModelIndex realIndex(index.sibling(index.row(), 0));
+	QModelIndex dirSource(m_frameSetFilterModel->mapToSource(realIndex));
+	
+	m_frameFilterModel->setRootIndex(dirSource);
+	m_ui.frameView->setRootIndex(m_frameFilterModel->mapFromSource(dirSource));
+	
+	QModelIndex dirFrames(m_frameFilterModel->mapFromSource(dirSource));
+	int childFrames = m_frameFilterModel->rowCount(dirFrames);
+	
+	bool someFramesHaveInfo = false;
+	for (int i=0 ; i<childFrames ; ++i)
+	{
+		if (m_model->hasModelInformation(m_frameFilterModel->mapToSource(dirFrames.child(i, 0))))
+			someFramesHaveInfo = true;
+	}
+	
+	m_ui.actionRecalculate->setEnabled(childFrames > 0);
+	m_ui.actionRecalculateAll->setEnabled(childFrames > 0);
+	
+	m_ui.actionPlotTimeGraphs->setEnabled(someFramesHaveInfo);
+	m_ui.actionPlotFftGraphs->setEnabled(someFramesHaveInfo);
+	m_ui.actionClassify->setEnabled(someFramesHaveInfo);
+	m_ui.actionErrorCorrection->setEnabled(someFramesHaveInfo);
+	
+	m_errorCorrection->setFrameSet(dirSource);
+	
+	if (childFrames > 0)
+		m_ui.frameView->selectionModel()->setCurrentIndex(dirFrames.child(0, 0), QItemSelectionModel::ClearAndSelect);
+}
+
+void MainWindow::frameActivated(const QModelIndex& index)
+{
+	FrameInfo* newFrameInfo = m_model->loadFrame(m_frameFilterModel->mapToSource(index));
+	if (newFrameInfo == NULL)
+	{
+		QMessageBox::warning(this, "Error", "Could not load the frame " + index.data(Qt::DisplayRole).toString() + ".  Perhaps the file no longer exists?");
+		return;
+	}
+	
+	setFrameInfo(newFrameInfo);
 }

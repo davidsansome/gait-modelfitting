@@ -8,12 +8,13 @@
 #include <QMetaType>
 #include <QMutex>
 #include <QSettings>
+#include <QModelIndex>
 
 class Voxel_Space;
 class Convolution;
 class Model;
 class FrameInfo;
-class FrameSet;
+class FrameModel;
 class Mesh;
 
 #define MAXX 38.0
@@ -89,14 +90,15 @@ class FrameInfo : public QObject
 	Q_OBJECT
 	
 	friend ReduceType correlateMap(const MapType& p);
+	friend class FrameModel;
 	
 public:
 	static const Model* thighModel() { return s_thighModel; }
 	
-	FrameInfo(FrameSet* frameSet, const QString& filename, bool loadInfoOnly = false);
 	~FrameInfo();
 	
-	FrameSet* frameSet() const { return m_frameSet; }
+	const FrameModel* frameModel() const { return m_frameModel; }
+	QModelIndex index() const { return m_index; }
 	
 	bool hasModelInformation() const { return m_leftLegParams.valid && m_rightLegParams.valid; }
 	QList<MapReduceOperation> update();
@@ -106,7 +108,7 @@ public:
 	void setLeftLeg(const Params<float>& p) { m_leftLegParams = p; }
 	void setRightLeg(const Params<float>& p) { m_rightLegParams = p; }
 	
-	QString filename() const { return m_filename; }
+	QString fileName() const { return m_fileName; }
 	const Voxel_Space* vspace() const { return m_vspace; }
 	const Voxel_Space* edgeVspace() const { return m_edgeVspace; }
 	const Mesh* mesh() const { return m_mesh; }
@@ -130,14 +132,17 @@ private slots:
 	void rightLegFinished();
 
 private:
+	FrameInfo(const FrameModel* frameModel, const QModelIndex& index, bool loadInfoOnly = false);
+	
 	void initDistanceCache();
 	float energy(Part part, const Params<float>& params) const;
 	float modelEnergy(const Model* model, const Mat4& mat) const;
 	float doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) const;
 	void addResult(const Params<int>& indices, Part part, float energy);
 	
-	FrameSet* m_frameSet;
-	QString m_filename;
+	const FrameModel* m_frameModel;
+	QModelIndex m_index;
+	QString m_fileName;
 	Voxel_Space* m_vspace;
 	Voxel_Space* m_edgeVspace;
 	Mesh* m_mesh;

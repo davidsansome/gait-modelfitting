@@ -6,7 +6,7 @@
 class TimePlotter : public GraphPlotter
 {
 public:
-	TimePlotter(QWidget* parent = 0);
+	TimePlotter(FrameModel* model, QWidget* parent = 0);
 	
 protected:
 	QString templateName(bool displayOnly) const;

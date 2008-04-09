@@ -5,7 +5,7 @@
 
 #include "ui_classifydialog.h"
 
-class FrameSet;
+class FrameModel;
 
 class PersonItem : public QListWidgetItem
 {
@@ -20,24 +20,26 @@ private:
 	double m_distance;
 };
 
+
 class ClassifyDialog : public QDialog
 {
 	Q_OBJECT
 public:
-	ClassifyDialog(QWidget* parent = 0);
+	ClassifyDialog(FrameModel* model, QWidget* parent = 0);
 	~ClassifyDialog();
 	
-	void setFrameSet(FrameSet* frameSet);
+	void setFrameSet(const QModelIndex& frameSet);
 
 private slots:
 	void okClicked();
 
 private:
-	double distanceTo(FrameSet* other) const;
+	double distanceTo(const QModelIndex& other) const;
 	
 	Ui_ClassifyDialog m_ui;
 	
-	FrameSet* m_frameSet;
+	QModelIndex m_index;
+	FrameModel* m_model;
 };
 
 #endif

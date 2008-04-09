@@ -1,5 +1,5 @@
 #include "batchmode.h"
-#include "frameset.h"
+#include "listmodels.h"
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -15,12 +15,14 @@ BatchMode::BatchMode()
 {
 	m_signalMapper = new QSignalMapper(this);
 	connect(m_signalMapper, SIGNAL(mapped(int)), SLOT(futureFinished(int)));
+	
+	m_model = new FrameModel(this);
+	m_frameFilter = new FrameModelFilter(this);
+	m_frameFilter->setSourceModel(m_model);
 }
 
 BatchMode::~BatchMode()
 {
-	foreach (FrameSet* s, m_frameSets)
-		delete s;
 }
 
 bool BatchMode::start()
@@ -42,14 +44,13 @@ bool BatchMode::startNextJob()
 	if (m_queue.isEmpty())
 		return false;
 	
-	QueuedFrame frame(m_queue.dequeue());
-	QString name(frame.first->directory() + "/" + frame.first->name(frame.second));
+	QModelIndex frame(m_queue.dequeue());
+	FrameInfo* info = m_model->loadFrame(frame);
 	
-	std::cout << name.toUtf8().data() << ": Starting..." << std::endl;
+	std::cout << info->fileName().toUtf8().data() << ": Starting..." << std::endl;
 	
-	FrameInfo* info = frame.first->loadFrame(frame.second);
 	if (info->hasModelInformation())
-		std::cout << name.toUtf8().data() << ": Frame already has model information - recalculating" << std::endl;
+		std::cout << info->fileName().toUtf8().data() << ": Frame already has model information - recalculating" << std::endl;
 	
 	QList<MapReduceOperation> ops(info->update());
 	foreach (MapReduceOperation op, ops)
@@ -70,7 +71,7 @@ void BatchMode::futureFinished(int id)
 	QString operationName(m_activeOperations[id].first);
 	FrameInfo* info = m_activeOperations[id].second;
 	
-	std::cout << info->filename().toUtf8().data() << ": " << operationName.toUtf8().data() << " finished" << std::endl;
+	std::cout << info->fileName().toUtf8().data() << ": " << operationName.toUtf8().data() << " finished" << std::endl;
 	
 	if (info->hasModelInformation())
 	{
@@ -127,11 +128,14 @@ bool BatchMode::parseFileList()
 		else if (info.isDir())
 		{
 			std::cout << "Queueing all files in directory: " << arg.toAscii().data() << std::endl;
-			FrameSet* frameSet = new FrameSet(arg);
-			m_frameSets << frameSet;
 			
-			for (int i=0 ; i<frameSet->count() ; ++i)
-				m_queue << QueuedFrame(frameSet, i);
+			QModelIndex index(m_model->index(info.absoluteFilePath()));
+			QModelIndex mappedIndex(m_frameFilter->mapFromSource(index));
+			m_frameFilter->setRootIndex(index);
+			
+			int childCount = m_frameFilter->rowCount(mappedIndex);
+			for (int i=0 ; i<childCount ; ++i)
+				m_queue << m_frameFilter->mapToSource(mappedIndex.child(i, 0));
 		}
 		else
 		{
