@@ -1,6 +1,9 @@
 #include "classifydialog.h"
 #include "listmodels.h"
 #include "people.h"
+#include "types.h"
+
+#include <QtDebug>
 
 typedef QPair<double, QModelIndex> Neighbour;
 
@@ -83,19 +86,26 @@ void ClassifyDialog::okClicked()
 
 double ClassifyDialog::distanceTo(const QModelIndex& other) const
 {
-	double accum = 0.0;
-	
 	int count = qMin(m_model->signature(other).count(), m_model->signature(m_index).count());
+	
+	std::complex<double> ourMean = 0.0;
+	std::complex<double> theirMean = 0.0;
 	for (int i=0 ; i<count ; ++i)
 	{
-		std::complex<double> ours = m_model->signature(m_index)[i];
-		std::complex<double> theirs = m_model->signature(other)[i];
+		ourMean += m_model->signature(m_index)[i];
+		theirMean += m_model->signature(other)[i];
+	}
+	ourMean /= count;
+	theirMean /= count;
+	
+	double accum = 0.0;
+	for (int i=0 ; i<count ; ++i)
+	{
+		std::complex<double> ours = m_model->signature(m_index)[i] - ourMean;
+		std::complex<double> theirs = m_model->signature(other)[i] - theirMean;
 		
 		accum += std::pow(ours.real() - theirs.real(), 2);
 		accum += std::pow(ours.imag() - theirs.imag(), 2);
-		// TODO: Normalize variance and mean
-		// Canonical analysis ??
-		// Include other leg as well.  And lower leg.
 	}
 	
 	return accum;

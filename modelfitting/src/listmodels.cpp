@@ -81,7 +81,7 @@ void FrameModel::saveFrameSet(const QModelIndex& index)
 
 bool FrameModel::hasClassification(const QModelIndex& index) const
 {
-	return !frameSet(index).classification.isNull();
+	return !frameSet(index).classification.isEmpty();
 }
 
 QString FrameModel::classification(const QModelIndex& index) const
