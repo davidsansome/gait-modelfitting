@@ -15,9 +15,9 @@
   <widget class="QWidget" name="centralwidget" >
    <property name="geometry" >
     <rect>
-     <x>231</x>
+     <x>262</x>
      <y>63</y>
-     <width>790</width>
+     <width>759</width>
      <height>718</height>
     </rect>
    </property>
@@ -221,8 +221,8 @@
     <rect>
      <x>0</x>
      <y>63</y>
-     <width>225</width>
-     <height>169</height>
+     <width>256</width>
+     <height>178</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -236,8 +236,8 @@
      <rect>
       <x>0</x>
       <y>23</y>
-      <width>225</width>
-      <height>146</height>
+      <width>256</width>
+      <height>155</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout" >
@@ -270,9 +270,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>238</y>
-     <width>225</width>
-     <height>186</height>
+     <y>247</y>
+     <width>256</width>
+     <height>177</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -292,8 +292,8 @@
      <rect>
       <x>0</x>
       <y>23</y>
-      <width>225</width>
-      <height>163</height>
+      <width>256</width>
+      <height>154</height>
      </rect>
     </property>
     <property name="sizePolicy" >
@@ -330,7 +330,7 @@
     <rect>
      <x>0</x>
      <y>430</y>
-     <width>225</width>
+     <width>256</width>
      <height>131</height>
     </rect>
    </property>
@@ -354,7 +354,7 @@
      <rect>
       <x>0</x>
       <y>23</y>
-      <width>225</width>
+      <width>256</width>
       <height>108</height>
      </rect>
     </property>
@@ -413,7 +413,7 @@
     <rect>
      <x>0</x>
      <y>567</y>
-     <width>225</width>
+     <width>256</width>
      <height>131</height>
     </rect>
    </property>
@@ -434,7 +434,7 @@
      <rect>
       <x>0</x>
       <y>23</y>
-      <width>225</width>
+      <width>256</width>
       <height>108</height>
      </rect>
     </property>
@@ -493,7 +493,7 @@
     <rect>
      <x>0</x>
      <y>704</y>
-     <width>225</width>
+     <width>256</width>
      <height>77</height>
     </rect>
    </property>
@@ -514,7 +514,7 @@
      <rect>
       <x>0</x>
       <y>23</y>
-      <width>225</width>
+      <width>256</width>
       <height>54</height>
      </rect>
     </property>
@@ -592,12 +592,6 @@
       </widget>
      </item>
     </layout>
-    <zorder>crossFrontLabel</zorder>
-    <zorder>crossFrontSlider</zorder>
-    <zorder>crossSideLabel</zorder>
-    <zorder>crossSideSlider</zorder>
-    <zorder>crossTopLabel</zorder>
-    <zorder>crossTopSlider</zorder>
    </widget>
   </widget>
   <action name="actionShowVoxelData" >
@@ -614,6 +608,9 @@
    <property name="text" >
     <string>Show voxel data</string>
    </property>
+   <property name="shortcut" >
+    <string>Ctrl+V</string>
+   </property>
   </action>
   <action name="actionShowModel" >
    <property name="checkable" >
@@ -628,6 +625,9 @@
    </property>
    <property name="text" >
     <string>Show model</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+M</string>
    </property>
   </action>
   <action name="actionOpenDirectory" >
@@ -651,7 +651,7 @@
     <string>&amp;Quit</string>
    </property>
    <property name="shortcut" >
-    <string>Alt+Q</string>
+    <string>Ctrl+Q</string>
    </property>
    <property name="menuRole" >
     <enum>QAction::QuitRole</enum>
@@ -680,6 +680,9 @@
    </property>
    <property name="text" >
     <string>Recalculate</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionRecalculateAll" >
@@ -728,6 +731,9 @@
    </property>
    <property name="text" >
     <string>Classify this person...</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+C</string>
    </property>
   </action>
  </widget>
