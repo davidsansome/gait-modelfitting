@@ -21,6 +21,7 @@ SET(MODELFITTING-SOURCES
 	classifydialog.cpp
 	people.cpp
 	listmodels.cpp
+	signature.cpp
 )
 
 # Header files that have Q_OBJECT in

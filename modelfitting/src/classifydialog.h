@@ -34,8 +34,6 @@ private slots:
 	void okClicked();
 
 private:
-	double distanceTo(const QModelIndex& other) const;
-	
 	Ui_ClassifyDialog m_ui;
 	
 	QModelIndex m_index;

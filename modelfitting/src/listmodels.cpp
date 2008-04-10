@@ -42,15 +42,7 @@ _FrameSet& FrameModel::frameSet(const QModelIndex& index) const
 			QSettings s(path, QSettings::IniFormat);
 			_FrameSet set(s.value("Classification", QVariant()).toString());
 			
-			int count = s.beginReadArray("Signature");
-			for (int i=0 ; i<count ; ++i)
-			{
-				s.setArrayIndex(i);
-				double real = s.value("Real", 0.0).toDouble();
-				double imag = s.value("Imag", 0.0).toDouble();
-				set.signature << std::complex<double>(real, imag);
-			}
-			s.endArray();
+			set.signature = Signature(s);
 			
 			const_cast<FrameModel*>(this)->m_frameSets[index] = set;
 		}
@@ -67,14 +59,7 @@ void FrameModel::saveFrameSet(const QModelIndex& index)
 	QSettings s(path, QSettings::IniFormat);
 	s.setValue("Classification", set.classification);
 	
-	s.beginWriteArray("Signature", set.signature.count());
-	for (int i=0 ; i<set.signature.count() ; ++i)
-	{
-		s.setArrayIndex(i);
-		s.setValue("Real", set.signature[i].real());
-		s.setValue("Imag", set.signature[i].imag());
-	}
-	s.endArray();
+	set.signature.save(s);
 	
 	emit dataChanged(index.sibling(index.row(), 0), index.sibling(index.row(), 1));
 }
@@ -108,15 +93,20 @@ void FrameModel::setSignature(const QModelIndex& index, const Signature& sig)
 
 void FrameModel::updateSignature(const QModelIndex& index)
 {
+	Signature& sig = frameSet(index).signature;
+	sig.clear();
+	
 	Fft fft(this);
 	fft.setFrameSet(index);
 	fft.init();
-	fft.run(Fft::LeftThighTheta);
 	
-	Signature& sig = frameSet(index).signature;
-	sig.clear();
+	fft.run(Fft::LeftThighTheta);
 	for (int i=0 ; i<fft.resultSize() ; ++i)
-		sig << fft.result()[i];
+		sig.leftThighTheta << fft.result()[i];
+	
+	fft.run(Fft::RightThighTheta);
+	for (int i=0 ; i<fft.resultSize() ; ++i)
+		sig.rightThighTheta << fft.result()[i];
 	
 	saveFrameSet(index);
 }

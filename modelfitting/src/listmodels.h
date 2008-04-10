@@ -1,6 +1,8 @@
 #ifndef LISTMODELS_H
 #define LISTMODELS_H
 
+#include "signature.h"
+
 #include <QSortFilterProxyModel>
 #include <QDirModel>
 #include <complex>
@@ -8,8 +10,6 @@
 class _Frame;
 class _FrameSet;
 class FrameInfo;
-
-typedef QList<std::complex<double> > Signature;
 
 class FrameModel : public QDirModel
 {

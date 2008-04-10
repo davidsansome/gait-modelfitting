@@ -51,7 +51,7 @@ void ClassifyDialog::setFrameSet(const QModelIndex& frameSet)
 			m_ui.warning->show();
 		}
 		else
-			neighbours << Neighbour(distanceTo(set), set);
+			neighbours << Neighbour(m_model->signature(m_index) - m_model->signature(set), set);
 	}
 	
 	qSort(neighbours);
@@ -84,29 +84,4 @@ void ClassifyDialog::okClicked()
 	accept();
 }
 
-double ClassifyDialog::distanceTo(const QModelIndex& other) const
-{
-	int count = qMin(m_model->signature(other).count(), m_model->signature(m_index).count());
-	
-	std::complex<double> ourMean = 0.0;
-	std::complex<double> theirMean = 0.0;
-	for (int i=0 ; i<count ; ++i)
-	{
-		ourMean += m_model->signature(m_index)[i];
-		theirMean += m_model->signature(other)[i];
-	}
-	ourMean /= count;
-	theirMean /= count;
-	
-	double accum = 0.0;
-	for (int i=0 ; i<count ; ++i)
-	{
-		std::complex<double> ours = m_model->signature(m_index)[i] - ourMean;
-		std::complex<double> theirs = m_model->signature(other)[i] - theirMean;
-		
-		accum += std::pow(ours.real() - theirs.real(), 2);
-		accum += std::pow(ours.imag() - theirs.imag(), 2);
-	}
-	
-	return accum;
-}
+
