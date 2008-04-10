@@ -88,10 +88,11 @@ double ClassifyDialog::distanceTo(const QModelIndex& other) const
 	int count = qMin(m_model->signature(other).count(), m_model->signature(m_index).count());
 	for (int i=0 ; i<count ; ++i)
 	{
-		double ourPhaseMag = abs(m_model->signature(m_index)[i]) * arg(m_model->signature(m_index)[i]);
-		double theirPhaseMag = abs(m_model->signature(other)[i]) * arg(m_model->signature(other)[i]);
+		std::complex<double> ours = m_model->signature(m_index)[i];
+		std::complex<double> theirs = m_model->signature(other)[i];
 		
-		accum += std::pow(ourPhaseMag - theirPhaseMag, 2);
+		accum += std::pow(ours.real() - theirs.real(), 2);
+		accum += std::pow(ours.imag() - theirs.imag(), 2);
 		// TODO: Normalize variance and mean
 		// Canonical analysis ??
 		// Include other leg as well.  And lower leg.
