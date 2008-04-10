@@ -1,0 +1,12 @@
+--- qfileiconprovider.cpp	2008-04-09 00:24:03.000000000 +0100
++++ qfileiconprovider-new.cpp	2008-04-09 00:23:57.000000000 +0100
+@@ -117,6 +117,9 @@
+ 
+ QFileIconProviderPrivate::QFileIconProviderPrivate()
+ {
++	if (qApp->type() == QApplication::Tty)
++		return;
++	
+     QStyle *style = QApplication::style();
+     file = style->standardIcon(QStyle::SP_FileIcon);
+     directory = style->standardIcon(QStyle::SP_DirIcon);
