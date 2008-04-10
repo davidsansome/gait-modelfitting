@@ -202,12 +202,14 @@ bool MainWindow::recalculate()
 
 void MainWindow::recalculateAll()
 {
-	/*for (int i=0 ; i<m_ui.fileList->count() ; i++)
+	QModelIndex root(m_frameFilterModel->mapFromSource(m_frameInfo->index().parent()));
+	int count = m_frameFilterModel->rowCount(root);
+	for (int i=0 ; i<count ; ++i)
 	{
-		m_ui.fileList->setCurrentRow(i);
+		m_ui.frameView->selectionModel()->setCurrentIndex(root.child(i, 0), QItemSelectionModel::ClearAndSelect);
 		if (!recalculate())
 			break;
-	}*/
+	}
 }
 
 void MainWindow::initializeGL()
