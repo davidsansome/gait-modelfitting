@@ -5,9 +5,9 @@ Highest=160
 XWidth=60
 
 [LeftLeg]
-LowerLegAlpha=0
-LowerLegTheta=-0.628318548202515
-ThighAlpha=-0.0589048638939857
+LowerLegAlpha=0.0196349546313286
+LowerLegTheta=-0.667588412761688
+ThighAlpha=-0.0785398185253143
 ThighTheta=-0.157079637050629
 
 [RightLeg]

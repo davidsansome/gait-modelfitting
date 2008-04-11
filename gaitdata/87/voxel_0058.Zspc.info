@@ -5,9 +5,9 @@ CenterY=72.7591477389476
 XWidth=51
 
 [LeftLeg]
-ThighAlpha=-0.0785398185253143
+ThighAlpha=-0.0981747731566429
 ThighTheta=0.157079637050629
-LowerLegAlpha=-0.0981747731566429
+LowerLegAlpha=-0.0785398185253143
 LowerLegTheta=0
 
 [RightLeg]
