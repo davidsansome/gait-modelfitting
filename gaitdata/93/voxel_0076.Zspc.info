@@ -8,7 +8,7 @@ XWidth=54
 ThighAlpha=-0.0785398185253143
 ThighTheta=0.235619455575943
 LowerLegAlpha=0
-LowerLegTheta=-0.628318548202515
+LowerLegTheta=-0.589048624038696
 
 [RightLeg]
 ThighAlpha=0
