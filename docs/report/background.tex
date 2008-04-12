@@ -1,0 +1,98 @@
+\section{Background and report of literature search}
+
+This project builds heavily on previous research and development work by members of the University of Southampton.
+The sample data used was obtained from test subjects walking through the Southampton Gait Tunnel.
+Their movements were recorded on a number of cameras and the images processed by various segmentation and 3D reconstruction algorithms.
+
+The remainder of this section covers the additional work that has been useful in the development of the project.
+
+\subsection{Model-fitting}
+
+In \cite{GaitBook} Nixon et al.\ summarise the general approach to model-based gait recognition.
+The important angles between the limbs for consideration are shown to be those along the direction of movement.
+A Pose Evaluation Function (PEF) is described that can be used to improve and measure the error of a particular fitting of a model to an image.
+Both boundary and region matching errors are considered when calculating this function, reducing the chance that a model segment will be placed in the empty space between two limbs.
+%A technique building on this is proposed in \ref{ImprovedCC}.
+
+\bigskip
+\noindent In \cite{cardboardpeople} Michael et al.\ describe an approach to model fitting entitled ``Cardboard People''.
+Limbs in the model are represented by rigid planar patches.
+These are connected together in a chain structure, with each rectangular plane consisting of four articulated points.
+While the research presents an interesting approach to model-fitting, the technique is strictly 2D and therefore not directly applicable to this project.
+
+\bigskip
+\noindent Zhihui et al.\ \cite{LinearModelFitting} describe a human body model and show how linear regression can be used to fit it to an image.
+The method of least squares is used in the paper to align points on the model to their corresponding locations on the human body shown the image.
+This method shows some very promising results, with the two main problems listed in the paper being caused by inaccurate or noisy segmentation.
+There is less of an issue in the Southampton sample data which is relatively free of noise.
+
+\subsection{Active contours}\label{ContourBackground}
+
+In \cite{CohenBalloons}, Cohen presents a model for active contours that considers the curve as a ``balloon'' that is inflated by a balloon force.
+This force takes the form:
+
+\begin{equation}
+	F = k_1 \vec{n}(s) - k\frac{\nabla P}{\|\nabla P\|}
+\end{equation}
+
+\noindent Where $\vec{n}(s)$ is the normal vector to the curve and $P$ is the image force.
+This force makes our contour expand like a balloon to fill a space, stopping when it encounters an opposing force from features of the image.
+
+\bigskip
+\noindent Gunn and Nixon present another force in \cite{GunnSnake} that causes an active contour to take the shape of a circle.
+This force $\mathbf{e}_i$ on the snaxel $i$ at position $\mathbf{V}_i$ is calculated from the neighbouring snaxels by:
+
+\begin{equation}
+	\mathbf{e}_i = \tfrac{1}{2}(\mathbf{V}_{i-1} + \mathbf{V}_{i+1}) - \mathbf{V}_i + \theta_i\tfrac{1}{2}\mathbf{R}(\mathbf{V}_{i-1} - \mathbf{V}_{i+1})
+\end{equation}
+
+\noindent Where $\mathbf{R}$ is a $+90^\circ$ rotation matrix.
+$\theta$ is the angle that should exist between a snaxel and its neighbours in order for them to form a circular shape.
+This angle is defined by $\theta = tan(\frac{\pi}{N})$ where $N$ is the number of snaxels.
+
+\bigskip
+\noindent Williams and Shah \cite{SnakeAlgorithm} present a fast algorithm for implementing active contours.
+A dynamic programming approach is used to avoid having to conduct an exhaustive search of the entire image.
+During each iteration the neighbourhood of each snaxel is examined, and the point in the neighbourhood that gives the smallest energy is chosen as the new location for the snaxel.
+Iteration continues until the number of points moved falls below a threshold.
+
+\bigskip
+\noindent In \cite{ImageSegModels} Xu et al.\ present a novel approach to image segmentation.
+Active Shape Models, originally proposed by Cootes et al.\ in \cite{cootes93use} and \cite{cootes95}, define a set of points that represent a particular feature in the image.
+During training these points are manually drawn on each image in the set of training data.
+The eigenvectors are then extracted from the training set and principle components analysis (PCA) used to select those that are most important.
+
+The model can be fitted to new images by both applying transformations to it (translation, rotation and scale) and by adjusting the weights of the eigenvectors (referred to as the \emph{shape parameters}).
+This is performed iteratively and stops when changes in the pose and shape parameters are insignificant.
+
+While interesting, this approach seems very generic and more suited to matching complex shapes.
+For matching a simple cylinder representing a thigh, the algorithm may be considered overkill.
+
+\subsection{Gait recognition}
+
+Cunado et al.\ present a detailed background to the various gait recognition approaches in \cite{GaitModels}.
+The paper describes which of the limbs provide the most useful information for gait.
+The smaller and easily obscured body parts such as the ankle and pelvis tend to provide useful identifying information, however identifying these from noisy images can be very difficult.
+
+The focus of the paper is on the angle made by the thigh with the hip, the thigh and calf being modelled as simple pendulae.
+
+\bigskip
+\noindent In his PHD thesis \cite{KarlSharman} Sharman lists 23 parameters that are required for simple gait recognition.
+Among these are the central position of the hip at time $t = 0$, the thigh length, and the harmonics of oscillations of hip positions both vertically and in the direction of travel.
+
+
+\subsection{GPU processing}
+
+Today's CPUs are very good at performing serial programming tasks.
+However as Owens explains in \cite{GemsStreams} this serial programming model is poorly suited to many high-performance applications that process large amounts of data.
+Typically these applications will perform the same operations on a large body of similar data (such as pixels).
+
+A better programming model for these applications is that of the stream processor.
+Stream processors (such as those found in modern graphics cards) run a computational \emph{kernel} over a stream of either simple (floating point valued) or complex (structured or vector) data.
+In normal 3D graphics applications these streams are typically made up of geometry data such as triangles, and the kernels are the fixed-function lighting and shading programs.
+However in recent years graphics cards have evolved to allow arbitrary kernels to be executed on custom user-specified data streams.
+Using languages such as Cg \cite{CgToolkit} and CUDA \cite{CudaToolkit}, the application developer can completely customise the operation of the stream processor.
+
+\bigskip
+\noindent In \cite{GemsVision} Fung demonstrates how typical computer vision algorithms can be implemented on the GPU.
+Canny edge detectors, a motion tracking algorithm and a Gaussian blur are implemented in the Cg programming language.
