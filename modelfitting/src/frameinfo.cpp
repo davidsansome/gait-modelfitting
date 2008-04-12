@@ -7,7 +7,7 @@
 #include <QTime>
 #include <QFutureWatcher>
 #include <QFile>
-#include <QtConcurrentMap>
+#include <QtConcurrentRun>
 #include <QMutexLocker>
 #include <QPointF>
 #include <QApplication>
@@ -22,57 +22,6 @@ quint32 FrameInfo::s_lookupElements = 0;
 char* FrameInfo::s_lookupData = NULL;
 char* FrameInfo::s_lookupEnd = NULL;
 
-
-MapType::MapType(Params<int> i, Params<float> p, FrameInfo* f, Part pa)
-	: indices(i),
-	  params(p),
-	  frame(f),
-	  part(pa)
-{
-}
-
-MapType::MapType(const MapType& other)
-{
-	*this = other;
-}
-
-MapType& MapType::operator =(const MapType& other)
-{
-	indices = other.indices;
-	params = other.params;
-	frame = other.frame;
-	part = other.part;
-	return *this;
-}
-
-bool MapType::operator <(const MapType& other) const
-{
-	return params < other.params;
-}
-
-ReduceType::ReduceType(Params<int> i, Params<float> p, float e)
-	: indices(i),
-	  params(p),
-	  energy(e)
-{
-}
-
-ReduceType::ReduceType(const ReduceType& other)
-{
-	*this = other;
-}
-
-ReduceType& ReduceType::operator =(const ReduceType& other)
-{
-	indices = other.indices;
-	params = other.params;
-	energy = other.energy;
-}
-
-bool ReduceType::operator <(const ReduceType& other) const
-{
-	return params < other.params;
-}
 
 
 
@@ -102,8 +51,8 @@ FrameInfo::FrameInfo(const FrameModel* frameModel, const QModelIndex& index, boo
 	m_edgeVspace = new Voxel_Space(*m_vspace);
 	m_edgeVspace->edge_detect();
 	
-	m_leftLegWatcher = new QFutureWatcher<ReduceType>(this);
-	m_rightLegWatcher = new QFutureWatcher<ReduceType>(this);
+	m_leftLegWatcher = new QFutureWatcher<Params<float> >(this);
+	m_rightLegWatcher = new QFutureWatcher<Params<float> >(this);
 	connect(m_leftLegWatcher, SIGNAL(finished()), SLOT(leftLegFinished()));
 	connect(m_rightLegWatcher, SIGNAL(finished()), SLOT(rightLegFinished()));
 	
@@ -139,10 +88,7 @@ FrameInfo::~FrameInfo()
 
 void FrameInfo::leftLegFinished()
 {
-	if (m_leftLegWatcher->isCanceled())
-		return;
-	
-	m_leftLegParams = m_leftLegWatcher->future().result().params;
+	m_leftLegParams = m_leftLegWatcher->future().result();
 	//qDebug() << "Final params for left leg =" << m_leftLegParams;
 	
 	if (hasModelInformation())
@@ -151,10 +97,7 @@ void FrameInfo::leftLegFinished()
 
 void FrameInfo::rightLegFinished()
 {
-	if (m_rightLegWatcher->isCanceled())
-		return;
-	
-	m_rightLegParams = m_rightLegWatcher->future().result().params;
+	m_rightLegParams = m_rightLegWatcher->future().result();
 	//qDebug() << "Final params for right leg =" << m_rightLegParams;
 	
 	if (hasModelInformation())
@@ -197,58 +140,86 @@ QList<MapReduceOperation> FrameInfo::update()
 	
 	if (m_distanceCache == NULL)
 		initDistanceCache();
-	m_results.clear();
+	
 	m_leftLegParams.invalidate();
 	m_rightLegParams.invalidate();
 	
 	QList<MapReduceOperation> ret;
+	QFuture<Params<float> > future;
 	
-	// Construct list of potential parameters
-	QList<MapType> params;
-	for (int ta=-ALPHA_RESOLUTION ; ta<=ALPHA_RESOLUTION ; ta++)
-		for (int tt=-THETA_RESOLUTION ; tt<=THETA_RESOLUTION ; tt++)
-			for (int la=-ALPHA_RESOLUTION ; la<=ALPHA_RESOLUTION ; la++)
-				for (int lt=-THETA_RESOLUTION ; lt<=THETA_RESOLUTION ; lt++)
-					params << MapType(Params<int>(ta, tt, la, lt),
-					                  Params<float>(ta*ALPHA_STEP, tt*THETA_STEP, la*ALPHA_STEP, lt*THETA_STEP),
-					                  this, LeftLeg);
-	
-	// Start the mapreduce
-	QFuture<ReduceType> future = QtConcurrent::mappedReduced(params, correlateMap, correlateReduce);
+	future = QtConcurrent::run(this, &FrameInfo::multiResolutionSearch, LeftLeg);
 	m_leftLegWatcher->setFuture(future);
 	ret << MapReduceOperation("Left leg", future);
 	
-	params.clear();
-	for (int ta=-ALPHA_RESOLUTION ; ta<=ALPHA_RESOLUTION ; ta++)
-		for (int tt=-THETA_RESOLUTION ; tt<=THETA_RESOLUTION ; tt++)
-			for (int la=-ALPHA_RESOLUTION ; la<=ALPHA_RESOLUTION ; la++)
-				for (int lt=-THETA_RESOLUTION ; lt<=THETA_RESOLUTION ; lt++)
-					params << MapType(Params<int>(ta, tt, la, lt),
-					                  Params<float>(ta*ALPHA_STEP, tt*THETA_STEP, la*ALPHA_STEP, lt*THETA_STEP),
-					                  this, RightLeg);
-	
-	// Start the mapreduce
-	future = QtConcurrent::mappedReduced(params, correlateMap, correlateReduce);
+	future = QtConcurrent::run(this, &FrameInfo::multiResolutionSearch, RightLeg);
 	m_rightLegWatcher->setFuture(future);
 	ret << MapReduceOperation("Right leg", future);
 	
 	return ret;
 }
 
-ReduceType correlateMap(const MapType& p)
+Params<float> FrameInfo::multiResolutionSearch(Part part)
 {
-	float energy = p.frame->energy(p.part, p.params);
+	const int firstAlphaResolution = 5;
+	const int firstThetaResolution = 11;
+	const float alphaError = (4.0 * ALPHA_RANGE) / (firstAlphaResolution - 1);
+	const float thetaError = (4.0 * THETA_RANGE) / (firstThetaResolution - 1);
+	const int secondAlphaResolution = 11;
+	const int secondThetaResolution = 21;
 	
-	ReduceType ret(p.indices, p.params, energy);
-	p.frame->addResult(p.indices, p.part, energy);
+	// Low resolution search
+	Params<float> min(-ALPHA_RANGE, -THETA_RANGE, -ALPHA_RANGE, -THETA_RANGE);
+	Params<float> max(+ALPHA_RANGE, +THETA_RANGE, +ALPHA_RANGE, +THETA_RANGE);
 	
-	return ret;
+	Params<float> res(subSearch(part, min, max, firstAlphaResolution, firstThetaResolution));
+	
+	// High resolution search around the result
+	min = Params<float>(res.thighAlpha - alphaError,
+	                    res.thighTheta - thetaError,
+	                    res.lowerLegAlpha - alphaError,
+	                    res.lowerLegTheta - thetaError);
+	max = Params<float>(res.thighAlpha + alphaError,
+	                    res.thighTheta + thetaError,
+	                    res.lowerLegAlpha + alphaError,
+	                    res.lowerLegTheta + thetaError);
+	
+	res = subSearch(part, min, max, secondAlphaResolution, secondThetaResolution);
+	
+	return res;
 }
 
-void correlateReduce(ReduceType& result, const ReduceType& intermediate)
+Params<float> FrameInfo::subSearch(Part part, const Params<float>& min, const Params<float>& max, int alphaResolution, int thetaResolution)
 {
-	if (!result.params.valid || intermediate.energy < result.energy)
-		result = intermediate;
+	Params<float> step = Params<float>(
+		(max.thighAlpha - min.thighAlpha) / alphaResolution,
+		(max.thighTheta - min.thighTheta) / thetaResolution,
+		(max.lowerLegAlpha - min.lowerLegAlpha) / alphaResolution,
+		(max.lowerLegTheta - min.lowerLegTheta) / thetaResolution);
+	
+	Params<float> retParams;
+	float retEnergy = std::numeric_limits<float>::max();
+	
+	Params<int> i;
+	for (i.thighAlpha=0 ; i.thighAlpha<alphaResolution ; ++i.thighAlpha)
+		for (i.thighTheta=0 ; i.thighTheta<thetaResolution ; ++i.thighTheta)
+			for (i.lowerLegAlpha=0 ; i.lowerLegAlpha<alphaResolution ; ++i.lowerLegAlpha)
+				for (i.lowerLegTheta=0 ; i.lowerLegTheta<thetaResolution; ++i.lowerLegTheta)
+				{
+					Params<float> p(
+						min.thighAlpha + step.thighAlpha * i.thighAlpha,
+						min.thighTheta + step.thighTheta * i.thighTheta,
+						min.lowerLegAlpha + step.lowerLegAlpha * i.lowerLegAlpha,
+						min.lowerLegTheta + step.lowerLegTheta * i.lowerLegTheta);
+					
+					float e = energy(part, p);
+					if (e < retEnergy)
+					{
+						retEnergy = e;
+						retParams = p;
+					}
+				}
+	
+	return retParams;
 }
 
 float FrameInfo::energy(Part part, const Params<float>& params) const
@@ -359,12 +330,6 @@ void FrameInfo::initDistanceCache()
 	
 	while (p != end)
 		*(p++) = inf;
-}
-
-void FrameInfo::addResult(const Params<int>& indices, Part part, float energy)
-{
-	QMutexLocker locker(&m_resultMutex);
-	m_results[QPair<Params<int>, Part>(indices, part)] = energy;
 }
 
 void FrameInfo::save() const

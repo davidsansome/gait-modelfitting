@@ -12,7 +12,7 @@ SET(MODELFITTING-SOURCES
 	graphplotter.cpp
 	params.cpp
 	batchmode.cpp
-	energyplotter.cpp
+#	energyplotter.cpp
 	timeplotter.cpp
 	errorcorrection.cpp
 	fftplotter.cpp

@@ -46,8 +46,8 @@ MainWindow::MainWindow()
 	
 	m_progressDialog = new MapReduceProgress(this);
 	
-	m_energyPlotter = new EnergyPlotter(m_model, this);
-	connect(m_ui.actionPlotEnergyGraphs, SIGNAL(triggered(bool)), m_energyPlotter, SLOT(exec()));
+	//m_energyPlotter = new EnergyPlotter(m_model, this);
+	//connect(m_ui.actionPlotEnergyGraphs, SIGNAL(triggered(bool)), m_energyPlotter, SLOT(exec()));
 	
 	m_timePlotter = new TimePlotter(m_model, this);
 	connect(m_ui.actionPlotTimeGraphs, SIGNAL(triggered(bool)), m_timePlotter, SLOT(exec()));
@@ -160,7 +160,7 @@ void MainWindow::setFrameInfo(FrameInfo* frameInfo)
 	m_ui.overhead->setFrameInfo(m_frameInfo);
 	m_ui.angle->setFrameInfo(m_frameInfo);
 	
-	m_energyPlotter->setFrameInfo(m_frameInfo);
+	//m_energyPlotter->setFrameInfo(m_frameInfo);
 	m_timePlotter->setFrameInfo(m_frameInfo);
 	m_fftPlotter->setFrameInfo(m_frameInfo);
 	

@@ -47,39 +47,6 @@ enum Part
 	RightLeg
 };
 
-class MapType
-{
-public:
-	MapType() {}
-	MapType(Params<int> i, Params<float> p, FrameInfo* f, Part pa);
-	MapType(const MapType& other);
-	
-	bool operator <(const MapType& other) const;
-	MapType& operator =(const MapType& other);
-	
-	Params<int> indices;
-	Params<float> params;
-	FrameInfo* frame;
-	Part part;
-};
-
-class ReduceType
-{
-public:
-	ReduceType() {}
-	ReduceType(Params<int> i, Params<float> p, float e);
-	ReduceType(const ReduceType& other);
-	
-	bool operator <(const ReduceType& other) const;
-	ReduceType& operator =(const ReduceType& other);
-	
-	Params<int> indices;
-	Params<float> params;
-	float energy;
-};
-
-ReduceType correlateMap(const MapType& p);
-void correlateReduce(ReduceType& result, const ReduceType& intermediate);
 
 Q_DECLARE_METATYPE(QFuture<void>)
 
@@ -89,7 +56,6 @@ class FrameInfo : public QObject
 {
 	Q_OBJECT
 	
-	friend ReduceType correlateMap(const MapType& p);
 	friend class FrameModel;
 	
 public:
@@ -119,9 +85,6 @@ public:
 	Params<float> leftLeg() const { return m_leftLegParams; }
 	Params<float> rightLeg() const { return m_rightLegParams; }
 	
-	bool hasResults() const { return m_results.count() != 0; }
-	float result(const Params<int>& indices, Part part) { return m_results.value(QPair<Params<int>, Part>(indices, part)); }
-	
 	void load();
 	void load(QSettings& settings);
 	void save() const;
@@ -134,11 +97,13 @@ private slots:
 private:
 	FrameInfo(const FrameModel* frameModel, const QModelIndex& index, bool loadInfoOnly = false);
 	
+	Params<float> multiResolutionSearch(Part part);
+	Params<float> subSearch(Part part, const Params<float>& min, const Params<float>& max, int alphaResolution, int thetaResolution);
+	
 	void initDistanceCache();
 	float energy(Part part, const Params<float>& params) const;
 	float modelEnergy(const Model* model, const Mat4& mat) const;
 	float doSearch(const Voxel_Space& voxelSpace, int x, int y, int z) const;
-	void addResult(const Params<int>& indices, Part part, float energy);
 	
 	const FrameModel* m_frameModel;
 	QModelIndex m_index;
@@ -156,8 +121,8 @@ private:
 	Vec2 m_center;
 	int m_xWidth;
 	
-	QFutureWatcher<ReduceType>* m_leftLegWatcher;
-	QFutureWatcher<ReduceType>* m_rightLegWatcher;
+	QFutureWatcher<Params<float> >* m_leftLegWatcher;
+	QFutureWatcher<Params<float> >* m_rightLegWatcher;
 	
 	Params<float> m_leftLegParams;
 	Params<float> m_rightLegParams;
@@ -166,7 +131,6 @@ private:
 	int m_distanceCacheSize;
 	
 	QMutex m_resultMutex;
-	QMap<QPair<Params<int>, Part>, float> m_results;
 };
 
 #endif

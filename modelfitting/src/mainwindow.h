@@ -59,7 +59,7 @@ private:
 	FrameInfo* m_frameInfo;
 	
 	MapReduceProgress* m_progressDialog;
-	EnergyPlotter* m_energyPlotter;
+	//EnergyPlotter* m_energyPlotter;
 	TimePlotter* m_timePlotter;
 	FftPlotter* m_fftPlotter;
 	ErrorCorrection* m_errorCorrection;
