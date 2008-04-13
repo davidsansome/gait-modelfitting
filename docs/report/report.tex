@@ -1,4 +1,4 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,12pt]{report}
 \usepackage[center]{caption}
 \usepackage[pdftex]{graphicx}
 \usepackage[pdftex]{hyperref}
@@ -34,12 +34,53 @@
 \newpage
 
 \tableofcontents
-\include{goals}
-\include{background}
-\include{theory}
-\include{implementation}
-\include{results}
-\include{futurework}
+
+\chapter{Introduction and background}
+
+\input{goals}
+\input{background}
+
+\chapter{Design approaches}
+
+\section{Modelfitter application}
+Why it was needed.
+\section{Pre-processing}
+Assumptions: legs start half way up.  Legs are always the same height (are they?  do we scale with height of person?)
+\section{GPU convolution}
+\section{Snakes}
+\section{3D mesh fitting}
+Why others were bad idea.
+Refer to literature that uses edge matching points.
+Show the model in blender.
+Describe matrix transformations.
+Describe least squares fitting.
+Implementation details - mapreduce, lookup caching, multiresolution.  Show table of times
+\section{Classification}
+Talk about FFTs.
+How do we decide where to start from?  Curve fitting.
+Assume that there's one period and the start is free of noise.  Ref set 4.
+Show details of different classification approaches.
+Graphs in complex plane to determine distance.
+
+\chapter{Results}
+
+\section{Accuracy of modelfitting}
+Discuss resolution challenges.
+Alpha error.
+Comparison with manually fit data.
+Show some graphs of theta over time.
+
+\section{Accuracy of classification}
+Show results of all approaches.
+How does adding more limbs help?
+
+\section{Comparison}
+How does this compare with previous approaches?
+
+\chapter{Future work}
+Feet.
+
+\input{futurework}
 
 \newpage
 \bibliography{../../bibtex}
@@ -47,16 +88,29 @@
 \newpage
 \appendix
 
-\section{Code listings}
+\chapter{User manual}
 
-\subsection{ThighFilter.m}
+\section{Using the application}
+\section{Command line interface}
+Qt Patch ref dev docs
+
+\chapter{Developer documentation}
+
+\section{Pre-requisites and compilation}
+SVN
+Qt Patch
+\section{Code structure}
+UML
+
+\chapter{Code Listings}
+
+\section{ThighFilter.m}
 \lstset{language=Matlab}
 \lstinputlisting[label=ThighFilter.m]{"../oldsource/ThighFilter.m"}
 
 \newpage
-\subsection{correlation.cg}
+\section{correlation.cg}
 \lstset{language=Cg}
 \lstinputlisting[label=correlation.cg]{"../oldsource/convolution.cg"}
-
 
 \end{document}
