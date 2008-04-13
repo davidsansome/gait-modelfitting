@@ -1,0 +1,133 @@
+\section{3D mesh fitting}
+
+\subsection{Designing the filter}
+
+The previous approach for cross-correlation described in Section \ref{sec:CC} relies purely on matching filled voxels.
+It suffers from the problem that the filter tends to fit better when aligned diagonally across both legs - in the position where it can match the greatest number of voxels.
+To correct this problem we can create a new filter that is more intelligent about the type of voxels it matches.
+
+\begin{figure}[b]
+	\centering
+	\includegraphics[width=4cm]{../interim/improvedfilter.png}
+	\caption{A cross section through the improved cross-correlation filter.
+		Black circles represent filled voxels, and white circles represent edge voxels.}
+	\label{ImprovedFilterCross}
+\end{figure}
+
+Instead of points in the filter having an intensity value $v \in \{0 \cdots 1\}$, our points could take one of two possible states: they could match either an edge voxel or a filled voxel.
+This would hopefully overcome the problem of a filter spanning the two legs, as the area between the legs would contain edge voxels.
+These edge voxels wouldn't match up with the edge-seeking points in the new filter, and so would be a lower match than if the filter was placed the proper position on the thigh.
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=5cm]{thighmodel.png}
+	\caption{The cross-correlation filter rendered in the Blender application.
+		Although not shown in this image, the outer points in the mesh are colored white to indicate that they should
+		match only edge voxels.}
+	\label{ImprovedFilter}
+\end{figure}
+
+Figure \ref{ImprovedFilterCross} shows a cross section of such a filter.
+It can be seen that the filter contains two types of points - those around the outside that should match edge voxels,
+and those in the middle that should match filled voxels through the centre of the thigh.
+
+One important thing to consider about this idea is whether the points in the filter should be spaced in a regular grid.
+In the form shown in Figure \ref{ImprovedFilterCross} the points have an arbitrary spacing and are very different from the original filter shown in Figure \ref{ThighFilterCrossSections}.
+A filter with points arranged in a regular grid is not necesairly advantageous when matching against discrete voxel data due to the rotations and transformations that the filter will undergo.
+In the process of finding the best fitting with the data the filter will be scaled to fit the proportions of the subject, and rotated to match the angle of the leg.
+By doing this any one-to-one relationship between pixels in the filter and voxels in the sample data will be lost.
+
+Since there is no advantage to be gained from using a regularly spaced filter, it was decided that a better form for the filter would be that of a mesh.
+The final mesh was designed using Blender \ref{Blender} and can be seen in Figure \ref{ImprovedFilter}.
+
+
+\subsection{Matrix transformations}
+
+In order to match the filter mesh to the voxel data, a matrix would need to be defined that transformed the points from their positions
+in mesh-space to their new positions in the voxel-space.
+The standard matrix transformations listed in Appendix G of the OpenGL Red Book \ref{RedBook} were used:
+
+\begin{equation}
+	\mathbf{M}_{trans}(v) =
+	\left(\begin{array}{cccc}
+		1 & 0 & 0 & v_{x} \\
+		0 & 1 & 0 & v_{y} \\
+		0 & 0 & 1 & v_{z} \\
+		0 & 0 & 0 & 1
+	\end{array} \right)
+\end{equation}
+
+\begin{equation}
+	\mathbf{M}_{scale}(v) =
+	\left(\begin{array}{cccc}
+		v_{x} & 0 & 0 & 1 \\
+		0 & v_{y} & 0 & 1 \\
+		0 & 0 & v_{z} & 1 \\
+		0 & 0 & 0 & 1
+	\end{array} \right)
+\end{equation}
+
+\begin{equation}
+	\mathbf{M}_{rotx}(\phi) =
+	\left(\begin{array}{cccc}
+		1 & 0 & 0 & 0 \\
+		0 & cos(\phi) & -sin(\phi) & 0 \\
+		0 & sin(\phi) & cos(\phi) & 0 \\
+		0 & 0 & 0 & 1
+	\end{array} \right)
+\end{equation}
+
+\begin{equation}
+	\mathbf{M}_{roty}(\phi) =
+	\left(\begin{array}{cccc}
+		cos(\phi) & 0 & sin(\phi) & 0 \\
+		0 & 1 & 0 & 0 \\
+		-sin(\phi) & 0 & cos(\phi) & 0 \\
+		0 & 0 & 0 & 1
+	\end{array} \right)
+\end{equation}
+
+\bigskip
+\noindent First the size of the filter is normalized - scaling all the vertices so they lie in the range $0 \cdots 1$.
+It is assumed that the origin of the model's coordinate system is already in the centre of its top face.
+
+\begin{equation}
+	\mathbf{M}_{1} = \mathbf{M}_{scale}(\max \{\text{modelSize}_{x}, \text{modelSize}_{y}, \text{modelSize}_{z} \})
+\end{equation}
+
+Then the filter is scaled up to voxel-space.
+$h$ is the height of the subject as determined in Section \ref{LocatingCenter}.
+We assume that the length of the thighs and lower legs are equal, and are a quarter of the subject's total height.
+
+\begin{equation}
+	\mathbf{M}_{2} = \mathbf{M}_{scale}(\frac{h}{4}, \frac{h}{4}, \frac{h}{4})
+\end{equation}
+
+Next we apply the relevant rotations to the limbs.
+The angles $\theta$ and $\alpha$ used here are the same as in Section \ref{sec:CC} - $\theta$ is the rotation of the leg along the direction of movement and $\alpha$ is the rotation perpendicular to the direction of movement.
+
+\begin{equation}
+	\mathbf{M}_{3} = \mathbf{M}_{rotx}(\theta) * \mathbf{M}_{roty}(\alpha)
+\end{equation}
+
+Finally we apply a translation to move the model to the position of either the left or right leg.
+$w$ is the width, or extent along the x axis, of the subject as determined in Section \ref{LocatingCenter}.
+
+\begin{align}
+	\mathbf{M}_{4r} &= \mathbf{M}_{trans}(+\frac{w}{6}, 0, 0) \\
+	\mathbf{M}_{4l} &= \mathbf{M}_{trans}(-\frac{w}{6}, 0, 0)
+\end{align}
+
+
+\subsection{Fitting with the data}
+
+This spacing would lend itself more towards a more traditional linear regression approach such as the least squares method used by Zhihui et al. \cite{LinearModelFitting}.
+
+\subsection{Optimisations}
+
+Why others were bad idea.
+Refer to literature that uses edge matching points.
+Show the model in blender.
+Describe matrix transformations.
+Describe least squares fitting.
+Implementation details - mapreduce, lookup caching, multiresolution.  Show table of times

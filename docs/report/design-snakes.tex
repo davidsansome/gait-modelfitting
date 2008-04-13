@@ -1,0 +1,128 @@
+\section{Active contours}
+
+Active contours are a useful tool in image processing as they allow a shape to be extracted from potentially noisy data.
+It is reasoned that active contours could be used to locate the thigh in a noisy 3D voxel-space reconstruction.
+An estimation of the likely position of the thigh is first formed by looking for a concentration of voxels below the hip
+(see \ref{LocatingCenter}) and either to the left or right side depending which leg is being located.
+Cross-sections of the leg are taken at various heights up the leg, centered around this concentration of voxels - see figure \ref{CrossSections}.
+An active contour (or snake) is then placed in the middle of each cross-section and allowed to grow to fill the space available.
+
+\begin{figure}[tb]
+	\vspace{-10pt}
+	\centering
+	\subfloat[Lower legs]{\includegraphics[width=4cm]{../interim/crosssections1.png}}
+	\quad
+	\subfloat[Thigh joining hips]{\includegraphics[width=4cm]{../interim/crosssections2.png}}
+	\caption{Cross sections taken through the legs at various points (after edge-detection.)}
+	\label{CrossSections}
+\end{figure}
+
+Hopefully each contour will match the interior area of the thigh at its corresponding height up the leg.
+The centers of these contours can then be joined together by a straight line to form the center of the model's cylinder.
+
+As described in section \ref{ContourBackground} an active contour is driven by internal energies and external energies.
+A trial-and-error approach was used to generate these energy functions - their effectiveness being tested on a series of artificial images.
+The images (see Figure \ref{Contours}) were designed to emulate expected cross-sections of thighs at various heights - ranging from elongated areas
+near the hips to closed circular areas further down.
+An ideal set of energy functions would cause the contour to match the entire of the closed-area images, but not spread out into
+the pelvic area when tested on a cross-section of the joint with the hips.
+
+\begin{figure}[tb]
+	\vspace{-10pt}
+	\centering
+	\subfloat[Inside of thigh]{\includegraphics[width=4cm]{../interim/contour2.png}}
+	\quad
+	\subfloat[Thigh joining hips]{\includegraphics[width=4cm]{../interim/contour4.png}}
+	\caption{Snakes matching test images for thigh cross-sections.}
+	\label{Contours}
+\end{figure}
+
+\bigskip
+\noindent A set of four energy functions was created.  It should be noted that in the following equations $n$ is the total number of snaxels,
+$\mathbf{V}_{i}$ is the position vector of the snaxel at index $i$ around the contour, where $i \in \{1 \cdots n\}$.
+Because the contour is closed all subscript arithmetic is modulo $n$, i.e. $\mathbf{V}_{n+1} = \mathbf{V}_{1}$.
+Generally $\mathbf{V}_{i}$ is used to denote the old position of the current snaxel, and $\mathbf{V}_{new}$ its proposed new position
+currently being evaluated.
+
+\begin{enumerate}
+	\item \textbf{Continuity Energy} - designed to maintain an equal spacing between snaxels.
+		\begin{equation}
+			E_{cont} = \Bigg| \bigg( \frac{1}{n} \sum_{j=1}^n\| \mathbf{V}_{j-1} - \mathbf{V}_{j} \| \bigg) - \bigg( \| \mathbf{V}_{i-1} - \mathbf{V}_{new} \| \bigg) \Bigg|
+		\end{equation}
+		This function looks at the difference between the average snaxel spacing and the spacing between the new proposed snaxel and its neighbour.
+	
+	\item \textbf{Balloon energy} - designed to make the snaxels expand outwards to fill an area.
+		\begin{equation}
+			E_{bal} = \mathbf{n} \cdot (\mathbf{V}_{i} - \mathbf{V}_{new})
+		\end{equation}
+		Where $\cdot$ is the inner product operator and $\mathbf{n}$ is the normal unit vector of the snaxel away from the origin position $\mathbf{V}_{origin}$:
+		\begin{equation}
+			n = \frac{\mathbf{V}_{i} - \mathbf{V}_{origin}}{\|\mathbf{V}_{i} - \mathbf{V}_{origin}\|}
+		\end{equation}
+
+	\item \textbf{External energy} - stops the snaxels from crossing filled voxels in the image.
+		A filled voxel represents the boundary of the area that the contour should describe, and in its simplest form this function is as follows:
+		\begin{equation}
+			E_{ext} = I(\mathbf{V}_{new})
+		\end{equation}
+		Where $I(\mathbf{v})$ is the image intensity at the location $\mathbf{v}$.
+		
+		A problem with this function is that it is not very robust when there is noise present in the image - the area's edge may have gaps and not be a solid filled line.
+		To solve this problem we can sample the image intensity in a 7x7 grid around the location being tested:
+		\begin{equation}
+			E_{ext} = \sum_{x=-3}^3 \sum_{y=-3}^3 I \binom{\mathbf{V}_{new_0} + x}{\mathbf{V}_{new_1} + y}
+		\end{equation}
+		This second version has the advantage of overcoming problems that occur when the contour is allowed to jump large numbers of pixels at a time -
+		it may occasionally skip over a line in the image completely.
+	
+	\item \textbf{Shape energy} - ensures the contour stays in a circular shape.
+		\begin{equation}
+			E_{shape} = \Bigg| \bigg( \frac{2}{n}\sum_{j=1}^n \| \mathbf{V}_{j+\frac{n}{2}} - \mathbf{V}_j \| \bigg) - \bigg( \| \mathbf{V}_{i+\frac{n}{2}} - \mathbf{V}_{new} \| \bigg) \Bigg|
+		\end{equation}
+		This function depends on there being an even number of snaxels in the contour.
+		It works by trying to keep the diameters constant (distances between the current snaxel and the one across the shape from it).
+		By doing this we can stop the shape becoming elongated.
+
+\end{enumerate}
+
+\noindent The energy function weights were also chosen by trial-and-error.
+The weights that were found to work the best were:
+\begin{align*}
+	w_{cont} &= 1 \\
+	w_{ball} &= 0.3 \\
+	w_{shape} &= 0.1 \\
+	w_{ext} &= 100
+\end{align*}
+
+The overall energy function is therefore given by:
+
+\begin{equation}
+	E = w_{cont} E_{cont} + w_{ball} E_{ball} + w_{shape} E_{shape} + w_{ext} E_{ext}
+\end{equation}
+
+\bigskip
+\noindent The implementation in C of the active contour was fairly straightforward and followed the algorithm given by Williams and Shah \cite{SnakeAlgorithm}.
+A \texttt{resetContour} function initialises the contour to a tiny circle at the given location,
+and an \texttt{advanceContour} function calculates and updates each snaxel with its next position.
+This works by evaluating the energy function at each point in a $k$x$k$ grid centered on the snaxel,
+and selecting the one with the lowest value.
+The selected point in the grid where the energy function was lowest becomes the snaxel's new position.
+
+This process is repeated until the total change in snaxel position falls below a certain threshold $t$.
+
+Due to its iterative nature it is difficult to find an implementation of this algorithm that is suitable for execution on a stream processor 
+However even with a large number of snaxels the C implementation converges on an answer quickly enough for it not to be an issue.
+
+\bigskip
+\noindent It is still not certain whether the active contour method is the best way of finding the location of the thigh in an image.
+Active contours are generally better suited to locating complex shapes in very noisy greyscale images.
+The shape that we are trying to locate here is a simple circle and the values of the pixels in the image are boolean (edge or not-edge).
+
+Perhaps a better approach could be developed by taking some active contour concepts such as internal and external energies,
+but restricting the shape to being a perfect circle with a radius $r$ and position $\mathbf{V}$.
+This shape would be initialised $r = 0$ and $\mathbf{V} = \mathbf{V}_{origin}$.
+Every iteration $r$ would be increased by $1$, and the centre $\mathbf{V}$ moved away from any filled pixels inside the circle's area.
+Iteration would cease when the radius could be increased no further without filled pixels appearing on both sides.
+
+This approach would allow the circle to expand and centre itself inside the leg.
+It would stop when it could expand no further without breaching the edge of the shape.

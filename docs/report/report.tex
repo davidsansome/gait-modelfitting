@@ -6,6 +6,10 @@
 \usepackage{subfig}
 \usepackage{listings}
 
+% From wikipedia
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
 \lstset{breaklines=true,basicstyle=\small,tabsize=3,numbers=left,numberstyle=\tiny,numbersep=5pt,emptylines=1}
 
 \lstdefinelanguage{Cg}
@@ -22,7 +26,6 @@
 
 \maketitle
 
-\bigskip
 \begin{abstract}
 	This report describes the progress made into developing a 3D model-fitting application.
 	The techniques of filter correlation and active contours are explored in detail, and their use in fitting a model to a reconstructed 3D image is examined.
@@ -37,48 +40,25 @@
 
 \chapter{Introduction and background}
 
-\input{goals}
-\input{background}
+\input{intro-goals}\clearpage
+\input{intro-background}
 
 \chapter{Design approaches}
 
-\section{Modelfitter application}
-Why it was needed.
-\section{Pre-processing}
-Assumptions: legs start half way up.  Legs are always the same height (are they?  do we scale with height of person?)
-\section{GPU convolution}
-\section{Snakes}
-\section{3D mesh fitting}
-Why others were bad idea.
-Refer to literature that uses edge matching points.
-Show the model in blender.
-Describe matrix transformations.
-Describe least squares fitting.
-Implementation details - mapreduce, lookup caching, multiresolution.  Show table of times
-\section{Classification}
-Talk about FFTs.
-How do we decide where to start from?  Curve fitting.
-Assume that there's one period and the start is free of noise.  Ref set 4.
-Show details of different classification approaches.
-Graphs in complex plane to determine distance.
+\input{design-application}\clearpage
+\input{design-preprocessing}\clearpage
+\input{design-gpu}\clearpage
+\input{design-snakes}\clearpage
+\input{design-mesh}\clearpage
+\input{design-classification}
 
 \chapter{Results}
 
-\section{Accuracy of modelfitting}
-Discuss resolution challenges.
-Alpha error.
-Comparison with manually fit data.
-Show some graphs of theta over time.
-
-\section{Accuracy of classification}
-Show results of all approaches.
-How does adding more limbs help?
-
-\section{Comparison}
-How does this compare with previous approaches?
+\input{results-modelfitting}\clearpage
+\input{results-classification}\clearpage
+\input{results-comparison}
 
 \chapter{Future work}
-Feet.
 
 \input{futurework}
 
@@ -89,28 +69,12 @@ Feet.
 \appendix
 
 \chapter{User manual}
-
-\section{Using the application}
-\section{Command line interface}
-Qt Patch ref dev docs
+\input{appendix-manual}
 
 \chapter{Developer documentation}
-
-\section{Pre-requisites and compilation}
-SVN
-Qt Patch
-\section{Code structure}
-UML
+\input{appendix-devdocs}
 
 \chapter{Code Listings}
-
-\section{ThighFilter.m}
-\lstset{language=Matlab}
-\lstinputlisting[label=ThighFilter.m]{"../oldsource/ThighFilter.m"}
-
-\newpage
-\section{correlation.cg}
-\lstset{language=Cg}
-\lstinputlisting[label=correlation.cg]{"../oldsource/convolution.cg"}
+\input{appendix-listings}
 
 \end{document}
