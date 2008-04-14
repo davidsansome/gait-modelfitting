@@ -14,7 +14,7 @@ To correct this problem we can create a new filter that is more intelligent abou
 	\label{ImprovedFilterCross}
 \end{figure}
 
-Instead of points in the filter having an intensity value $v \in \{0 \cdots 1\}$, our points could take one of two possible states: they could match either an edge voxel or a filled voxel.
+Instead of points in the filter having an intensity value $i \in \{0 \cdots 1\}$, our points could take one of two possible states: they could match either an edge voxel or a filled voxel.
 This would hopefully overcome the problem of a filter spanning the two legs, as the area between the legs would contain edge voxels.
 These edge voxels wouldn't match up with the edge-seeking points in the new filter, and so would be a lower match than if the filter was placed the proper position on the thigh.
 
@@ -48,7 +48,7 @@ Pendulae
 
 \subsection{Matrix transformations}
 
-In order to match the filter mesh to the voxel data, a matrix would need to be defined that transformed the points from their positions
+In order to match the filter mesh to the voxel data, a matrix would need to be defined that transforms the points from their positions
 in mesh-space to their new positions in the voxel-space.
 The standard matrix transformations listed in Appendix G of the OpenGL Red Book \ref{RedBook} were used:
 
@@ -93,7 +93,7 @@ The standard matrix transformations listed in Appendix G of the OpenGL Red Book 
 \end{equation}
 
 \bigskip
-\noindent First the size of the filter is normalized - scaling all the vertices so they lie in the range ${0 \cdots 1}$.
+First the size of the filter is normalized - scaling all the vertices so they lie in the range ${0 \cdots 1}$.
 It is assumed that the origin of the model's coordinate system is already in the centre of its top face.
 
 \begin{equation}
