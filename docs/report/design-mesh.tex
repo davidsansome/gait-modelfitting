@@ -41,6 +41,11 @@ Since there is no advantage to be gained from using a regularly spaced filter, i
 The final mesh was designed using Blender \ref{Blender} and can be seen in Figure \ref{ImprovedFilter}.
 
 
+\subsection{Model}
+
+Pendulae
+
+
 \subsection{Matrix transformations}
 
 In order to match the filter mesh to the voxel data, a matrix would need to be defined that transformed the points from their positions
@@ -88,7 +93,7 @@ The standard matrix transformations listed in Appendix G of the OpenGL Red Book 
 \end{equation}
 
 \bigskip
-\noindent First the size of the filter is normalized - scaling all the vertices so they lie in the range $0 \cdots 1$.
+\noindent First the size of the filter is normalized - scaling all the vertices so they lie in the range ${0 \cdots 1}$.
 It is assumed that the origin of the model's coordinate system is already in the centre of its top face.
 
 \begin{equation}
@@ -104,19 +109,26 @@ We assume that the length of the thighs and lower legs are equal, and are a quar
 \end{equation}
 
 Next we apply the relevant rotations to the limbs.
-The angles $\theta$ and $\alpha$ used here are the same as in Section \ref{sec:CC} - $\theta$ is the rotation of the leg along the direction of movement and $\alpha$ is the rotation perpendicular to the direction of movement.
+The angles $\theta$ and $\alpha$ used here are the same as in Section \ref{sec:CC} -
+$\theta$ is the rotation of the leg along the direction of movement and $\alpha$ is the rotation perpendicular to the direction of movement.
 
 \begin{equation}
 	\mathbf{M}_{3} = \mathbf{M}_{rotx}(\theta) * \mathbf{M}_{roty}(\alpha)
 \end{equation}
 
-Finally we apply a translation to move the model to the position of either the left or right leg.
-$w$ is the width, or extent along the x axis, of the subject as determined in Section \ref{LocatingCenter}.
+We now move the mesh to the estimated position of the subject's leg.
+Equation \ref{eqn:TransToHip} translates the mesh to the centre of the hip, and equations \ref{eqn:TransToRightLeg} and \ref{eqn:TransToLeftLeg} perform additional
+translations to the right or left leg position respectively.
+As determined in Section \ref{LocatingCenter} $w$ is the width, or extent along the x axis, of the subject,
+and $\mathbf{V}_{mean}$ is the mean filled voxel position.
 
 \begin{align}
-	\mathbf{M}_{4r} &= \mathbf{M}_{trans}(+\frac{w}{6}, 0, 0) \\
-	\mathbf{M}_{4l} &= \mathbf{M}_{trans}(-\frac{w}{6}, 0, 0)
+	\label{eqn:TransToHip}      \mathbf{M}_{4}  &= \mathbf{M}_{trans}(\mathbf{V}_{mean_{x}}, \mathbf{V}_{mean_{y}}, \frac{h}{2}) \\
+	\label{eqn:TransToRightLeg} \mathbf{M}_{5r} &= \mathbf{M}_{trans}(+\frac{w}{6}, 0, 0) \\
+	\label{eqn:TransToLeftLeg}  \mathbf{M}_{5l} &= \mathbf{M}_{trans}(-\frac{w}{6}, 0, 0)
 \end{align}
+
+TODO: Lower legs
 
 
 \subsection{Fitting with the data}
