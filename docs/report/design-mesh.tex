@@ -1,6 +1,6 @@
 \section{3D mesh fitting}
 
-\subsection{Designing the filter}
+\subsection{Designing a better filter}
 
 The previous approach for cross-correlation described in Section \ref{sec:CC} relies purely on matching filled voxels.
 It suffers from the problem that the filter tends to fit better when aligned diagonally across both legs - in the position where it can match the greatest number of voxels.
@@ -38,19 +38,15 @@ In the process of finding the best fitting with the data the filter will be scal
 By doing this any one-to-one relationship between pixels in the filter and voxels in the sample data will be lost.
 
 Since there is no advantage to be gained from using a regularly spaced filter, it was decided that a better form for the filter would be that of a mesh.
-The final mesh was designed using Blender \ref{Blender} and can be seen in Figure \ref{ImprovedFilter}.
+The final mesh was designed using Blender \cite{Blender} and can be seen in Figure \ref{ImprovedFilter}.
 
-
-\subsection{Model}
-
-Pendulae
 
 
 \subsection{Matrix transformations}
 
 In order to match the filter mesh to the voxel data, a matrix would need to be defined that transforms the points from their positions
 in mesh-space to their new positions in the voxel-space.
-The standard matrix transformations listed in Appendix G of the OpenGL Red Book \ref{RedBook} were used:
+The standard matrix transformations listed in Appendix G of the OpenGL Red Book \cite{RedBook} were used:
 
 \begin{equation}
 	\mathbf{M}_{trans}(v) =
