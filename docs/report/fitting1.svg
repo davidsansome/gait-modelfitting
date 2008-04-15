@@ -8,14 +8,18 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="744.09448819"
-   height="1052.3622047"
+   width="109.52464"
+   height="146.47702"
    id="svg2"
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
    sodipodi:docbase="/home/david/projects/3yp/docs/report"
    sodipodi:docname="fitting.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0"
+   inkscape:export-filename="/home/david/projects/3yp/docs/report/fitting.png"
+   inkscape:export-xdpi="694.28003"
+   inkscape:export-ydpi="694.28003">
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -26,9 +30,9 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="4.2440064"
-     inkscape:cx="132.23689"
-     inkscape:cy="947.86572"
+     inkscape:zoom="6.5061401"
+     inkscape:cx="54.762314"
+     inkscape:cy="73.238511"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -45,159 +49,159 @@
   <defs
      id="defs4">
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutM"
        inkscape:stockid="TriangleOutM">
       <path
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
-         transform="scale(0.4)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="scale(0.4,0.4)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3637" />
     </marker>
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutS"
        inkscape:stockid="TriangleOutS">
       <path
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
-         transform="scale(0.2)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="scale(0.2,0.2)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3640" />
     </marker>
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutL"
        inkscape:stockid="TriangleOutL">
       <path
-         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
-         transform="scale(0.8)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="scale(0.8,0.8)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3634" />
     </marker>
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutM1"
        inkscape:stockid="TriangleOutM1">
       <path
-         style="marker-start:none;stroke:#ffe88d;stroke-width:1.0pt;fill:#ffe88d;fill-rule:evenodd"
-         transform="scale(0.4)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill:#ffe88d;fill-rule:evenodd;stroke:#ffe88d;stroke-width:1pt;marker-start:none"
+         transform="scale(0.4,0.4)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3744" />
     </marker>
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutMI"
        inkscape:stockid="TriangleOutMI">
       <path
-         style="marker-start:none;stroke:#ffe88d;stroke-width:1.0pt;fill:#ffe88d;fill-rule:evenodd"
-         transform="scale(0.4)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill:#ffe88d;fill-rule:evenodd;stroke:#ffe88d;stroke-width:1pt;marker-start:none"
+         transform="scale(0.4,0.4)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3747" />
     </marker>
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutMd"
        inkscape:stockid="TriangleOutMd">
       <path
-         style="marker-start:none;stroke:#ffe88d;stroke-width:1.0pt;fill:#ffe88d;fill-rule:evenodd"
-         transform="scale(0.4)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill:#ffe88d;fill-rule:evenodd;stroke:#ffe88d;stroke-width:1pt;marker-start:none"
+         transform="scale(0.4,0.4)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3750" />
     </marker>
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutMY"
        inkscape:stockid="TriangleOutMY">
       <path
-         style="marker-start:none;stroke:#ffe88d;stroke-width:1.0pt;fill:#ffe88d;fill-rule:evenodd"
-         transform="scale(0.4)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill:#ffe88d;fill-rule:evenodd;stroke:#ffe88d;stroke-width:1pt;marker-start:none"
+         transform="scale(0.4,0.4)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3753" />
     </marker>
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutM12"
        inkscape:stockid="TriangleOutM12">
       <path
-         style="fill-rule:evenodd;marker-start:none;stroke:#b59b42;stroke-width:1.0pt;fill:#b59b42"
-         transform="scale(0.4)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill:#b59b42;fill-rule:evenodd;stroke:#b59b42;stroke-width:1pt;marker-start:none"
+         transform="scale(0.4,0.4)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3821" />
     </marker>
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutMIs"
        inkscape:stockid="TriangleOutMIs">
       <path
-         style="fill-rule:evenodd;marker-start:none;stroke:#b59b42;stroke-width:1.0pt;fill:#b59b42"
-         transform="scale(0.4)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill:#b59b42;fill-rule:evenodd;stroke:#b59b42;stroke-width:1pt;marker-start:none"
+         transform="scale(0.4,0.4)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3824" />
     </marker>
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutMdq"
        inkscape:stockid="TriangleOutMdq">
       <path
-         style="fill-rule:evenodd;marker-start:none;stroke:#b59b42;stroke-width:1.0pt;fill:#b59b42"
-         transform="scale(0.4)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill:#b59b42;fill-rule:evenodd;stroke:#b59b42;stroke-width:1pt;marker-start:none"
+         transform="scale(0.4,0.4)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3827" />
     </marker>
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutMYv"
        inkscape:stockid="TriangleOutMYv">
       <path
-         style="fill-rule:evenodd;marker-start:none;stroke:#b59b42;stroke-width:1.0pt;fill:#b59b42"
-         transform="scale(0.4)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill:#b59b42;fill-rule:evenodd;stroke:#b59b42;stroke-width:1pt;marker-start:none"
+         transform="scale(0.4,0.4)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3830" />
     </marker>
     <marker
-       refY="0.0"
+       refY="0"
        orient="auto"
-       refX="0.0"
+       refX="0"
        style="overflow:visible"
        id="TriangleOutMk"
        inkscape:stockid="TriangleOutMk">
       <path
-         style="marker-start:none;stroke:#052384;stroke-width:1.0pt;fill:#052384;fill-rule:evenodd"
-         transform="scale(0.4)"
-         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill:#052384;fill-rule:evenodd;stroke:#052384;stroke-width:1pt;marker-start:none"
+         transform="scale(0.4,0.4)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
          id="path3913" />
     </marker>
   </defs>
@@ -215,7 +219,8 @@
   <g
      inkscape:label="Layer 1"
      id="layer1"
-     inkscape:groupmode="layer">
+     inkscape:groupmode="layer"
+     transform="translate(-106.62064,-41.385161)">
     <rect
        transform="matrix(0.8660254,-0.5,0.5,0.8660254,0,0)"
        rx="0.31998807"
@@ -229,11 +234,11 @@
        id="rect3503"
        inkscape:transform-center-x="-34.293105" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:3,1;stroke-dashoffset:0"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3, 1;stroke-dashoffset:0;stroke-opacity:1"
        d="M 110,52.362183 L 110,187.36218"
        id="path3507" />
     <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;stroke-miterlimit:4;stroke-dasharray:3,1;stroke-dashoffset:0"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:3, 1;stroke-dashoffset:0;stroke-opacity:1"
        d="M 150,52.362183 L 150,187.36218"
        id="path3509" />
     <path
@@ -247,27 +252,27 @@
        id="path3519"
        sodipodi:ry="5" />
     <path
-       style="stroke-linejoin:miter;marker-end:url(#TriangleOutM12);stroke-opacity:1;fill-opacity:1;fill-rule:evenodd;stroke:#b59b42;stroke-linecap:butt;stroke-width:1px;fill:none"
+       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#b59b42;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#TriangleOutM12);stroke-opacity:1"
        id="path3523"
        sodipodi:nodetypes="cc"
        d="M 150,82.362183 L 163.58624,75.1897" />
     <path
-       style="stroke-linejoin:miter;marker-end:url(#TriangleOutMYv);stroke-opacity:1;fill-opacity:1;fill-rule:evenodd;stroke:#b59b42;stroke-linecap:butt;stroke-width:1px;fill:none"
+       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#b59b42;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#TriangleOutMYv);stroke-opacity:1"
        id="path3525"
        sodipodi:nodetypes="cc"
        d="M 150,157.36218 L 160.75872,150.1897" />
     <path
-       style="stroke-linejoin:miter;marker-end:url(#TriangleOutMdq);stroke-opacity:1;fill-opacity:1;fill-rule:evenodd;stroke:#b59b42;stroke-linecap:butt;stroke-width:1px;fill:none"
+       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#b59b42;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#TriangleOutMdq);stroke-opacity:1"
        id="path3527"
        sodipodi:nodetypes="cc"
        d="M 110,157.36218 L 150,131.60346" />
     <path
-       style="stroke-linejoin:miter;marker-end:url(#TriangleOutMIs);stroke-opacity:1;fill-opacity:1;fill-rule:evenodd;stroke:#b59b42;stroke-linecap:butt;stroke-width:1px;fill:none"
+       style="fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#b59b42;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#TriangleOutMIs);stroke-opacity:1"
        id="path3529"
        sodipodi:nodetypes="cc"
        d="M 110,82.362183 L 118.58624,77.362183" />
     <path
-       style="stroke-linejoin:miter;marker-end:url(#TriangleOutMk);stroke-opacity:1;fill-rule:evenodd;stroke:#052384;stroke-linecap:butt;stroke-width:1px;fill:none"
+       style="fill:none;fill-rule:evenodd;stroke:#052384;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#TriangleOutMk);stroke-opacity:1"
        id="path3531"
        sodipodi:nodetypes="cc"
        d="M 130,157.36218 L 161.93686,136.1322" />
