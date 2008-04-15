@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="553.23047"
+   height="371.39758"
+   id="svg4738"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="/home/david/projects/3yp/docs/report"
+   sodipodi:docname="cachecollisions.svg"
+   version="1.0"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/david/projects/3yp/docs/report/cachecollisions.png"
+   inkscape:export-xdpi="242.32791"
+   inkscape:export-ydpi="242.32791">
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="336.86527"
+     inkscape:cy="176.58278"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:grid-points="true"
+     inkscape:grid-bbox="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1155"
+     inkscape:window-x="0"
+     inkscape:window-y="0" />
+  <defs
+     id="defs4740">
+    <marker
+       refY="0"
+       orient="auto"
+       refX="0"
+       style="overflow:visible"
+       id="TriangleOutL"
+       inkscape:stockid="TriangleOutL">
+      <path
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;marker-start:none"
+         transform="scale(0.8,0.8)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
+         id="path3385" />
+    </marker>
+    <marker
+       refY="0"
+       orient="auto"
+       refX="0"
+       style="overflow:visible"
+       id="TriangleOutLs"
+       inkscape:stockid="TriangleOutLs">
+      <path
+         style="fill:#ff0000;fill-rule:evenodd;stroke:#ff0000;stroke-width:1pt;marker-start:none"
+         transform="scale(0.8,0.8)"
+         d="M 5.77,0 L -2.88,5 L -2.88,-5 L 5.77,0 z "
+         id="path4859" />
+    </marker>
+  </defs>
+  <metadata
+     id="metadata4743">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     id="layer1"
+     inkscape:groupmode="layer"
+     transform="translate(-105.42773,-46.4646)">
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4746"
+       y="55.581787"
+       x="105.36914"><tspan
+         sodipodi:role="line"
+         id="tspan4748"
+         y="55.581787"
+         x="105.36914">Thread 1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:bold;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4750"
+       y="55.581787"
+       x="420.47754"><tspan
+         sodipodi:role="line"
+         id="tspan4752"
+         y="55.581787"
+         x="420.47754">Thread 2</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4754"
+       y="92.362183"
+       x="155"><tspan
+         sodipodi:role="line"
+         id="tspan4756"
+         y="92.362183"
+         x="155">Start lookup for (x, y, z)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4758"
+       y="112.36218"
+       x="155"><tspan
+         sodipodi:role="line"
+         id="tspan4760"
+         y="112.36218"
+         x="155">Query cache</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999994px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 135,62.600372 L 135,417.36218"
+       id="path4780" />
+    <rect
+       rx="5"
+       style="opacity:1;fill:#ffe4a6;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       ry="5"
+       y="82.362183"
+       x="125"
+       height="210"
+       width="20"
+       id="rect4782" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4784"
+       y="132.36218"
+       x="165"><tspan
+         sodipodi:role="line"
+         id="tspan4788"
+         y="132.36218"
+         x="165">No value cached, so calculate</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4792"
+       y="267.36218"
+       x="165"><tspan
+         sodipodi:role="line"
+         id="tspan4794"
+         y="267.36218"
+         x="165">Calculation finished</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4796"
+       y="287.36218"
+       x="155"><tspan
+         sodipodi:role="line"
+         id="tspan4798"
+         y="287.36218"
+         x="155">Store value in cache</tspan></text>
+    <rect
+       rx="5"
+       style="opacity:1;fill:#caebff;fill-opacity:1;stroke:#000000;stroke-width:0.99999988;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       ry="5.000001"
+       y="117.36462"
+       x="135"
+       height="155.01416"
+       width="20"
+       id="rect4802" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4804"
+       y="162.36218"
+       x="470"><tspan
+         sodipodi:role="line"
+         id="tspan4806"
+         y="162.36218"
+         x="470">Start lookup for (x, y, z)</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4808"
+       y="182.36218"
+       x="470"><tspan
+         sodipodi:role="line"
+         id="tspan4810"
+         y="182.36218"
+         x="470">Query cache</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 450,62.36218 L 450,417.35471"
+       id="path4812" />
+    <rect
+       rx="5"
+       style="opacity:1;fill:#ffe4a6;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       ry="5"
+       y="152.36218"
+       x="440"
+       height="210"
+       width="20"
+       id="rect4814" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4816"
+       y="202.36218"
+       x="480"><tspan
+         sodipodi:role="line"
+         id="tspan4818"
+         y="202.36218"
+         x="480">No value cached, so calculate</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4820"
+       y="337.36218"
+       x="480"><tspan
+         sodipodi:role="line"
+         id="tspan4822"
+         y="337.36218"
+         x="480">Calculation finished</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       id="text4824"
+       y="357.36218"
+       x="470"><tspan
+         sodipodi:role="line"
+         id="tspan4826"
+         y="357.36218"
+         x="470">Store value in cache</tspan></text>
+    <rect
+       rx="5"
+       style="opacity:1;fill:#caebff;fill-opacity:1;stroke:#000000;stroke-width:0.99999988;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       ry="5.000001"
+       y="187.36462"
+       x="450"
+       height="155.01416"
+       width="20"
+       id="rect4828" />
+    <g
+       id="g4842"
+       transform="translate(20,-9.9707642)">
+      <rect
+         rx="5"
+         style="opacity:1;fill:#fec9c1;fill-opacity:1;stroke:#000000;stroke-width:1.00000012;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         ry="5.0000014"
+         y="337.36218"
+         x="190"
+         height="79.970764"
+         width="169.98576"
+         id="rect4840" />
+      <text
+         xml:space="preserve"
+         style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+         id="text4830"
+         y="359.3212"
+         x="275.3884"><tspan
+           sodipodi:role="line"
+           id="tspan4832"
+           y="359.3212"
+           x="275.3884">Thread 2 is overwriting</tspan><tspan
+           sodipodi:role="line"
+           id="tspan4834"
+           y="374.3212"
+           x="275.3884">the result that Thread 1</tspan><tspan
+           sodipodi:role="line"
+           id="tspan4836"
+           y="389.3212"
+           x="275.3884">has already written to</tspan><tspan
+           sodipodi:role="line"
+           id="tspan4838"
+           y="404.3212"
+           x="275.3884">the cache.</tspan></text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#TriangleOutLs);stroke-opacity:1"
+       d="M 380,367.36218 L 425,352.36218"
+       inkscape:connector-type="polyline"
+       id="path4850"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>

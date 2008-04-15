@@ -93,7 +93,7 @@ First the size of the filter is normalised - scaling all the vertices so they li
 It is assumed that the origin of the model's coordinate system is already in the centre of its top face.
 
 \begin{equation}
-	\mathbf{M}_{1} = \mathbf{M}_{scale}(\max \{\text{modelSize}_{x}, \text{modelSize}_{y}, \text{modelSize}_{z} \})
+	\mathbf{M}_{1} = \mathbf{M}_{scale}(\frac{1}{\max \{\text{modelSize}_{x}, \text{modelSize}_{y}, \text{modelSize}_{z} \}})
 \end{equation}
 
 Then the filter is scaled up to voxel-space.
@@ -168,7 +168,7 @@ Yellow circles are trying to match edge voxels, and blue circles are trying to m
 	\subfloat[Low energy fitting]{\label{FittingImageLow}\includegraphics[height=6cm]{fitting2.png}}
 	\caption{Potential fittings of our mesh filter.
 		The filled green rectangle represents the voxels of a subject's thigh,
-		and the coloured circles show a select number of nodes in the mesh.}
+		and the coloured circles show a few of the nodes in the mesh.}
 	\label{FittingImages}
 \end{figure}
 
@@ -218,7 +218,7 @@ In order to visualise the data we have fixed the lower leg parameters ($\alpha_2
 
 \begin{figure}[tb]
 	\centering
-	\includegraphics[height=7cm]{problems/set81frame96-fixed-leftthigh.png}
+	\includegraphics[width=\textwidth]{problems/set81frame96-fixed-leftthigh.png}
 	\caption{Energy plot of Frame 96 from Sample 81.
 		Darker colours represent lower energies.}
 	\label{EnergyPlot}
@@ -226,33 +226,5 @@ In order to visualise the data we have fixed the lower leg parameters ($\alpha_2
 
 We can see from the plot that there is a minimum around the centre - where $(\alpha_1, \theta_1) = (0, 0)$ and the thigh is pointing straight down.
 
-\subsection{Optimisations}
+TODO: How do we search for the closest point
 
-The exhaustive search implementation shown in Listing \ref{leastsquarescode} takes a very long time to iterate over the entire search space and produce a result.
-Several tricks were employed to reduce execution time from several hours per frame to a couple of seconds.
-
-\bigskip
-\noindent MapReduce \cite{MapReduce} is a technique developed at Google to split up tasks and spread them across large computational clusters.
-It is suitable for big tasks that can be split into small chunks and computed independently of each other.
-A computational cluster is slight overkill for this application, but MapReduce can be applied effectively to multi-core systems - tasks are run in individual threads and each thread runs on its own processor.
-Theoretically, in a dual-core system this would bring about a maximum speed increase of 2.
-
-The natural place to split our least-squares algorithm is the calling of the modelEnergy function.
-The energy of the filter at each configuration (set of $\alpha_1$, $\alpha_2$, $\theta_1$, $\theta_2$) can be calculated in parallel as each result is independent of any of the others.
-modelEnergy would become known as our ``map'' function - it takes a piece of input data (the parameters) and maps them to a result (the energy of the model with those parameters).
-We also need to introduce a ``reduce'' function.
-This should take two results from the map functions and combine them into one - our implementation would eliminate the one with the highest energy and keep the one with the lowest energy.
-In this way all the intermediate results from the map functions get reduced into one final result which contains the parameters that fit best.
-Figure \ref{MapReduceDiagram} shows how this idea works.
-
-Scalability.
-
-\begin{figure}[tb]
-	\centering
-	\includegraphics[width=\textwidth]{mapreduce.png}
-	\caption{A diagram showing how MapReduce may be used to parallelize and speed up modelfitting.}
-	\label{MapReduceDiagram}
-\end{figure}
-
-Describe least squares fitting.
-Implementation details - mapreduce, lookup caching, multiresolution.  Show table of times
