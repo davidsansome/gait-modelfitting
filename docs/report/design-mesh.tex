@@ -22,7 +22,7 @@ These edge voxels wouldn't match up with the edge-seeking points in the new filt
 	\centering
 	\includegraphics[width=5cm]{thighmodel.png}
 	\caption{The cross-correlation filter rendered in the Blender application.
-		Although not shown in this image, the outer points in the mesh are colored white to indicate that they should
+		Although not shown in this image, the outer points in the mesh are coloured white to indicate that they should
 		match only edge voxels.}
 	\label{ImprovedFilter}
 \end{figure}
@@ -33,7 +33,7 @@ and those in the middle that should match filled voxels through the centre of th
 
 One important thing to consider about this idea is whether the points in the filter should be spaced in a regular grid.
 In the form shown in Figure \ref{ImprovedFilterCross} the points have an arbitrary spacing and are very different from the original filter shown in Figure \ref{ThighFilterCrossSections}.
-A filter with points arranged in a regular grid is not necesairly advantageous when matching against discrete voxel data due to the rotations and transformations that the filter will undergo.
+A filter with points arranged in a regular grid is not necessarily advantageous when matching against discrete voxel data due to the rotations and transformations that the filter will undergo.
 In the process of finding the best fitting with the data the filter will be scaled to fit the proportions of the subject, and rotated to match the angle of the leg.
 By doing this any one-to-one relationship between pixels in the filter and voxels in the sample data will be lost.
 
@@ -89,7 +89,7 @@ The standard matrix transformations listed in Appendix G of the OpenGL Red Book 
 \end{equation}
 
 \bigskip
-First the size of the filter is normalized - scaling all the vertices so they lie in the range ${0 \cdots 1}$.
+First the size of the filter is normalised - scaling all the vertices so they lie in the range ${0 \cdots 1}$.
 It is assumed that the origin of the model's coordinate system is already in the centre of its top face.
 
 \begin{equation}
@@ -148,26 +148,111 @@ These equations give us a composite transformation that describes the lower legs
 
 
 
-\subsection{Fitting with the data}
+\subsection{Fitting to the data}
 
-This spacing would lend itself more towards a more traditional linear regression approach such as the least squares method used by Zhihui et al. \cite{LinearModelFitting}.
+In our previous approach in section TODO, a program would iterate over all the pixels in the filter and sample the
+voxel data in the corresponding location.
+The value of the filter (a real number between 0 and 1) would be multiplied by the value of the voxel (integer 0 or 1 - representing empty or filled) to produce a ``score''.
+The scores of all these samples would then be summed to produce the final fitting score for that orientation.
 
-\begin{figure}[b]
+A better approach would be a more traditional linear regression method such as least squares, as used by Zhihui et al. \cite{LinearModelFitting}.
+Figure \ref{FittingImages} shows a two-dimensional example to demonstrate this least squares fitting, however three dimensional fitting works in exactly the same way.
+The goal is to fit a mesh (shown as black dashed lines) to voxel data in the shape of a leg (shown as a filled green rectangle).
+The mesh contains a number of nodes which are shown in the diagrams as filled circles.
+Yellow circles are trying to match edge voxels, and blue circles are trying to match filled non-edge voxels.
+
+\begin{figure}[tb]
 	\centering
 	\subfloat[High energy fitting]{\label{FittingImageHigh}\includegraphics[height=6cm]{fitting1.png}}
 	\qquad
-	\subfloat[Low energy fitting]{\label{FittingImagesLow}\includegraphics[height=6cm]{fitting2.png}}
+	\subfloat[Low energy fitting]{\label{FittingImageLow}\includegraphics[height=6cm]{fitting2.png}}
 	\caption{Potential fittings of our mesh filter.
 		The filled green rectangle represents the voxels of a subject's thigh,
 		and the coloured circles show a select number of nodes in the mesh.}
 	\label{FittingImages}
 \end{figure}
 
+An algorithm iterates over the six nodes in the mesh, and for each one searches for the nearest suitable voxel (for the yellow nodes, only edge voxels are suitable).
+The first potential fitting, Figure \ref{FittingImageHigh}, has the mesh orientated straight down ($\theta = 0$) and only one of the nodes - the blue one at the top - lies directly on top of a suitable voxel.
+The sum of the squared distances between each of the nodes and its closest suitable voxel is taken, and this is used as the overall ``energy'' of that orientation.
+Figure \ref{FittingImageHigh} has a high energy as the distances between the nodes and their voxels is very large.
+Figure \ref{FittingImageLow} has an energy of $0$, as each node lies directly on top of a suitable voxel.
+
+To find the parameters that give the best fit for an individual frame, one approach would be to iterate over all possible parameters and accept the one that has the least energy.
+Such an implementation is shown in Listing \ref{leastsquarescode}.
+
+\begin{lstlisting}[language=c,morekeywords={step,function,foreach,in},frame=single,mathescape=true,caption={Least squares fitting pseudo-code},label={leastsquarescode},float=[tb]]
+function fit
+	$range_\theta = \frac{\pi}{4}$
+	$range_\alpha = \frac{\pi}{32}$
+	$resolution_\theta = 41$
+	$resolution_\alpha = 11$
+	
+	$bestEnergy$ = $\infty$
+	
+	for $\theta_1 = \{-range_\theta \cdots +range_\theta\}$ step $\frac{2range_\theta}{resolution_\theta}$
+		for $\theta_2 = \{-range_\theta \cdots +range_\theta\}$ step $\frac{2range_\theta}{resolution_\theta}$
+			for $\alpha_1 = \{-range_\alpha \cdots +range_\alpha\}$ step $\frac{2range_\alpha}{resolution_\alpha}$
+				for $\alpha_2 = \{-range_\alpha \cdots +range_\alpha\}$ step $\frac{2range_\alpha}{resolution_\alpha}$
+					if modelEnergy($\theta_1$, $\theta_2$, $\alpha_1$, $\alpha_2$) < $bestEnergy$
+						$bestEnergy$ = modelEnergy($\theta_1$, $\theta_2$, $\alpha_1$, $\alpha_2$)
+						$bestParams$ = ($\theta_1$, $\theta_2$, $\alpha_1$, $\alpha_2$)
+	
+	return $bestParams$
+
+function modelEnergy($params$)
+	$energy = 0$
+	foreach $node$ in transform($modelMesh$, $params$)
+		if isEdgeNode($node$)
+			$energy$ += pow(distanceToEdgeVoxel($node$), 2)
+		else
+			$energy$ += pow(distanceToVoxel($node$), 2)
+	
+	return $energy$
+\end{lstlisting}
+
+We can store the energies at each orientation of the model and use them to plot a graph.
+Figure \ref{EnergyPlot} shows the energy for the left thigh in one frame of a sequence.
+Note that the search space is actually four-dimensional and hence is difficult to plot on a two-dimensional surface.
+In order to visualise the data we have fixed the lower leg parameters ($\alpha_2$ and $\theta_2$) and drawn a slice of $\alpha_1$ against $\theta_1$.
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[height=7cm]{problems/set81frame96-fixed-leftthigh.png}
+	\caption{Energy plot of Frame 96 from Sample 81.
+		Darker colours represent lower energies.}
+	\label{EnergyPlot}
+\end{figure}
+
+We can see from the plot that there is a minimum around the centre - where $(\alpha_1, \theta_1) = (0, 0)$ and the thigh is pointing straight down.
+
 \subsection{Optimisations}
 
-Why others were bad idea.
-Refer to literature that uses edge matching points.
-Show the model in blender.
-Describe matrix transformations.
+The exhaustive search implementation shown in Listing \ref{leastsquarescode} takes a very long time to iterate over the entire search space and produce a result.
+Several tricks were employed to reduce execution time from several hours per frame to a couple of seconds.
+
+\bigskip
+\noindent MapReduce \cite{MapReduce} is a technique developed at Google to split up tasks and spread them across large computational clusters.
+It is suitable for big tasks that can be split into small chunks and computed independently of each other.
+A computational cluster is slight overkill for this application, but MapReduce can be applied effectively to multi-core systems - tasks are run in individual threads and each thread runs on its own processor.
+Theoretically, in a dual-core system this would bring about a maximum speed increase of 2.
+
+The natural place to split our least-squares algorithm is the calling of the modelEnergy function.
+The energy of the filter at each configuration (set of $\alpha_1$, $\alpha_2$, $\theta_1$, $\theta_2$) can be calculated in parallel as each result is independent of any of the others.
+modelEnergy would become known as our ``map'' function - it takes a piece of input data (the parameters) and maps them to a result (the energy of the model with those parameters).
+We also need to introduce a ``reduce'' function.
+This should take two results from the map functions and combine them into one - our implementation would eliminate the one with the highest energy and keep the one with the lowest energy.
+In this way all the intermediate results from the map functions get reduced into one final result which contains the parameters that fit best.
+Figure \ref{MapReduceDiagram} shows how this idea works.
+
+Scalability.
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=\textwidth]{mapreduce.png}
+	\caption{A diagram showing how MapReduce may be used to parallelize and speed up modelfitting.}
+	\label{MapReduceDiagram}
+\end{figure}
+
 Describe least squares fitting.
 Implementation details - mapreduce, lookup caching, multiresolution.  Show table of times
