@@ -204,9 +204,9 @@ function modelEnergy($params$)
 	$energy = 0$
 	foreach $node$ in transform($modelMesh$, $params$)
 		if isEdgeNode($node$)
-			$energy$ += pow(distanceToEdgeVoxel($node$), 2)
+			$energy$ += distanceToEdgeVoxel($node$)^2
 		else
-			$energy$ += pow(distanceToVoxel($node$), 2)
+			$energy$ += distanceToVoxel($node$)^2
 	
 	return $energy$
 \end{lstlisting}

@@ -1,7 +1,87 @@
-
 \section{Classification}
-Talk about FFTs.
-How do we decide where to start from?  Curve fitting.
+
+After each frame of a sample has been through the modelfitting process, we can analyse the sequence as a whole
+and produce a series of numbers which describe the subject's gait.
+If we are successful, this series of numbers will be unique to each subject and can be used as the basis for classifying a new sample.
+
+
+\subsection{Extracting a gait cycle}
+
+Before we can perform any kind of analysis on a sample we need to identify and extract one gait cycle.
+Figure TODO shows a typical plot of the change in the value of $\theta_1$ over time.
+The graph resembles a sinosoid which we intuitavely know to be correct - when we walk our thighs swing forwards and backwards like a pendulum.
+A gait cycle is usually defined as beginning and ending with heel strikes of the same foot (TODO: citation), which in Figure TODO would be two subsequent maximums of the sinosoid.
+We however are going to begin our gait cycle when the thigh crosses the vertical, ie. when $\theta = 0$.
+
+We can find this point where the thigh crosses the vertical by fitting a function $f_1(t)$ to our data points and finding where $f_1(t) = 0$.
+The function we use is shown in Equation \ref{eqn:CurveFitting}:
+
+\begin{equation}
+	f_1(t) = d + a \sin(\frac{2 \pi t}{\xi} + \phi)
+	\label{eqn:CurveFitting}
+\end{equation}
+
+The DC offset, $d$, and amplitude, $a$, were fairly similar for all subjects, so were kept fixed at $d = 0.05$ and $a = 0.55$.
+Least squares regression was used to find the values for $\xi$, the period of the gait cycle, and $\phi$, the phase offset.
+
+Equation \ref{eqn:CurveFitting} above describes the general motion of only one of the thighs.
+We can increase accuracy by including the motion of the other thigh as well.
+We make use of the observation that the motion of the two thighs are $90^\circ$ out of phase (see Figure TODO):
+
+\begin{equation}
+	f_2(t) = d + a \sin(\frac{2 \pi t}{\xi} + \phi + \pi)
+	\label{eqn:CurveFitting2}
+\end{equation}
+
+The implementation used for our least squares fitting is similar to that in Listing \ref{leastsquarescode}, however instead of looking over a four-dimensional parameter space we are only interested in $\xi$ and $\phi$.
+The ranges used for these variables are $\xi = [30, 40]$ and $\phi = [0, 2\pi]$.
+The assumption that the period of one gait cycle lies in this range $[30, 40]$ was arrived at arbitrarilly, but holds true for all the subjects in the database.
+
+The energy function used to determine the suitability of each set of parameters is worth mentioning as it has to take into account two curves and two sets of data.
+It is shown in Listing \ref{curvefittingenergy}.
+This function is used in a similar way to $modelEnergy$ in Listing \ref{leastsquarescode}.
+
+\begin{lstlisting}[firstnumber=auto,language=c,morekeywords={step,function,foreach,in},frame=single,mathescape=true,caption={Energy function pseudo-code},label={curvefittingenergy},float=[tb]]
+function energy($\xi$, $\phi$)
+	$d = 0.05$
+	$a = 0.55$
+	
+	$energy = 0$
+	foreach $t$
+		$expected_{left} = d + a \sin(\frac{2 \pi t}{\xi} + \phi)$
+		$expected_{right} = d + a \sin(\frac{2 \pi t}{\xi} + \phi + \pi)$
+		$actual_{left}$ = $\theta_1$[$t$]
+		$actual_{right}$ = $\theta_2$[$t$]
+		
+		$energy$ += $(expected_{left} - actual_{left})^2$
+		$energy$ += $(expected_{right} - actual_{right})^2$
+	
+	return $energy$
+\end{lstlisting}
+
+Once we have obtained values for $\xi$ and $\phi$ we can find the time of each zero-crossing like so:
+
+\begin{equation}
+	z_i = \frac{\xi \sin^{-1}(-\frac{d}{a} - \phi)}{2\pi} + i\pi
+\end{equation}
+
+
+\subsection{Discrete fourier transforms}
+
+
+
+\begin{equation}
+	X_i = \sum_{n=0}^{N-1} x_n e^{-\frac{2 \pi i}{N} i n} \quad \quad i = 0, \dots, N-1
+\end{equation}
+
+
+What does it do?
+
+Implementation: FFTW library \cite{FFTW}
 Assume that there's one period and the start is free of noise.  Ref set 4.
+
+\subsection{Classification methods}
 Show details of different classification approaches.
 Graphs in complex plane to determine distance.
+
+Take the polar distance instead!
