@@ -88,17 +88,42 @@ Once we have obtained values for $\xi$ and $\phi$ we can find the time $z$ of ea
 Now that we can extract a gait cycle from each sample we need to apply the DFT (Discrete Fourier Transform) to them to obtain information about the frequency components of the subject's gait.
 Previous work (TODO: citations) have suggested that these frequency components can be used to form an identifying signature for the subject.
 
+The DFT is defined by Equation \ref{eqn:DFT}.
+A series $x$ of $N$ complex numbers is transformed into another series $X$ of $N$ complex numbers.
+The number $X_i$ represents the $i^\text{th}$ multiple of the fundamental frequency (which is defined as $\frac{1}{N}$).
+
 \begin{equation}
-	X_i = \sum_{n=0}^{N-1} x_n e^{-\frac{2 \pi i}{N} i n} \quad \quad i = 0, \dots, N-1
+	X_i = \sum_{k=0}^{N-1} x_k e^{-\frac{2 \pi i}{N} i k} \quad \quad i = 0, \dots, N-1
+	\label{eqn:DFT}
 \end{equation}
 
+Our input data to the DFT is purely real valued, so the output will obey the symmetry:
 
-What does it do?
+\begin{equation}
+	X_i = X_{N-k}^*
+\end{equation}
 
-Implementation: FFTW library \cite{FFTW}
-Assume that there's one period and the start is free of noise.  Ref set 4.
+We can therefore disregard the second half of the output, as it will contain the same information as the first half.
+
+The FFTW library \cite{FFTW} was used in the Modelfitter application to calculate the DFT.
+Some typical results are shown in Figure \ref{FFTResults}.
+
+\begin{figure}[tb]
+	\centering
+	\subfloat[Magnitude]{\includegraphics[width=5cm]{dft-leftthightheta-magnitude.png}}
+	\quad
+	\subfloat[Phase]{\includegraphics[width=5cm]{dft-leftthightheta-phase.png}}
+	\caption{Results of taking the DFT of $\theta_1$ from one gait cycle of Sample 81.}
+	\label{FFTResults}
+\end{figure}
+
 
 \subsection{Classification methods}
+
+A variety of methods for classifying the subjects were tried.
+The aim of any method is to correctly identify 
+
+
 Show details of different classification approaches.
 Graphs in complex plane to determine distance.
 
