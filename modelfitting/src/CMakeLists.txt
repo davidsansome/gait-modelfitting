@@ -22,6 +22,7 @@ SET(MODELFITTING-SOURCES
 	people.cpp
 	listmodels.cpp
 	signature.cpp
+	shader.cpp
 )
 
 # Header files that have Q_OBJECT in
@@ -48,6 +49,7 @@ SET(MODELFITTING-UI
 # Resource files
 SET(MODELFITTING-RESOURCES
 	../data/resources.qrc
+	../shaders/shaders.qrc
 )
 
 SET (EXECUTABLE_OUTPUT_PATH ..)
@@ -81,6 +83,7 @@ TARGET_LINK_LIBRARIES(modelfitting
 	-lcommon
 	${OPENGL_LIBRARIES}
 	${FFTWD_LIB}
+	-lSDL_image
 )
 
 INSTALL(TARGETS modelfitting

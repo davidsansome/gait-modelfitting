@@ -1,14 +1,18 @@
+#include "opengl.h"
 #include "glview.h"
 #include "frameinfo.h"
 #include "model.h"
-#include "glwin.h"
+#include "shader.h"
 
 #include <QDebug>
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QGLFramebufferObject>
 #include <mesh.hh>
 
 QGLWidget* GLView::s_contextWidget = NULL;
+Shader* GLView::s_voxelShader = NULL;
+QList<Shader*> GLView::s_ppShaders;
 
 GLView::GLView(QWidget* parent)
 	: QGLWidget(parent, s_contextWidget),
@@ -19,7 +23,8 @@ GLView::GLView(QWidget* parent)
 	  m_zenith(0.0),
 	  m_center(0.0, 0.0, 100.0),
 	  m_showModel(true),
-	  m_showVoxelData(true)
+	  m_showVoxelData(true),
+	  m_sceneFbo(NULL)
 {
 	if (!s_contextWidget)
 		s_contextWidget = this;
@@ -27,6 +32,8 @@ GLView::GLView(QWidget* parent)
 
 GLView::~GLView()
 {
+	delete m_sceneFbo;
+	qDeleteAll(m_blurTargets);
 }
 
 void GLView::setViewType(ViewType type)
@@ -34,38 +41,160 @@ void GLView::setViewType(ViewType type)
 	m_viewType = type;
 }
 
+void GLView::recreateFbos()
+{
+	delete m_sceneFbo;
+	m_sceneFbo = new QGLFramebufferObject(nextPowerOf2(width()), nextPowerOf2(height()), QGLFramebufferObject::Depth);
+	glBindTexture(GL_TEXTURE_2D, m_sceneFbo->texture());
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	qDeleteAll(m_blurTargets);
+	m_blurTargets.clear();
+	
+	QSize size(m_sceneFbo->size() / 2);
+	for (int i=0 ; i<3 ; ++i)
+	{
+		size /= 2;
+		
+		QGLFramebufferObject* fbo = new QGLFramebufferObject(size, QGLFramebufferObject::Depth);
+		glBindTexture(GL_TEXTURE_2D, fbo->texture());
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
+		m_blurTargets << fbo;
+	}
+}
+
 void GLView::initializeGL()
 {
 	setupWinGLFunctions();
 	
 	glEnable(GL_NORMALIZE);
-	//glEnable(GL_CULL_FACE);
-	
-	// Lighting
-	static GLfloat pos1[4] = {500.0, -1000.0, 300.0, 1.0};
-	static GLfloat amb[4] = { 0.2, 0.2, 0.2, 1.0 };
-	static GLfloat diff[4] = { 0.7, 0.7, 0.7, 1.0 };
-	static GLfloat spec[4] = { 1.0, 1.0, 1.0, 1.0 };
-	static GLfloat gamb[4] = { 0.5, 0.5, 0.5, 1.0 };
-	
-	glLightfv(GL_LIGHT0, GL_AMBIENT, amb);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diff);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, spec);
-	glLightfv(GL_LIGHT0, GL_POSITION, pos1);
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, gamb);
-	glEnable(GL_LIGHT0);
+	glEnable(GL_DEPTH_TEST);
+	glShadeModel(GL_FLAT);
 	
 	m_quadric = gluNewQuadric();
+	
+	if (!s_voxelShader)
+	{
+		s_voxelShader = new Shader(":voxels_vert.glsl", ":voxels_frag.glsl");
+		for (int i=0 ; i<5 ; ++i)
+			s_ppShaders << new Shader(":pp_vert.glsl", ":pp_pass" + QString::number(i) + ".glsl");
+	}
 }
 
 void GLView::resizeGL(int width, int height)
 {
-	float aspectRatio = float(width) / height;
-	glViewport(0, 0, width, height);
+	recreateFbos();
+}
+
+void GLView::paintGL()
+{
+	// Draw the scene to the scene FBO
+	m_sceneFbo->bind();
+	glViewport(0, 0, size());
+	drawScene();
+	m_sceneFbo->release();
 	
+	m_blurTargets[0]->bind();
+	glViewport(0, 0, m_blurTargets[0]->size());
+	drawScene();
+	m_blurTargets[0]->release();
+	
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
+	
+	// Blur the bright bits
+	blurPass(s_ppShaders[0], m_blurTargets[0], m_blurTargets[0]);
+	blurPass(s_ppShaders[1], m_blurTargets[0], m_blurTargets[0]);
+	blurPass(s_ppShaders[2], m_blurTargets[0], m_blurTargets[0]);
+	blurPass(s_ppShaders[1], m_blurTargets[0], m_blurTargets[0]);
+	blurPass(s_ppShaders[2], m_blurTargets[0], m_blurTargets[0]);
+	blurPass(s_ppShaders[1], m_blurTargets[0], m_blurTargets[0]);
+	blurPass(s_ppShaders[2], m_blurTargets[0], m_blurTargets[0]);
+	blurPass(s_ppShaders[1], m_blurTargets[0], m_blurTargets[0]);
+	blurPass(s_ppShaders[2], m_blurTargets[0], m_blurTargets[0]);
+	blurPass(s_ppShaders[1], m_blurTargets[0], m_blurTargets[0]);
+	
+	// Downsample
+	blurPass(s_ppShaders[2], m_blurTargets[0], m_blurTargets[1]);
+	blurPass(s_ppShaders[1], m_blurTargets[1], m_blurTargets[1]);
+	
+	blurPass(s_ppShaders[2], m_blurTargets[0], m_blurTargets[2]);
+	blurPass(s_ppShaders[1], m_blurTargets[2], m_blurTargets[2]);
+	
+	// Draw back to the screen
+	glViewport(0, 0, width(), height());
+	s_ppShaders[4]->bind();
+	
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, m_sceneFbo->texture());
+	
+	glActiveTexture(GL_TEXTURE1);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, m_blurTargets[0]->texture());
+	
+	glActiveTexture(GL_TEXTURE2);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, m_blurTargets[1]->texture());
+	
+	glActiveTexture(GL_TEXTURE3);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, m_blurTargets[2]->texture());
+	
+	glUniform1i(s_ppShaders[4]->uniformLocation("scene"), 0);
+	glUniform1i(s_ppShaders[4]->uniformLocation("blur1"), 1);
+	glUniform1i(s_ppShaders[4]->uniformLocation("blur2"), 2);
+	glUniform1i(s_ppShaders[4]->uniformLocation("blur3"), 3);
+	
+	drawQuad(float(width()) / m_sceneFbo->width(), float(height()) / m_sceneFbo->height());
+	
+	glDisable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE2);
+	glDisable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE1);
+	glDisable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
+	glDisable(GL_TEXTURE_2D);
+	
+	glEnable(GL_DEPTH_TEST);
+}
+
+void GLView::blurPass(Shader* shader, QGLFramebufferObject* source, QGLFramebufferObject* target)
+{
+	glViewport(0, 0, target->size());
+	target->bind();
+	
+	shader->bind();
+	glBindTexture(GL_TEXTURE_2D, source->texture());
+	glUniform1i(shader->uniformLocation("source"), 0);
+	glUniform2f(shader->uniformLocation("pixelStep"), 1.0 / target->width(), 1.0 / target->height());
+	drawQuad(1.0, 1.0);
+	
+	target->release();
+}
+
+void GLView::downsamplePass(QGLFramebufferObject* source, QGLFramebufferObject* target)
+{
+	glViewport(0, 0, target->size());
+	target->bind();
+	
+	s_ppShaders[3]->bind();
+	glBindTexture(GL_TEXTURE_2D, source->texture());
+	glUniform1i(s_ppShaders[3]->uniformLocation("source"), 0);
+	drawQuad(1.0, 1.0);
+	
+	target->release();
+}
+
+void GLView::setupMatrices()
+{
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
+	const float aspectRatio = float(width()) / height();
 	const float zNear = 1.0;
 	const float zFar = 2000.0;
 	
@@ -83,24 +212,22 @@ void GLView::resizeGL(int width, int height)
 		
 		if (aspectRatio < x/y)
 		{
-			float scale = x/width;
-			glOrtho(-x/2.0, x/2.0, -scale*height/2.0, scale*height/2.0, zNear, zFar);
+			float scale = x/width();
+			glOrtho(-x/2.0, x/2.0, -scale*height()/2.0, scale*height()/2.0, zNear, zFar);
 		}
 		else
 		{
-			float scale = y/height;
-			glOrtho(-scale*width/2.0, scale*width/2.0, -y/2.0, y/2.0, zNear, zFar);
+			float scale = y/height();
+			glOrtho(-scale*width()/2.0, scale*width()/2.0, -y/2.0, y/2.0, zNear, zFar);
 		}
 	}
 	
 	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
-void GLView::paintGL()
+void GLView::setupCamera()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glLoadIdentity();
-	
 	switch (m_viewType)
 	{
 		case Front:    gluLookAt(0.0, 200.0, 100.0, 0.0, 0.0, 100.0, 0.0,  0.0, 1.0);             break;
@@ -115,26 +242,31 @@ void GLView::paintGL()
 			break;
 	}
 	
+	float lightPos[4] = {0.0, MAXY, ZEXTENT, 0.0};
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+}
+
+void GLView::drawScene()
+{
+	// Clear the screen
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	Shader::unbind();
+	
+	setupMatrices();
+	setupCamera();
+	
 	if (!m_frameInfo)
 		return;
 	
 	if (m_showVoxelData)
 	{
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_LIGHTING);
+		s_voxelShader->bind();
 		m_frameInfo->mesh()->draw();
-		glDisable(GL_LIGHTING);
+		s_voxelShader->unbind();
 	}
 	
 	drawTunnel();
 	
-	/*glPushMatrix();
-		glTranslatef(0.0, 0.0, 100.0);
-		glScalef(50.0, 50.0, 50.0);
-		drawTestCube();
-	glPopMatrix();*/
-	
-	//glDisable(GL_DEPTH_TEST);
 	if (m_showModel)
 		drawInfo();
 }
@@ -213,6 +345,27 @@ void GLView::drawTestCube()
 	glEnd();
 }
 
+void GLView::drawQuad(float width, float height)
+{
+	glBegin(GL_QUADS);
+		glMultiTexCoord2f(GL_TEXTURE0, 0.0, height);
+		glMultiTexCoord2f(GL_TEXTURE1, 0.0, 1.0);
+		glVertex2f(-1.0, 1.0);
+		
+		glMultiTexCoord2f(GL_TEXTURE0, width, height);
+		glMultiTexCoord2f(GL_TEXTURE1, 1.0, 1.0);
+		glVertex2f(1.0, 1.0);
+		
+		glMultiTexCoord2f(GL_TEXTURE0, width, 0.0);
+		glMultiTexCoord2f(GL_TEXTURE1, 1.0, 0.0);
+		glVertex2f(1.0, -1.0);
+		
+		glMultiTexCoord2f(GL_TEXTURE0, 0.0, 0.0);
+		glMultiTexCoord2f(GL_TEXTURE1, 0.0, 0.0);
+		glVertex2f(-1.0, -1.0);
+	glEnd();
+}
+
 void GLView::drawInfo()
 {
 	if (m_frameInfo == NULL || !m_frameInfo->hasModelInformation())
@@ -241,6 +394,7 @@ void GLView::drawInfo()
 			glEnd();
 		}
 		
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glPushMatrix();
 			glMultMatrix(m_frameInfo->limbMatrix(LeftLeg, Thigh));
 			FrameInfo::thighModel()->draw();
@@ -260,6 +414,7 @@ void GLView::drawInfo()
 			glMultMatrix(m_frameInfo->limbMatrix(RightLeg, LowerLeg));
 			FrameInfo::thighModel()->draw();
 		glPopMatrix();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glPopMatrix();
 }
 

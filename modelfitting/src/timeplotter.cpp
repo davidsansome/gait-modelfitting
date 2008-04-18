@@ -56,14 +56,14 @@ void TimePlotter::replaceTokens(QByteArray& commands)
 {
 	QStringList plots;
 	
-	if (m_ui.leftThighAlpha->isChecked()) plots << "'__DATA_FILENAME__' using 1:2 title \"Left thigh alpha\"";
-	if (m_ui.leftThighTheta->isChecked()) plots << "'__DATA_FILENAME__' using 1:3 title \"Left thigh theta\"";
-	if (m_ui.leftLowerAlpha->isChecked()) plots << "'__DATA_FILENAME__' using 1:4 title \"Left lower leg alpha\"";
-	if (m_ui.leftLowerTheta->isChecked()) plots << "'__DATA_FILENAME__' using 1:5 title \"Left lower leg theta\"";
-	if (m_ui.rightThighAlpha->isChecked()) plots << "'__DATA_FILENAME__' using 1:6 title \"Right thigh alpha\"";
-	if (m_ui.rightThighTheta->isChecked()) plots << "'__DATA_FILENAME__' using 1:7 title \"Right thigh theta\"";
-	if (m_ui.rightLowerAlpha->isChecked()) plots << "'__DATA_FILENAME__' using 1:8 title \"Right lower leg alpha\"";
-	if (m_ui.rightLowerTheta->isChecked()) plots << "'__DATA_FILENAME__' using 1:9 title \"Right lower leg theta\"";
+	if (m_ui.leftThighAlpha->isChecked()) plots << "'__DATA_FILENAME__' using 1:2 lt 1 title \"Left thigh alpha\"";
+	if (m_ui.leftThighTheta->isChecked()) plots << "'__DATA_FILENAME__' using 1:3 lt 1 title \"Left thigh theta\"";
+	if (m_ui.leftLowerAlpha->isChecked()) plots << "'__DATA_FILENAME__' using 1:4 lt 3 title \"Left lower leg alpha\"";
+	if (m_ui.leftLowerTheta->isChecked()) plots << "'__DATA_FILENAME__' using 1:5 lt 3 title \"Left lower leg theta\"";
+	if (m_ui.rightThighAlpha->isChecked()) plots << "'__DATA_FILENAME__' using 1:6 lt 3 title \"Right thigh alpha\"";
+	if (m_ui.rightThighTheta->isChecked()) plots << "'__DATA_FILENAME__' using 1:7 lt 3 title \"Right thigh theta\"";
+	if (m_ui.rightLowerAlpha->isChecked()) plots << "'__DATA_FILENAME__' using 1:8 lt 1 title \"Right lower leg alpha\"";
+	if (m_ui.rightLowerTheta->isChecked()) plots << "'__DATA_FILENAME__' using 1:9 lt 1 title \"Right lower leg theta\"";
 	
 	commands.replace("__PLOTS__", plots.join(", ").toAscii());
 }

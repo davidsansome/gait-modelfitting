@@ -1,6 +1,6 @@
 # Source files
 SET(COMMON-SOURCES
-	glwin.cpp
+	opengl.cpp
 )
 
 ADD_LIBRARY(common STATIC ${COMMON-SOURCES})

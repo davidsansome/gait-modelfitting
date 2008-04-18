@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "mainwindow.h"
-#include "glwin.h"
+#include "opengl.h"
 #include "batchmode.h"
 
 void printHelp(const char* appName)

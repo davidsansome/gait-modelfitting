@@ -13,5 +13,6 @@
 		<file>recalculate.png</file>
 		<file>viewdata.png</file>
 		<file>viewmodel.png</file>
+		<file>orthogonal.png</file>
 	</qresource>
 </RCC>

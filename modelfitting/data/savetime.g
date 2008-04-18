@@ -1,6 +1,6 @@
-set title "Parameters over time"
+#set title "Parameters over time"
 set xlabel "Time"
-set ylabel "Value"
+#set ylabel "Value"
 #unset key
 
 # Plot to an X11 window

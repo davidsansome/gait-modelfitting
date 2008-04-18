@@ -89,6 +89,8 @@ MainWindow::MainWindow()
 	connect(m_ui.actionShowVoxelData, SIGNAL(toggled(bool)), m_ui.overhead, SLOT(setVoxelDataVisible(bool)));
 	connect(m_ui.actionShowVoxelData, SIGNAL(toggled(bool)), m_ui.angle, SLOT(setVoxelDataVisible(bool)));
 	
+	connect(m_ui.actionOrthogonalViews, SIGNAL(toggled(bool)), SLOT(orthogonalToggled(bool)));
+	
 	connect(m_ui.actionAboutQt, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(aboutQt()));
 	connect(m_ui.actionQuit, SIGNAL(triggered(bool)), QApplication::instance(), SLOT(quit()));
 	
@@ -103,6 +105,7 @@ MainWindow::MainWindow()
 	
 	QSettings settings;
 	m_openDir = settings.value("OpenDir", QDir::homePath()).toString();
+	m_ui.actionOrthogonalViews->setChecked(settings.value("OrthogonalViews", true).toBool());
 	
 	// We do this in a single shot timer so that initalizeGL() gets called on the GLViews before creating any
 	// FrameInfo objects.  FrameInfo objects call Mesh::draw_init() which needs to have had
@@ -331,3 +334,14 @@ void MainWindow::frameActivated(const QModelIndex& index)
 	
 	setFrameInfo(newFrameInfo);
 }
+
+void MainWindow::orthogonalToggled(bool value)
+{
+	m_ui.front->setVisible(value);
+	m_ui.side->setVisible(value);
+	m_ui.overhead->setVisible(value);
+	
+	QSettings settings;
+	settings.setValue("OrthogonalViews", value);
+}
+

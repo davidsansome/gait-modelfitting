@@ -1,8 +1,8 @@
 #include "model.h"
 #include "modelloader.h"
+#include "opengl.h"
 
 #include <QDebug>
-#include <GL/gl.h>
 #include <svl/SVLgl.h>
 
 Model::Model(const QString& name)

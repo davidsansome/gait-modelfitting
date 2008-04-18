@@ -1,14 +1,21 @@
 #ifndef GLWIN_H
 #define GLWIN_H
 
+#define GL_GLEXT_PROTOTYPES
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/glu.h>
+#endif
+
 void setupWinGLFunctions();
 
 #ifdef _WIN32
-
-#define GL_GLEXT_PROTOTYPES 1
 #include <windows.h>
-#include <gl/gl.h>
-#include <gl/glext.h>
 
 extern PFNGLBINDBUFFERPROC pglBindBuffer;
 extern PFNGLGENBUFFERSPROC pglGenBuffers;

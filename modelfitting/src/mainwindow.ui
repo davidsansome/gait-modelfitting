@@ -16,9 +16,9 @@
    <property name="geometry" >
     <rect>
      <x>262</x>
-     <y>63</y>
+     <y>65</y>
      <width>759</width>
-     <height>718</height>
+     <height>716</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout" >
@@ -124,7 +124,7 @@
      <x>0</x>
      <y>0</y>
      <width>1021</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -171,8 +171,8 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>25</y>
-     <width>285</width>
+     <y>27</y>
+     <width>420</width>
      <height>38</height>
     </rect>
    </property>
@@ -190,13 +190,14 @@
    </attribute>
    <addaction name="actionShowVoxelData" />
    <addaction name="actionShowModel" />
+   <addaction name="actionOrthogonalViews" />
   </widget>
   <widget class="QToolBar" name="recalculateToolbar" >
    <property name="geometry" >
     <rect>
-     <x>285</x>
-     <y>25</y>
-     <width>736</width>
+     <x>420</x>
+     <y>27</y>
+     <width>601</width>
      <height>38</height>
     </rect>
    </property>
@@ -220,9 +221,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>63</y>
+     <y>65</y>
      <width>256</width>
-     <height>178</height>
+     <height>166</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -237,7 +238,7 @@
       <x>0</x>
       <y>23</y>
       <width>256</width>
-      <height>155</height>
+      <height>143</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout" >
@@ -270,9 +271,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>247</y>
+     <y>237</y>
      <width>256</width>
-     <height>177</height>
+     <height>165</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -293,7 +294,7 @@
       <x>0</x>
       <y>23</y>
       <width>256</width>
-      <height>154</height>
+      <height>142</height>
      </rect>
     </property>
     <property name="sizePolicy" >
@@ -329,9 +330,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>430</y>
+     <y>408</y>
      <width>256</width>
-     <height>131</height>
+     <height>139</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -355,7 +356,7 @@
       <x>0</x>
       <y>23</y>
       <width>256</width>
-      <height>108</height>
+      <height>116</height>
      </rect>
     </property>
     <layout class="QGridLayout" >
@@ -412,9 +413,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>567</y>
+     <y>553</y>
      <width>256</width>
-     <height>131</height>
+     <height>139</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -435,7 +436,7 @@
       <x>0</x>
       <y>23</y>
       <width>256</width>
-      <height>108</height>
+      <height>116</height>
      </rect>
     </property>
     <layout class="QGridLayout" >
@@ -492,9 +493,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>704</y>
+     <y>698</y>
      <width>256</width>
-     <height>77</height>
+     <height>83</height>
     </rect>
    </property>
    <property name="sizePolicy" >
@@ -515,7 +516,7 @@
       <x>0</x>
       <y>23</y>
       <width>256</width>
-      <height>54</height>
+      <height>60</height>
      </rect>
     </property>
     <layout class="QGridLayout" >
@@ -734,6 +735,21 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionOrthogonalViews" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../data/resources.qrc" >
+     <normaloff>:/orthogonal.png</normaloff>:/orthogonal.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Orthogonal views</string>
    </property>
   </action>
  </widget>

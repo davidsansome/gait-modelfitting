@@ -2,14 +2,15 @@
 #define GLVIEW_H
 
 #include <QGLWidget>
-#include <GL/glu.h>
 
 #include "types.h"
 
 class FrameInfo;
+class Shader;
 
 class QMouseEvent;
 class QWheelEvent;
+class QGLFramebufferObject;
 
 class GLView : public QGLWidget
 {
@@ -47,10 +48,19 @@ private:
 	void resizeGL(int width, int height);
 	void paintGL();
 	
+	void recreateFbos();
+	void setupMatrices();
+	void setupCamera();
+	
+	void drawScene();
 	void drawTunnel();
 	void drawInfo();
 	void drawTestCube();
-
+	
+	void drawQuad(float width, float height);
+	void blurPass(Shader* shader, QGLFramebufferObject* source, QGLFramebufferObject* target);
+	void downsamplePass(QGLFramebufferObject* source, QGLFramebufferObject* target);
+	
 	ViewType m_viewType;
 	float m_viewDistance;
 	
@@ -68,6 +78,12 @@ private:
 	float m_mouseDownZenith;
 	Vec3 m_center;
 	Vec3 m_mouseDownCenter;
+	
+	static Shader* s_voxelShader;
+	static QList<Shader*> s_ppShaders;
+	
+	QGLFramebufferObject* m_sceneFbo;
+	QList<QGLFramebufferObject*> m_blurTargets;
 };
 
 #endif

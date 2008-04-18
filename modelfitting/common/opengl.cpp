@@ -1,4 +1,4 @@
-#include "glwin.h"
+#include "opengl.h"
 
 #ifndef _WIN32
 void setupWinGLFunctions()

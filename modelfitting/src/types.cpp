@@ -1,6 +1,9 @@
 #include "types.h"
+#include "opengl.h"
 
-#include <GL/gl.h>
+#include <QRect>
+#include <QSize>
+#include <QPoint>
 
 QDebug& operator <<(QDebug& s, const Vec3& v)
 {
@@ -30,4 +33,27 @@ void glMultMatrix(const Mat4& mat)
 #else
 	glMultMatrixd(trans(mat).Ref());
 #endif
+}
+
+void glViewport(const QRect& rect)
+{
+	glViewport(rect.x(), rect.y(), rect.width(), rect.height());
+}
+
+void glViewport(const QPoint& pos, const QSize& size)
+{
+	glViewport(pos.x(), pos.y(), size.width(), size.height());
+}
+
+void glViewport(int x, int y, const QSize& size)
+{
+	glViewport(x, y, size.width(), size.height());
+}
+
+int nextPowerOf2(int n)
+{
+	int ret = 1;
+	while (ret < n)
+		ret *= 2;
+	return ret;
 }

@@ -46,6 +46,8 @@ private slots:
 	void frameSetActivated(const QModelIndex& index);
 	void frameActivated(const QModelIndex& index);
 	
+	void orthogonalToggled(bool value);
+	
 private:
 	void setupSpinBox(QDoubleSpinBox* spinner, double range, double step);
 	void setFrameInfo(FrameInfo* frameInfo);

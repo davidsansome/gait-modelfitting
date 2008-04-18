@@ -1,0 +1,12 @@
+<RCC>
+	<qresource prefix="/" >
+		<file>voxels_frag.glsl</file>
+		<file>voxels_vert.glsl</file>
+		<file>pp_vert.glsl</file>
+		<file>pp_pass0.glsl</file>
+		<file>pp_pass1.glsl</file>
+		<file>pp_pass2.glsl</file>
+		<file>pp_pass3.glsl</file>
+		<file>pp_pass4.glsl</file>
+	</qresource>
+</RCC>
