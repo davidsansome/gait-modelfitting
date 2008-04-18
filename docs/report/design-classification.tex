@@ -1,16 +1,25 @@
 \section{Classification}
 
-After each frame of a sample has been through the modelfitting process, we can analyse the sequence as a whole
+After every frame in a sample has been through the modelfitting process, we can analyse the sequence as a whole
 and produce a series of numbers which describe the subject's gait.
-If we are successful, this series of numbers will be unique to each subject and can be used as the basis for classifying a new sample.
+If we are successful, this series of numbers will be unique to each subject and can be used as the basis for classifying any new samples.
 
 
 \subsection{Extracting a gait cycle}
 
 Before we can perform any kind of analysis on a sample we need to identify and extract one gait cycle.
-Figure TODO shows a typical plot of the change in the value of $\theta_1$ over time.
+This is important because we will be comparing different samples which might begin at different times during the subjects' gait cycle.
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=\textwidth]{curvefitting.png}
+	\caption{The change in $\theta_1$ over time for Sample 81.}
+	\label{CurveFitting1}
+\end{figure}
+
+Figure \ref{CurveFitting1} shows a typical plot of the change in the value of $\theta_1$ over time.
 The graph resembles a sinosoid which we intuitavely know to be correct - when we walk our thighs swing forwards and backwards like a pendulum.
-A gait cycle is usually defined as beginning and ending with heel strikes of the same foot (TODO: citation), which in Figure TODO would be two subsequent maximums of the sinosoid.
+A gait cycle is usually defined as beginning and ending with heel strikes of the same foot (TODO: citation), which in Figure \ref{CurveFitting1} would be two subsequent maximums of the sinosoid.
 We however are going to begin our gait cycle when the thigh crosses the vertical, ie. when $\theta = 0$.
 
 We can find this point where the thigh crosses the vertical by fitting a function $f_1(t)$ to our data points and finding where $f_1(t) = 0$.
@@ -21,12 +30,20 @@ The function we use is shown in Equation \ref{eqn:CurveFitting}:
 	\label{eqn:CurveFitting}
 \end{equation}
 
-The DC offset, $d$, and amplitude, $a$, were fairly similar for all subjects, so were kept fixed at $d = 0.05$ and $a = 0.55$.
+The DC offset, $d$, and amplitude, $a$, were found to be fairly similar for all subjects, so were kept fixed at $d = 0.05$ and $a = 0.55$.
 Least squares regression was used to find the values for $\xi$, the period of the gait cycle, and $\phi$, the phase offset.
+
+\begin{figure}[tb]
+	\centering
+	\includegraphics[width=\textwidth]{curvefitting2.png}
+	\caption{The change in $\theta_1$ and $\theta_2$ over time for Sample 81.
+		The two parameters are $90^\circ$ out of phase.}
+	\label{CurveFitting2}
+\end{figure}
 
 Equation \ref{eqn:CurveFitting} above describes the general motion of only one of the thighs.
 We can increase accuracy by including the motion of the other thigh as well.
-We make use of the observation that the motion of the two thighs are $90^\circ$ out of phase (see Figure TODO):
+We make use of the observation that the motion of the two thighs are $90^\circ$ out of phase (see Figure \ref{CurveFitting2}):
 
 \begin{equation}
 	f_2(t) = d + a \sin(\frac{2 \pi t}{\xi} + \phi + \pi)
@@ -35,13 +52,13 @@ We make use of the observation that the motion of the two thighs are $90^\circ$ 
 
 The implementation used for our least squares fitting is similar to that in Listing \ref{leastsquarescode}, however instead of looking over a four-dimensional parameter space we are only interested in $\xi$ and $\phi$.
 The ranges used for these variables are $\xi = [30, 40]$ and $\phi = [0, 2\pi]$.
-The assumption that the period of one gait cycle lies in this range $[30, 40]$ was arrived at arbitrarilly, but holds true for all the subjects in the database.
+The assumption that the period of one gait cycle lies in this range $[30, 40]$ was arrived at by observation of the typical gait cycles in our database.
 
 The energy function used to determine the suitability of each set of parameters is worth mentioning as it has to take into account two curves and two sets of data.
 It is shown in Listing \ref{curvefittingenergy}.
 This function is used in a similar way to $modelEnergy$ in Listing \ref{leastsquarescode}.
 
-\begin{lstlisting}[firstnumber=auto,language=c,morekeywords={step,function,foreach,in},frame=single,mathescape=true,caption={Energy function pseudo-code},label={curvefittingenergy},float=[tb]]
+\begin{lstlisting}[firstnumber=1,language=c,morekeywords={step,function,foreach,in},frame=single,mathescape=true,caption={Energy function pseudo-code},label={curvefittingenergy},float=[tb]]
 function energy($\xi$, $\phi$)
 	$d = 0.05$
 	$a = 0.55$
@@ -59,7 +76,7 @@ function energy($\xi$, $\phi$)
 	return $energy$
 \end{lstlisting}
 
-Once we have obtained values for $\xi$ and $\phi$ we can find the time of each zero-crossing like so:
+Once we have obtained values for $\xi$ and $\phi$ we can find the time $z$ of each zero-crossing like so:
 
 \begin{equation}
 	z_i = \frac{\xi \sin^{-1}(-\frac{d}{a} - \phi)}{2\pi} + i\pi
@@ -68,7 +85,8 @@ Once we have obtained values for $\xi$ and $\phi$ we can find the time of each z
 
 \subsection{Discrete fourier transforms}
 
-
+Now that we can extract a gait cycle from each sample we need to apply the DFT (Discrete Fourier Transform) to them to obtain information about the frequency components of the subject's gait.
+Previous work (TODO: citations) have suggested that these frequency components can be used to form an identifying signature for the subject.
 
 \begin{equation}
 	X_i = \sum_{n=0}^{N-1} x_n e^{-\frac{2 \pi i}{N} i n} \quad \quad i = 0, \dots, N-1

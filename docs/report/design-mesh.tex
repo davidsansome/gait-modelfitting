@@ -181,7 +181,7 @@ Figure \ref{FittingImageLow} has an energy of $0$, as each node lies directly on
 To find the parameters that give the best fit for an individual frame, one approach would be to iterate over all possible parameters and accept the one that has the least energy.
 Such an implementation is shown in Listing \ref{leastsquarescode}.
 
-\begin{lstlisting}[language=c,morekeywords={step,function,foreach,in},frame=single,mathescape=true,caption={Least squares fitting pseudo-code},label={leastsquarescode},float=[tb]]
+\begin{lstlisting}[firstnumber=1,language=c,morekeywords={step,function,foreach,in},frame=single,mathescape=true,caption={Least squares fitting pseudo-code},label={leastsquarescode},float=[tb]]
 function fit
 	$range_\theta = \frac{\pi}{4}$
 	$range_\alpha = \frac{\pi}{32}$
