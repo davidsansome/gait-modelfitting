@@ -14,5 +14,6 @@
 		<file>viewdata.png</file>
 		<file>viewmodel.png</file>
 		<file>orthogonal.png</file>
+		<file>bloom.png</file>
 	</qresource>
 </RCC>

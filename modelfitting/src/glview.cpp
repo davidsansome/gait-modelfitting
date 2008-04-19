@@ -13,6 +13,7 @@
 QGLWidget* GLView::s_contextWidget = NULL;
 Shader* GLView::s_voxelShader = NULL;
 QList<Shader*> GLView::s_ppShaders;
+bool GLView::s_hasFbos = false;
 
 GLView::GLView(QWidget* parent)
 	: QGLWidget(parent, s_contextWidget),
@@ -24,7 +25,8 @@ GLView::GLView(QWidget* parent)
 	  m_center(0.0, 0.0, 100.0),
 	  m_showModel(true),
 	  m_showVoxelData(true),
-	  m_sceneFbo(NULL)
+	  m_sceneFbo(NULL),
+	  m_bloom(false)
 {
 	if (!s_contextWidget)
 		s_contextWidget = this;
@@ -43,6 +45,9 @@ void GLView::setViewType(ViewType type)
 
 void GLView::recreateFbos()
 {
+	if (!s_hasFbos)
+		return;
+	
 	delete m_sceneFbo;
 	m_sceneFbo = new QGLFramebufferObject(nextPowerOf2(width()), nextPowerOf2(height()), QGLFramebufferObject::Depth);
 	glBindTexture(GL_TEXTURE_2D, m_sceneFbo->texture());
@@ -66,22 +71,41 @@ void GLView::recreateFbos()
 	}
 }
 
+void GLView::setBloomEnabled(bool bloom)
+{
+	if (!s_hasFbos)
+		return;
+	m_bloom = bloom;
+}
+
 void GLView::initializeGL()
 {
 	setupWinGLFunctions();
 	
 	glEnable(GL_NORMALIZE);
+	glEnable(GL_LIGHT0);
 	glEnable(GL_DEPTH_TEST);
 	glShadeModel(GL_FLAT);
 	
 	m_quadric = gluNewQuadric();
 	
-	if (!s_voxelShader)
+	static bool beenHereBefore = false;
+	if (!beenHereBefore)
 	{
-		s_voxelShader = new Shader(":voxels_vert.glsl", ":voxels_frag.glsl");
-		for (int i=0 ; i<5 ; ++i)
-			s_ppShaders << new Shader(":pp_vert.glsl", ":pp_pass" + QString::number(i) + ".glsl");
+		beenHereBefore = true;
+		
+		QStringList extensions(QString((const char*)glGetString(GL_EXTENSIONS)).split(" "));
+		s_hasFbos = extensions.contains("GL_EXT_framebuffer_object");
+		
+		if (s_hasFbos)
+		{
+			s_voxelShader = new Shader(":voxels_vert.glsl", ":voxels_frag.glsl");
+			for (int i=0 ; i<4 ; ++i)
+				s_ppShaders << new Shader(":pp_vert.glsl", ":pp_pass" + QString::number(i) + ".glsl");
+		}
 	}
+	
+	emit initialized();
 }
 
 void GLView::resizeGL(int width, int height)
@@ -91,6 +115,13 @@ void GLView::resizeGL(int width, int height)
 
 void GLView::paintGL()
 {
+	if (!m_bloom)
+	{
+		glViewport(0, 0, size());
+		drawScene();
+		return;
+	}
+	
 	// Draw the scene to the scene FBO
 	m_sceneFbo->bind();
 	glViewport(0, 0, size());
@@ -126,7 +157,7 @@ void GLView::paintGL()
 	
 	// Draw back to the screen
 	glViewport(0, 0, width(), height());
-	s_ppShaders[4]->bind();
+	s_ppShaders[3]->bind();
 	
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
@@ -144,10 +175,10 @@ void GLView::paintGL()
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, m_blurTargets[2]->texture());
 	
-	glUniform1i(s_ppShaders[4]->uniformLocation("scene"), 0);
-	glUniform1i(s_ppShaders[4]->uniformLocation("blur1"), 1);
-	glUniform1i(s_ppShaders[4]->uniformLocation("blur2"), 2);
-	glUniform1i(s_ppShaders[4]->uniformLocation("blur3"), 3);
+	glUniform1i(s_ppShaders[3]->uniformLocation("scene"), 0);
+	glUniform1i(s_ppShaders[3]->uniformLocation("blur1"), 1);
+	glUniform1i(s_ppShaders[3]->uniformLocation("blur2"), 2);
+	glUniform1i(s_ppShaders[3]->uniformLocation("blur3"), 3);
 	
 	drawQuad(float(width()) / m_sceneFbo->width(), float(height()) / m_sceneFbo->height());
 	
@@ -171,19 +202,6 @@ void GLView::blurPass(Shader* shader, QGLFramebufferObject* source, QGLFramebuff
 	glBindTexture(GL_TEXTURE_2D, source->texture());
 	glUniform1i(shader->uniformLocation("source"), 0);
 	glUniform2f(shader->uniformLocation("pixelStep"), 1.0 / target->width(), 1.0 / target->height());
-	drawQuad(1.0, 1.0);
-	
-	target->release();
-}
-
-void GLView::downsamplePass(QGLFramebufferObject* source, QGLFramebufferObject* target)
-{
-	glViewport(0, 0, target->size());
-	target->bind();
-	
-	s_ppShaders[3]->bind();
-	glBindTexture(GL_TEXTURE_2D, source->texture());
-	glUniform1i(s_ppShaders[3]->uniformLocation("source"), 0);
 	drawQuad(1.0, 1.0);
 	
 	target->release();
@@ -260,9 +278,18 @@ void GLView::drawScene()
 	
 	if (m_showVoxelData)
 	{
-		s_voxelShader->bind();
-		m_frameInfo->mesh()->draw();
-		s_voxelShader->unbind();
+		if (s_voxelShader)
+		{
+			s_voxelShader->bind();
+			m_frameInfo->mesh()->draw();
+			s_voxelShader->unbind();
+		}
+		else
+		{
+			glEnable(GL_LIGHTING);
+			m_frameInfo->mesh()->draw();
+			glDisable(GL_LIGHTING);
+		}
 	}
 	
 	drawTunnel();

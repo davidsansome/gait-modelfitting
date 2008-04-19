@@ -83,7 +83,6 @@ TARGET_LINK_LIBRARIES(modelfitting
 	-lcommon
 	${OPENGL_LIBRARIES}
 	${FFTWD_LIB}
-	-lSDL_image
 )
 
 INSTALL(TARGETS modelfitting

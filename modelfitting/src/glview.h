@@ -34,6 +34,7 @@ public:
 	void wheelEvent(QWheelEvent* e);
 	
 	static QGLWidget* s_contextWidget;
+	static bool hasFbos() { return s_hasFbos; }
 
 public slots:
 	void setViewType(ViewType type);
@@ -42,7 +43,11 @@ public slots:
 	
 	void setVoxelDataVisible(bool showVoxelData) { m_showVoxelData = showVoxelData; }
 	void setModelVisible(bool showModel) { m_showModel = showModel; }
+	void setBloomEnabled(bool bloom);
 
+signals:
+	void initialized();
+	
 private:
 	void initializeGL();
 	void resizeGL(int width, int height);
@@ -59,13 +64,13 @@ private:
 	
 	void drawQuad(float width, float height);
 	void blurPass(Shader* shader, QGLFramebufferObject* source, QGLFramebufferObject* target);
-	void downsamplePass(QGLFramebufferObject* source, QGLFramebufferObject* target);
 	
 	ViewType m_viewType;
 	float m_viewDistance;
 	
 	bool m_showModel;
 	bool m_showVoxelData;
+	bool m_bloom;
 	
 	const FrameInfo* m_frameInfo;
 	
@@ -78,6 +83,8 @@ private:
 	float m_mouseDownZenith;
 	Vec3 m_center;
 	Vec3 m_mouseDownCenter;
+	
+	static bool s_hasFbos;
 	
 	static Shader* s_voxelShader;
 	static QList<Shader*> s_ppShaders;

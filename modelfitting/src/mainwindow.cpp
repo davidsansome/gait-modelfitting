@@ -66,6 +66,8 @@ MainWindow::MainWindow()
 	m_ui.overhead->setViewType(GLView::Overhead);
 	m_ui.angle->setViewType(GLView::Angle);
 	
+	connect(m_ui.front, SIGNAL(initialized()), SLOT(initializeGL()));
+	
 	m_redrawTimer = new QTimer(this);
 	m_redrawTimer->setSingleShot(true);
 	connect(m_redrawTimer, SIGNAL(timeout()), SLOT(updateViews()));
@@ -88,6 +90,11 @@ MainWindow::MainWindow()
 	connect(m_ui.actionShowVoxelData, SIGNAL(toggled(bool)), m_ui.side, SLOT(setVoxelDataVisible(bool)));
 	connect(m_ui.actionShowVoxelData, SIGNAL(toggled(bool)), m_ui.overhead, SLOT(setVoxelDataVisible(bool)));
 	connect(m_ui.actionShowVoxelData, SIGNAL(toggled(bool)), m_ui.angle, SLOT(setVoxelDataVisible(bool)));
+	
+	connect(m_ui.actionBloom, SIGNAL(toggled(bool)), m_ui.front, SLOT(setBloomEnabled(bool)));
+	connect(m_ui.actionBloom, SIGNAL(toggled(bool)), m_ui.side, SLOT(setBloomEnabled(bool)));
+	connect(m_ui.actionBloom, SIGNAL(toggled(bool)), m_ui.overhead, SLOT(setBloomEnabled(bool)));
+	connect(m_ui.actionBloom, SIGNAL(toggled(bool)), m_ui.angle, SLOT(setBloomEnabled(bool)));
 	
 	connect(m_ui.actionOrthogonalViews, SIGNAL(toggled(bool)), SLOT(orthogonalToggled(bool)));
 	
@@ -116,6 +123,9 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
 	delete m_frameInfo;
+	
+	QSettings settings;
+	settings.setValue("Bloom", m_ui.actionBloom->isChecked());
 }
 
 void MainWindow::setupSpinBox(QDoubleSpinBox* spinner, double range, double step)
@@ -217,6 +227,10 @@ void MainWindow::recalculateAll()
 
 void MainWindow::initializeGL()
 {
+	m_ui.actionBloom->setEnabled(GLView::hasFbos());
+	
+	QSettings settings;
+	m_ui.actionBloom->setChecked(settings.value("Bloom", false).toBool());
 }
 
 void MainWindow::sliderMoved(int value)

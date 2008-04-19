@@ -141,6 +141,8 @@
     </property>
     <addaction name="actionShowVoxelData" />
     <addaction name="actionShowModel" />
+    <addaction name="actionOrthogonalViews" />
+    <addaction name="actionBloom" />
    </widget>
    <widget class="QMenu" name="menuTools" >
     <property name="title" >
@@ -172,7 +174,7 @@
     <rect>
      <x>0</x>
      <y>27</y>
-     <width>420</width>
+     <width>505</width>
      <height>38</height>
     </rect>
    </property>
@@ -191,13 +193,14 @@
    <addaction name="actionShowVoxelData" />
    <addaction name="actionShowModel" />
    <addaction name="actionOrthogonalViews" />
+   <addaction name="actionBloom" />
   </widget>
   <widget class="QToolBar" name="recalculateToolbar" >
    <property name="geometry" >
     <rect>
-     <x>420</x>
+     <x>505</x>
      <y>27</y>
-     <width>601</width>
+     <width>516</width>
      <height>38</height>
     </rect>
    </property>
@@ -750,6 +753,18 @@
    </property>
    <property name="text" >
     <string>Orthogonal views</string>
+   </property>
+  </action>
+  <action name="actionBloom" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="../data/resources.qrc" >
+     <normaloff>:/bloom.png</normaloff>:/bloom.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Bloom</string>
    </property>
   </action>
  </widget>

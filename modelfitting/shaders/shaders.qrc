@@ -7,6 +7,5 @@
 		<file>pp_pass1.glsl</file>
 		<file>pp_pass2.glsl</file>
 		<file>pp_pass3.glsl</file>
-		<file>pp_pass4.glsl</file>
 	</qresource>
 </RCC>
