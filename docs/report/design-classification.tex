@@ -123,41 +123,57 @@ Some typical results are shown in Figure \ref{FFTResults}.
 To correctly classify a new sample, we need some way of comparing it to the other samples already in the database.
 The k-nearest neighbour algorithm with $k=1$ was chosen as it is simple to implement while providing good results.
 
-A distance function was created to compare and evaluate the difference between two samples $s_i$ and $s_j$.
-Each sample consists of $\frac{N}{2}$ complex numbers - the result of the DFT.
-
-\begin{equation}
-	d(s_i, s_k) \quad \quad i \neq k
-\end{equation}
+A distance function $d(a,b)$ was created to compare and evaluate the difference between two samples $a$ and $b$.
+Each sample consists of $\frac{N}{2}$ complex numbers - the output of the DFT.
 
 Several different implementations for this function were tested.
-Details of each are given below, and quantative comparisons of their performance can be found in section TODO.
+Details of each are given below, and quantitative comparisons of their performance can be found in section TODO.
 
 \begin{enumerate}
-	\item Magnitude
+	\item \textbf{Magnitude}.
+		The magnitudes of each frequency component are compared.
+		\begin{equation}
+			d(a, b) = \sum_{i=1}^{N/2} \left( \left|a_i\right| - \left|b_i\right| \right)^2
+		\end{equation}
+	
+	\item \textbf{Magnitude-weighted phase}.
+		Phase information is also taken into account, but it is weighted by the magnitude to ensure that
+		the very low magnitude frequency components do not overly influence the result.
+		\begin{equation}
+			d(a, b) = \sum_{i=1}^{N/2} \left( \left|a_i\right| \arg a_i - \left|b_i\right| \arg b_i \right)^2
+		\end{equation}
+
+	\item \textbf{Euclidean distance in complex plane}.
+		A problem with comparing the phase directly is that the difference between two phase values $+\frac{5}{6}\pi$ and $-\frac{5}{6}\pi$ will
+		equal $\frac{10}{6}\pi$ when actually, due to the modulo nature of phase, it should equal only $\frac{2}{6}$.
+		In an attempt to solve this we compare the real and imaginary parts directly.
+		\begin{equation}
+			d(a, b) = \sum_{i=1}^{N/2} \left( \Re{a_i} - \Re{b_i} \right)^2 + \left( \Im{a_i} - \Im{b_i} \right)^2
+		\end{equation}
+	
+	\item \textbf{Polar distance}.
+		TODO: description.
+		\begin{equation}
+			d(a, b) = \sum_{i=1}^{N/2} \left|a_i\right|^2 + \left|b_i\right|^2 - 2 \left|a_i\right| \left|b_i\right|^2 \cos\left(\arg a_i - \arg b_i\right)
+		\end{equation}
+	
+	\item \textbf{Exclude first component}.
+		As can be seen in Figure \ref{FFTResults} the magnitude of the first frequency component is very large.
+		This is the case for every sample, so perhaps better classification can be performed by ignoring this first component.
+		TODO: DC offset?
+		This can be done by changing the sum on each of the previous equations to $\sum_{i=2}^{N/2}$.
+	
+	\item \textbf{Mean normalization}.
+		It may boost performance to normalize each of the samples so the mean of their frequency components is zero.
+		This can be done by first finding the mean:
+		\begin{align}
+			\mu_a &= \frac{2}{N} \sum_{i=1}^{N/2} a_i \\
+			\mu_b &= \frac{2}{N} \sum_{i=1}^{N/2} b_i
+		\end{align}
+		and then subtracting this mean from each of the frequency components:
+		\begin{align}
+			a_i' &= a_i - \mu_a \\
+			b_i' &= b_i - \mu_b
+		\end{align}
+		These new values $a_i'$ and $b_i'$ can then be used in the above difference functions in place of $a_i$ and $b_i$.
 \end{enumerate}
-
-
-
-
-Magnitude-weighted phase
-y/x
-Real and imag
-Magnitude excluding first
-Magnitude-weighted phase excluding first
-y/x excluding first
-Real and imag excluding first
-
-Normalized
-Mean normalized
-With other thigh
-Higher res
-
-A variety of methods for classifying the subjects were tried.
-The aim of any method is to correctly identify 
-
-
-Show details of different classification approaches.
-Graphs in complex plane to determine distance.
-
-Take the polar distance instead!
