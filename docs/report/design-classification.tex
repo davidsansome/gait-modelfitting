@@ -26,7 +26,7 @@ We can find this point where the thigh crosses the vertical by fitting a functio
 The function we use is shown in Equation \ref{eqn:CurveFitting}:
 
 \begin{equation}
-	f_1(t) = d + a \sin(\frac{2 \pi t}{\xi} + \phi)
+	f_1(t) = d + a \sin\left(\frac{2 \pi t}{\xi} + \phi\right)
 	\label{eqn:CurveFitting}
 \end{equation}
 
@@ -46,7 +46,7 @@ We can increase accuracy by including the motion of the other thigh as well.
 We make use of the observation that the motion of the two thighs are $90^\circ$ out of phase (see Figure \ref{CurveFitting2}):
 
 \begin{equation}
-	f_2(t) = d + a \sin(\frac{2 \pi t}{\xi} + \phi + \pi)
+	f_2(t) = d + a \sin\left(\frac{2 \pi t}{\xi} + \phi + \pi\right)
 	\label{eqn:CurveFitting2}
 \end{equation}
 
@@ -79,7 +79,7 @@ function energy($\xi$, $\phi$)
 Once we have obtained values for $\xi$ and $\phi$ we can find the time $z$ of each zero-crossing like so:
 
 \begin{equation}
-	z_i = \frac{\xi \sin^{-1}(-\frac{d}{a} - \phi)}{2\pi} + i\pi
+	z_i = \frac{\xi \sin^{-1}\left(-\frac{d}{a} - \phi\right)}{2\pi} + i\pi
 \end{equation}
 
 
@@ -119,6 +119,39 @@ Some typical results are shown in Figure \ref{FFTResults}.
 
 
 \subsection{Classification methods}
+
+To correctly classify a new sample, we need some way of comparing it to the other samples already in the database.
+The k-nearest neighbour algorithm with $k=1$ was chosen as it is simple to implement while providing good results.
+
+A distance function was created to compare and evaluate the difference between two samples $s_i$ and $s_j$.
+Each sample consists of $\frac{N}{2}$ complex numbers - the result of the DFT.
+
+\begin{equation}
+	d(s_i, s_k) \quad \quad i \neq k
+\end{equation}
+
+Several different implementations for this function were tested.
+Details of each are given below, and quantative comparisons of their performance can be found in section TODO.
+
+\begin{enumerate}
+	\item Magnitude
+\end{enumerate}
+
+
+
+
+Magnitude-weighted phase
+y/x
+Real and imag
+Magnitude excluding first
+Magnitude-weighted phase excluding first
+y/x excluding first
+Real and imag excluding first
+
+Normalized
+Mean normalized
+With other thigh
+Higher res
 
 A variety of methods for classifying the subjects were tried.
 The aim of any method is to correctly identify 
