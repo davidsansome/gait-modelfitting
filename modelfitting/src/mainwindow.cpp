@@ -109,6 +109,7 @@ MainWindow::MainWindow()
 	setupSpinBox(m_ui.rightThighTheta, THETA_RANGE, THETA_STEP);
 	setupSpinBox(m_ui.rightLowerAlpha, ALPHA_RANGE, ALPHA_STEP);
 	setupSpinBox(m_ui.rightLowerTheta, THETA_RANGE, THETA_STEP);
+	connect(m_ui.saveParamsButton, SIGNAL(clicked()), SLOT(saveParams()));
 	
 	QSettings settings;
 	m_openDir = settings.value("OpenDir", QDir::homePath()).toString();
@@ -280,6 +281,8 @@ void MainWindow::setInfoParams()
 	
 	m_frameInfo->setLeftLeg(left);
 	m_frameInfo->setRightLeg(right);
+	
+	m_ui.saveParamsButton->setEnabled(true);
 }
 
 void MainWindow::getInfoParams()
@@ -295,6 +298,8 @@ void MainWindow::getInfoParams()
 	m_ui.rightLowerAlpha->setValue(m_frameInfo->rightLeg().lowerLegAlpha);
 	m_ui.rightLowerTheta->setValue(m_frameInfo->rightLeg().lowerLegTheta);
 	m_paramUpdatesDisabled = false;
+	
+	m_ui.saveParamsButton->setEnabled(false);
 }
 
 void MainWindow::classify()
@@ -357,5 +362,11 @@ void MainWindow::orthogonalToggled(bool value)
 	
 	QSettings settings;
 	settings.setValue("OrthogonalViews", value);
+}
+
+void MainWindow::saveParams()
+{
+	m_frameInfo->save();
+	m_ui.saveParamsButton->setEnabled(false);
 }
 

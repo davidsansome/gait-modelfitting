@@ -40,6 +40,7 @@ private slots:
 	
 	void setInfoParams();
 	void getInfoParams();
+	void saveParams();
 	
 	void openDirChanged();
 	
