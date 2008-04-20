@@ -1,5 +1,35 @@
 \section{Pre-requisites and compilation}
-SVN
-Qt Patch
+
+The complete source code for the application is included on the DVD.
+It is also available from the subversion repository at:
+
+\texttt{http://svn.davidsansome.com/3yp}
+
+\bigskip
+\noindent Before compiling you should make sure you have the following libraries and tools installed:
+
+\begin{enumerate}
+	\item \textbf{CMake} (\texttt{http://www.cmake.org}).
+	\item \textbf{Qt} (\texttt{http://www.trolltech.com}).
+		Version 4.4 is \emph{required} as the modelfitter application uses the new QtConcurrent framework.
+		At the time of writing Qt 4.4 was in release-candidate stage.
+	\item \textbf{SVL} (\texttt{http://www.cs.cmu.edu/\~ajw/doc/svl.html}).
+		I have created an Ubuntu package for SVL which is available from: \\
+		\texttt{http://www.davidsansome.com/svl}.
+	\item \textbf{ZLib} (\texttt{http://www.zlib.net/}).
+	\item \textbf{FFTW} (\texttt{http://www.fftw.org/}).
+\end{enumerate}
+
+The application should compile cleanly on Linux, Mac OS X and Windows.
+Windows users are advised to use MinGW instead of Visual Studio.
+To build the application you should issue the following commands:
+
+\begin{lstlisting}[firstnumber=1,language=sh,frame=single,morekeywords={cmake,make}]
+cd modelfitting/bin
+cmake ..
+make
+./modelfitting
+\end{lstlisting}
+
 \section{Code structure}
 UML
