@@ -102,7 +102,13 @@ void GraphPlotter::saveGraph(const QString& filename)
 	//qDebug() << commands;
 	
 	if (m_ui.saveData->isChecked())
-		m_tempFile->copy(m_ui.destDir->text() + QDir::separator() + filename + ".dat"); // This also closes the temp file
+	{
+		QString destFilename(m_ui.destDir->text() + QDir::separator() + filename + ".dat");
+		if (QFile::exists(destFilename))
+			if (QMessageBox::question(this, "File already exists", "The file \"" + destFilename + "\" alreay exists.  Overwrite?", QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+				QFile::remove(destFilename);
+		m_tempFile->copy(destFilename); // This also closes the temp file
+	}
 	else
 	{
 		m_tempFile->close();
