@@ -32,7 +32,7 @@ void readFile(QIODevice& file, QList<float>& leftThigh, QList<float>& leftLower,
 	}
 }
 
-QPair<float, float> compare(const QString& label, const QList<float>& a, const QList<float>& m)
+void compare(const QString& label, const QList<float>& a, const QList<float>& m, float& diffTot, float& diffSquaredTot)
 {
 	Q_ASSERT(a.count() == m.count());
 	
@@ -47,9 +47,10 @@ QPair<float, float> compare(const QString& label, const QList<float>& a, const Q
 		diffSquared += pow(d, 2);
 	}
 	
-	cout << qPrintable(label) << " & " << diff << " & " << diffSquared << " \\\\" << endl;
+	cout << qPrintable(label) << " & " << diff << " & " << diff/a.count() << " & " << diffSquared << " & " << diffSquared/a.count() << " \\\\" << endl;
 	
-	return qMakePair(diff, diffSquared);
+	diffTot += diff;
+	diffSquaredTot += diffSquared;
 }
 
 int main(int argc, char** argv)
@@ -89,15 +90,14 @@ int main(int argc, char** argv)
 	// Compare the values
 	float diff = 0.0;
 	float diffSquared = 0.0;
-	QPair<float, float> ret;
 	
-	ret = compare("Left thigh", autoLeftThigh, manualLeftThigh);         diff += ret.first;  diffSquared += ret.second;
-	ret = compare("Right thigh", autoRightThigh, manualRightThigh);      diff += ret.first;  diffSquared += ret.second;
-	ret = compare("Left lower leg", autoLeftLower, manualLeftLower);     diff += ret.first;  diffSquared += ret.second;
-	ret = compare("Right lower leg", autoRightLower, manualRightLower);  diff += ret.first;  diffSquared += ret.second;
+	compare("Left thigh", autoLeftThigh, manualLeftThigh, diff, diffSquared);
+	compare("Right thigh", autoRightThigh, manualRightThigh, diff, diffSquared);
+	compare("Left lower", autoLeftLower, manualLeftLower, diff, diffSquared);
+	compare("Right lower", autoRightLower, manualRightLower, diff, diffSquared);
 	
 	cout << "\\hline" << endl;
-	cout << "Total & " << diff << " & " << diffSquared << " \\\\" << endl;
+	cout << "Total & " << diff << " & " << diff/autoLeftThigh.count() << " & " << diffSquared << " & " << diffSquared/autoLeftThigh.count() << " \\\\" << endl;
 	
 	return 0;
 }
