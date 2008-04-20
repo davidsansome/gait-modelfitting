@@ -77,7 +77,7 @@ Some of the problems encountered when selecting values for the variables are giv
 		Also it was feared that any kind of smoothing of the data might destroy valuable gait information.
 		
 		Instead it was decided to take the simpler solution - limiting the range of possible alpha values.
-		A strong distinction was noted between the typical alpha values of correct and incorrect frames - the correct frames all took on
+		A strong divide was noted between the typical alpha values of correct and incorrect frames - the correct frames all took on
 		values within the range $\left[ -\frac{\pi}{32}, +\frac{\pi}{32}\right]$, and the others outside.
 		$range_\alpha$ was therefore set to $\left[ -\frac{\pi}{32}, +\frac{\pi}{32}\right]$.
 	
@@ -99,6 +99,76 @@ Some of the problems encountered when selecting values for the variables are giv
 
 
 \subsection{Quantitative error analysis}
+
+A manual fitting was produced for selected samples to provide a means of evaluating the error of the modelfitting algorithm.
+Each frame was examined in the modelfitting application, and the parameters of the model tweaked to visually fit the model to the image of the subject.
+Samples 81 and 96 were chosen for this manual fitting process as they gave very different success rates in classification.
+Sample 81 is one of the samples of Subject 1, who was classified correctly in most of the tests.
+Sample 96 is one of the samples of Subject 4, who was never classified correctly in any of the tests.
+
+Figures \ref{ManualFit81} and \ref{ManualFit96} show the differences between parameter values for automatic fitting and manual fitting.
+Only the $\theta$ values were compared as their errors affect classification far more than those in the $\alpha$ values.
+
+\begin{figure}[thb]
+	\begin{center}
+		\begin{tabular}{l|c|c}
+			& $\sum_{i=1}^N \left| a_i - m_i \right|$ & $\sum_{i=1}^N \left( a_i - m_i \right)^2 $ \\
+			Left thigh & 2.38639 & 0.371018 \\
+			Right thigh & 1.76716 & 0.206641 \\
+			Left lower leg & 4.33182 & 1.58659 \\
+			Right lower leg & 2.56525 & 0.540861 \\
+			\hline
+			Total & 11.0506 & 2.70511
+		\end{tabular}
+	\end{center}
+	\caption{Error rates between automatic and manual fittings for Sample 81.}
+	\label{ManualFitTable81}
+\end{figure}
+
+\begin{figure}[thb]
+	\begin{center}
+		\begin{tabular}{l|c|c}
+			& $\sum_{i=1}^N \left| a_i - m_i \right|$ & $\sum_{i=1}^N \left( a_i - m_i \right)^2 $ \\
+			Left thigh & 0.15713 & 0.0131091 \\
+			Right thigh & 5.28754 & 4.64062 \\
+			Left lower leg & 0.137489 & 0.018892 \\
+			Right lower leg & 5.70374 & 3.58478 \\
+			\hline
+			Total & 11.2859 & 8.2574 \\
+		\end{tabular}
+	\end{center}
+	\caption{Error rates between automatic and manual fittings for Sample 96.}
+	\label{ManualFitTable96}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\subfloat[Left thigh]{\label{ManualFit81:LeftThigh}\includegraphics[width=6.2cm]{manualfitting/81-leftthightheta.png}}
+	\qquad
+	\subfloat[Right thigh]{\label{ManualFit81:RightThigh}\includegraphics[width=6.2cm]{manualfitting/81-rightthightheta.png}}
+	\\
+	\subfloat[Left lower leg]{\label{ManualFit81:LeftLower}\includegraphics[width=6.2cm]{manualfitting/81-leftlowertheta.png}}
+	\qquad
+	\subfloat[Right lower leg]{\label{ManualFit81:RightLower}\includegraphics[width=6.2cm]{manualfitting/81-rightlowertheta.png}}
+	
+	\caption{Comparison between automatic and manual fittings for Sample 81.}
+	\label{ManualFit81}
+\end{figure}
+
+\begin{figure}[p]
+	\centering
+	\subfloat[Left thigh]{\label{ManualFit96:LeftThigh}\includegraphics[width=6.2cm]{manualfitting/96-leftthightheta.png}}
+	\qquad
+	\subfloat[Right thigh]{\label{ManualFit96:RightThigh}\includegraphics[width=6.2cm]{manualfitting/96-rightthightheta.png}}
+	\\
+	\subfloat[Left lower leg]{\label{ManualFit96:LeftLower}\includegraphics[width=6.2cm]{manualfitting/96-leftlowertheta.png}}
+	\qquad
+	\subfloat[Right lower leg]{\label{ManualFit96:RightLower}\includegraphics[width=6.2cm]{manualfitting/96-rightlowertheta.png}}
+	
+	\caption{Comparison between automatic and manual fittings for Sample 96.}
+	\label{ManualFit96}
+\end{figure}
+
 
 Comparison with manually fit data.
 Show some graphs of theta over time.
