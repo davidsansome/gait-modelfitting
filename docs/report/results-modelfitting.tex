@@ -107,44 +107,42 @@ Sample 81 is one of the samples of Subject 1, who was classified correctly in mo
 Sample 96 is one of the samples of Subject 4, who was never classified correctly in any of the tests.
 
 Figures \ref{ManualFit81} and \ref{ManualFit96} show the differences between parameter values for automatic fitting and manual fitting,
-and Figures \ref{ManualFitTable81} and \ref{ManualFitTable96} summarise these results in tabular form.
+and Tables \ref{ManualFitTable81} and \ref{ManualFitTable96} summarise these results in tabular form.
 Only the $\theta$ values were compared as their errors affect classification far more than those in the $\alpha$ values.
 
 In the tables below $a_t$ represents the value of $\theta$ that was determined automatically, and $m_t$ the value that was entered manually.
 
-\begin{figure}[thb]
-	\begin{center}
-		\begin{tabular}{l|c|c|c|c}
-			& $\sum_{t=1}^N \left| a_t - m_t \right|$ & $\frac{\sum_{t=1}^N \left| a_t - m_t \right|}{N}$ & $\sum_{t=1}^N \left( a_t - m_t \right)^2 $ & $\frac{\sum_{t=1}^N \left( a_t - m_t \right)^2}{N}$ \\
-			\hline
-			Left thigh & 2.38639 & 0.0294616 & 0.371018 &0.00458047 \\
-			Right thigh & 1.76716 & 0.0218168 & 0.206641 &0.00255113 \\
-			Left lower & 4.33182 & 0.0534793 & 1.58659 &0.0195875 \\
-			Right lower & 2.56525 & 0.0316698 & 0.540861 &0.0066773 \\
-			\hline
-			Total & 11.0506 & 0.136427 & 2.70511 & 0.0333964 \\
-		\end{tabular}
-	\end{center}
+\begin{table}[thb]
+	\centering
+	\begin{tabular}{l|c|c|c|c}
+		& $\sum_{t=1}^N \left| a_t - m_t \right|$ & $\frac{\sum_{t=1}^N \left| a_t - m_t \right|}{N}$ & $\sum_{t=1}^N \left( a_t - m_t \right)^2 $ & $\frac{\sum_{t=1}^N \left( a_t - m_t \right)^2}{N}$ \\
+		\hline
+		Left thigh & 2.38639 & 0.0294616 & 0.371018 &0.00458047 \\
+		Right thigh & 1.76716 & 0.0218168 & 0.206641 &0.00255113 \\
+		Left lower & 4.33182 & 0.0534793 & 1.58659 &0.0195875 \\
+		Right lower & 2.56525 & 0.0316698 & 0.540861 &0.0066773 \\
+		\hline
+		Total & 11.0506 & 0.136427 & 2.70511 & 0.0333964 \\
+	\end{tabular}
 	\caption{Error between automatic and manual fittings for Sample 81.}
 	\label{ManualFitTable81}
-\end{figure}
+\end{table}
 
-\begin{figure}[thb]
-	\begin{center}
-		\begin{tabular}{l|c|c|c|c}
-			& $\sum_{t=1}^N \left| a_t - m_t \right|$ & $\frac{\sum_{t=1}^N \left| a_t - m_t \right|}{N}$ & $\sum_{t=1}^N \left( a_t - m_t \right)^2 $ & $\frac{\sum_{t=1}^N \left( a_ t- m_t \right)^2}{N}$ \\
-			\hline
-			Left thigh & 0.15711 & 0.00285655 & 0.0131091 &0.00023835 \\
-			Right thigh & 0.667605 & 0.0121383 & 0.0979246 &0.00178045 \\
-			Left lower & 0.137471 & 0.00249947 & 0.018892 &0.00034349 \\
-			Right lower & 1.64081 & 0.0298329 & 0.434485 &0.00789972 \\
-			\hline
-			Total & 2.603 & 0.0473272 & 0.56441 & 0.010262 \\
-		\end{tabular}
-	\end{center}
+\begin{table}[thb]
+	\centering
+	\begin{tabular}{l|c|c|c|c}
+		& $\sum_{t=1}^N \left| a_t - m_t \right|$ & $\frac{\sum_{t=1}^N \left| a_t - m_t \right|}{N}$ & $\sum_{t=1}^N \left( a_t - m_t \right)^2 $ & $\frac{\sum_{t=1}^N \left( a_ t- m_t \right)^2}{N}$ \\
+		\hline
+		Left thigh & 0.15711 & 0.00285655 & 0.0131091 &0.00023835 \\
+		Right thigh & 0.667605 & 0.0121383 & 0.0979246 &0.00178045 \\
+		Left lower & 0.137471 & 0.00249947 & 0.018892 &0.00034349 \\
+		Right lower & 1.64081 & 0.0298329 & 0.434485 &0.00789972 \\
+		\hline
+		Total & 2.603 & 0.0473272 & 0.56441 & 0.010262 \\
+	\end{tabular}
 	\caption{Error between automatic and manual fittings for Sample 96.}
 	\label{ManualFitTable96}
-\end{figure}
+\end{table}
 
 \begin{figure}[p]
 	\centering
