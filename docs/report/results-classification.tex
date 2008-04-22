@@ -1,3 +1,46 @@
 \section{Accuracy of classification}
+
+\begin{landscape}
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{|l|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c|}
+			\hline
+			& \multicolumn{20}{|c|}{Sample} & Success rate \\
+			& 1a & 1b & 2a & 2b & 3a & 3b & 4a & 4b & 5a & 5b & 6a & 6b & 7a & 7b & 8a & 8b & 9a & 9b & 10a & 10b & \\
+			
+			\hline
+			\multicolumn{22}{|l|}{\textbf{Using left thigh $\theta$ only.}} \\
+			Magnitude                  & 1 & 2 & 1 & 0 & 0 & 1 & 6 & 11 & 4 & 0 & 3 & 0 & 0 & 2 & 0 & 0 & 1 & 2 & 2 & 0 & 40\% \\
+			Phase-mag                  & 0 & 2 & 0 & 6 & 0 & 1 & 12 & 10 & 3 & 3 & 0 & 4 & 1 & 0 & 0 & 2 & 10 & 16 & 1 & 5 & 30\% \\
+			Eucl dist                  & 0 & 3 & 0 & 0 & 0 & 0 & 0 & 11 & 0 & 3 & 2 & 0 & 0 & 0 & 0 & 0 & 7 & 0 & 0 & 16 & 70\% \\
+			Mag excl first             & 2 & 1 & 1 & 6 & 1 & 1 & 0 & 2 & 14 & 2 & 3 & 0 & 1 & 8 & 0 & 7 & 1 & 2 & 4 & 1 & 65\% \\
+			Phase-mag excl first       & 0 & 2 & 0 & 6 & 0 & 1 & 12 & 12 & 3 & 3 & 0 & 2 & 1 & 0 & 0 & 2 & 10 & 2 & 1 & 15 & 30\% \\
+			Eucl dist excl first       & 0 & 2 & 0 & 2 & 0 & 0 & 0 & 11 & 0 & 5 & 3 & 0 & 0 & 0 & 0 & 2 & 9 & 0 & 2 & 16 & 55\% \\
+			Eucl dist norm             & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 11 & 0 & 0 & 4 & 0 & 0 & 0 & 0 & 0 & 7 & 0 & 0 & 16 & 75\% \\
+			
+			\hline
+			\multicolumn{22}{|l|}{\textbf{Using both thigh $\theta$ values.}} \\
+			Eucl dist norm             & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 12 & 0 & 0 & 1 & 0 & 0 & 0 & 5 & 0 & 5 & 0 & 0 & 18 & 75\% \\
+			High res search            & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 4 & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 6 & 0 & 0 & 18 & 80\% \\
+			Multires search            & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 2 & 0 & 3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 18 & 75\% \\
+			
+			\hline
+			\multicolumn{22}{|l|}{\textbf{Using both lower leg $\theta$ values.}} \\
+			Multires search            & 1 & 2 & 0 & 0 & 1 & 0 & 0 & 8 & 4 & 3 & 3 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 3 & 2 & 50\% \\
+			
+			\hline
+			\multicolumn{22}{|l|}{\textbf{Using thigh and lower leg $\theta$ values.}} \\
+			Multires search            & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 7 & 2 & 2 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 2 & 18 & 65\% \\
+			
+			\hline
+		\end{tabular}
+		\caption{Classification results.
+			Two samples from each subject were manually classified, and the classification algorithm run on the remaining two samples (\emph{a} and \emph{b}).
+			The numbers in the cells show how close the algorithm was to correctly identifying the subject.
+			A value of 0 represents a correct classification.}
+		\label{ClassificationResults}
+	\end{table}
+\end{landscape}
+
 Show results of all approaches.
 How does adding more limbs help?

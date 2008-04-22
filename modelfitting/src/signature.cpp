@@ -1,6 +1,9 @@
 #include "signature.h"
+#include "listmodels.h"
+#include "fft.h"
 
 #include <QSettings>
+#include <QModelIndex>
 
 Signature::Signature(QSettings& s)
 {
@@ -8,6 +11,8 @@ Signature::Signature(QSettings& s)
 	
 	leftThighTheta = readList(s, "LeftThighTheta");
 	rightThighTheta = readList(s, "RightThighTheta");
+	leftLowerTheta = readList(s, "LeftLowerTheta");
+	rightLowerTheta = readList(s, "RightLowerTheta");
 	
 	s.endGroup();
 }
@@ -29,12 +34,39 @@ ComplexList Signature::readList(QSettings& s, const QString& name)
 	return ret;
 }
 
+void Signature::update(FrameModel* model, const QModelIndex& index)
+{
+	clear();
+	
+	Fft fft(model);
+	fft.setFrameSet(index);
+	fft.init();
+	
+	fft.run(Fft::LeftThighTheta);
+	for (int i=0 ; i<fft.resultSize() ; ++i)
+		leftThighTheta << fft.result()[i];
+	
+	fft.run(Fft::RightThighTheta);
+	for (int i=0 ; i<fft.resultSize() ; ++i)
+		rightThighTheta << fft.result()[i];
+	
+	fft.run(Fft::LeftLowerTheta);
+	for (int i=0 ; i<fft.resultSize() ; ++i)
+		leftLowerTheta << fft.result()[i];
+	
+	fft.run(Fft::RightLowerTheta);
+	for (int i=0 ; i<fft.resultSize() ; ++i)
+		rightLowerTheta << fft.result()[i];
+}
+
 void Signature::save(QSettings& s) const
 {
 	s.beginGroup("Signature");
 	
 	saveList(s, "LeftThighTheta", leftThighTheta);
 	saveList(s, "RightThighTheta", rightThighTheta);
+	saveList(s, "LeftLowerTheta", leftLowerTheta);
+	saveList(s, "RightLowerTheta", rightLowerTheta);
 	
 	s.endGroup();
 }
@@ -54,13 +86,17 @@ void Signature::saveList(QSettings& s, const QString& name, const ComplexList& l
 double Signature::operator -(const Signature& other) const
 {
 	return diff(leftThighTheta, other.leftThighTheta) +
-	       diff(rightThighTheta, other.rightThighTheta);
+	       diff(rightThighTheta, other.rightThighTheta)/* +
+	       diff(leftLowerTheta, other.leftLowerTheta) +
+	       diff(rightLowerTheta, other.rightLowerTheta)*/;
 }
 
 void Signature::clear()
 {
 	leftThighTheta.clear();
 	rightThighTheta.clear();
+	leftLowerTheta.clear();
+	rightLowerTheta.clear();
 }
 
 double Signature::diff(const ComplexList& one, const ComplexList& two)

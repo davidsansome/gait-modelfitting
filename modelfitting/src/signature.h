@@ -5,6 +5,8 @@
 #include <QList>
 
 class QSettings;
+class QModelIndex;
+class FrameModel;
 
 typedef QList<std::complex<double> > ComplexList;
 
@@ -14,12 +16,16 @@ public:
 	Signature() {}
 	Signature(QSettings& s);
 	
+	void update(FrameModel* model, const QModelIndex& index);
+	
 	void save(QSettings& s) const;
 	void clear();
 	double operator -(const Signature& other) const;
 	
 	ComplexList leftThighTheta;
 	ComplexList rightThighTheta;
+	ComplexList leftLowerTheta;
+	ComplexList rightLowerTheta;
 
 private:
 	static ComplexList readList(QSettings& s, const QString& name);

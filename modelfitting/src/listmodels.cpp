@@ -1,6 +1,5 @@
 #include "listmodels.h"
 #include "frameinfo.h"
-#include "fft.h"
 
 #include <QDirModel>
 #include <QtDebug>
@@ -94,19 +93,7 @@ void FrameModel::setSignature(const QModelIndex& index, const Signature& sig)
 void FrameModel::updateSignature(const QModelIndex& index)
 {
 	Signature& sig = frameSet(index).signature;
-	sig.clear();
-	
-	Fft fft(this);
-	fft.setFrameSet(index);
-	fft.init();
-	
-	fft.run(Fft::LeftThighTheta);
-	for (int i=0 ; i<fft.resultSize() ; ++i)
-		sig.leftThighTheta << fft.result()[i];
-	
-	fft.run(Fft::RightThighTheta);
-	for (int i=0 ; i<fft.resultSize() ; ++i)
-		sig.rightThighTheta << fft.result()[i];
+	sig.update(this, index);
 	
 	saveFrameSet(index);
 }
