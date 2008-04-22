@@ -17,7 +17,7 @@ class FrameInfo;
 class FrameModel;
 class Mesh;
 
-//#define USE_MULTIRESOLUTION
+#define USE_MULTIRESOLUTION
 
 #define MAXX 38.0
 #define MINX (-MAXX)

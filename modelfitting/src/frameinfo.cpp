@@ -264,12 +264,12 @@ QList<MapReduceOperation> FrameInfo::update()
 #ifdef USE_MULTIRESOLUTION
 Params<float> FrameInfo::multiResolutionSearch(Part part)
 {
-	const int firstAlphaResolution = 5;
+	const int firstAlphaResolution = 7;
 	const int firstThetaResolution = 11;
-	const float alphaError = (4.0 * ALPHA_RANGE) / (firstAlphaResolution - 1);
-	const float thetaError = (4.0 * THETA_RANGE) / (firstThetaResolution - 1);
-	const int secondAlphaResolution = 11;
-	const int secondThetaResolution = 9;
+	const float alphaError = (2.0 * ALPHA_RANGE) / (firstAlphaResolution - 1);
+	const float thetaError = (2.0 * THETA_RANGE) / (firstThetaResolution - 1);
+	const int secondAlphaResolution = 6;
+	const int secondThetaResolution = 8;
 	
 	// Low resolution search
 	Params<float> min(-ALPHA_RANGE, -THETA_RANGE, -ALPHA_RANGE, -THETA_RANGE);
