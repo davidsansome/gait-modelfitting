@@ -174,7 +174,32 @@ In the tables below $a_t$ represents the value of $\theta$ that was determined a
 	\label{ManualFit96}
 \end{figure}
 
-TODO: Analysis of the numbers - why is 96 ``better'' than 81 - maybe it was the other samples in the set that were wrong?
+Our results here are suprising, since Sample 81 fared so much better in classification than Sample 96, but seems to have a higher error.
+One possible explanation for this relates to the way in which classification operates.
+Two of the four samples from each subject are classified manually and the remaining two undergo automatic classification.
+A success is recorded if the automatic classification matches either of the two manually labelled samples.
+It could be that the modelfitting algorithm fit Sample 96 well, but was less successful with the other three samples from the same subject.
 
-TODO: Suggest why they might be bad - noise.
+The low error rate for the modelfitting is encouraging however.
+On average, the difference between the automatically determined $\theta$ value and the ``correct'' manually set value was 0.03410675 for Sample 81 and 0.01183180 for Sample 96.
+The possible range for these $\theta$ values is $\pm \frac{\pi}{4} = \pm 0.785398163$, so our error in the $\theta$ value in each frame is $2.1\%$ for Sample 81 and $0.75\%$ for Sample 96 (to 2 significant figures).
 
+\bigskip
+\noindent So how might we account for this error?
+There are several obvious possibilities - the first of which is noise in the 3D voxel data.
+The modelfitting algorithm seems to cope fairly well with noisy data - one of the worst samples is shown in Figure \ref{BadData}, but despite the holes in the subject's legs and spurious groups of surrounding voxels the algorithm still manages to correctly fit the model.
+
+Another possiblity is that the subject's clothing might interfere with correct fittings to the data.
+The modelfitting algorithm tries to place the cylinders in the model in the centre of groups of voxels - where the distance between the edges of the model and the edge voxels are equal on all sides.
+Baggy trousers that move around as the subject walks will confuse the algorithm, as it will try to place the cylinders in the centre of the trousers, which may not be the same as the centre of the leg.
+A possible solution to this problem is presented in Section \ref{FutureWork:BaggyTrousers}.
+
+\begin{figure}[bp]
+	\centering
+	\subfloat[Voxel data]{\includegraphics[height=10cm]{baddata/voxels.png}}
+	\quad
+	\subfloat[Model]{\includegraphics[height=10cm]{baddata/model.png}}
+	
+	\caption{One of the worst examples of 3D reconstruction.}
+	\label{BadData}
+\end{figure}
