@@ -196,10 +196,30 @@ A possible solution to this problem is presented in Section \ref{FutureWork:Bagg
 
 \begin{figure}[bp]
 	\centering
-	\subfloat[Voxel data]{\includegraphics[height=10cm]{baddata/voxels.png}}
+	\subfloat[Voxel data]{\includegraphics[height=8cm]{baddata/voxels.png}}
 	\quad
-	\subfloat[Model]{\includegraphics[height=10cm]{baddata/model.png}}
+	\subfloat[Model]{\includegraphics[height=8cm]{baddata/model.png}}
 	
 	\caption{One of the worst examples of 3D reconstruction.}
 	\label{BadData}
+\end{figure}
+
+There are certain cases where our model for the human leg seems inadequate for describing the data.
+In Figure \ref{FittingErrors} we see that our automatic fitting algorithm has missed the true shape of the subject's right leg, and instead has placed the model in an incorrect location that still matches a large number of voxels.
+When trying to manually fit this frame, we see that a correct value for the thigh's $\theta$ leads to the lower leg being too far forward to properly match its voxels.
+There are two explanations for this - the first is that the thigh in our model is too long.
+While it would explain the results seen in this frame, there are plenty of other frames in which the thigh appears to be of the correct length.
+The other explanation is that the lower leg is pivoting about the leg at the wrong point.
+If we allowed it to rotate about a point slightly further up the thigh then it may stand a better chance of matching the data.
+
+
+\begin{figure}[bp]
+	\centering
+	\subfloat[Automatic fitting]{\includegraphics[width=6cm]{fittingerrors/model.png}}
+	\quad
+	\subfloat[Manual fitting]{\includegraphics[width=6cm]{fittingerrors/manualmodel.png}}
+	
+	\caption{Sometimes our model of the human leg does not adequately describe the data.
+		In Sample 81 Frame 77 the thigh is too long and the lower leg cannot properly match the subject.}
+	\label{FittingErrors}
 \end{figure}
