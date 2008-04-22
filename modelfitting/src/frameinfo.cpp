@@ -8,6 +8,7 @@
 #include <QFutureWatcher>
 #include <QFile>
 #include <QtConcurrentRun>
+#include <QtConcurrentMap>
 #include <QMutexLocker>
 #include <QPointF>
 #include <QApplication>
@@ -23,7 +24,60 @@ char* FrameInfo::s_lookupData = NULL;
 char* FrameInfo::s_lookupEnd = NULL;
 
 
+#ifndef USE_MULTIRESOLUTION
 
+MapType::MapType(Params<int> i, Params<float> p, FrameInfo* f, Part pa)
+	: indices(i),
+	  params(p),
+	  frame(f),
+	  part(pa)
+{
+}
+
+MapType::MapType(const MapType& other)
+{
+	*this = other;
+}
+
+MapType& MapType::operator =(const MapType& other)
+{
+	indices = other.indices;
+	params = other.params;
+	frame = other.frame;
+	part = other.part;
+	return *this;
+}
+
+bool MapType::operator <(const MapType& other) const
+{
+	return params < other.params;
+}
+
+ReduceType::ReduceType(Params<int> i, Params<float> p, float e)
+	: indices(i),
+	  params(p),
+	  energy(e)
+{
+}
+
+ReduceType::ReduceType(const ReduceType& other)
+{
+	*this = other;
+}
+
+ReduceType& ReduceType::operator =(const ReduceType& other)
+{
+	indices = other.indices;
+	params = other.params;
+	energy = other.energy;
+}
+
+bool ReduceType::operator <(const ReduceType& other) const
+{
+	return params < other.params;
+}
+
+#endif
 
 
 FrameInfo::FrameInfo(const FrameModel* frameModel, const QModelIndex& index, bool loadInfoOnly)
@@ -51,8 +105,13 @@ FrameInfo::FrameInfo(const FrameModel* frameModel, const QModelIndex& index, boo
 	m_edgeVspace = new Voxel_Space(*m_vspace);
 	m_edgeVspace->edge_detect();
 	
+#ifndef USE_MULTIRESOLUTION
+	m_leftLegWatcher = new QFutureWatcher<ReduceType>(this);
+	m_rightLegWatcher = new QFutureWatcher<ReduceType>(this);
+#else
 	m_leftLegWatcher = new QFutureWatcher<Params<float> >(this);
 	m_rightLegWatcher = new QFutureWatcher<Params<float> >(this);
+#endif
 	connect(m_leftLegWatcher, SIGNAL(finished()), SLOT(leftLegFinished()));
 	connect(m_rightLegWatcher, SIGNAL(finished()), SLOT(rightLegFinished()));
 	
@@ -88,7 +147,15 @@ FrameInfo::~FrameInfo()
 
 void FrameInfo::leftLegFinished()
 {
+	if (m_leftLegWatcher->isCanceled())
+		return;
+	
+#ifndef USE_MULTIRESOLUTION
+	m_leftLegParams = m_leftLegWatcher->future().result().params;
+#else
 	m_leftLegParams = m_leftLegWatcher->future().result();
+#endif
+
 	//qDebug() << "Final params for left leg =" << m_leftLegParams;
 	
 	if (hasModelInformation())
@@ -97,7 +164,14 @@ void FrameInfo::leftLegFinished()
 
 void FrameInfo::rightLegFinished()
 {
+	if (m_rightLegWatcher->isCanceled())
+		return;
+	
+#ifndef USE_MULTIRESOLUTION
+	m_rightLegParams = m_rightLegWatcher->future().result().params;
+#else
 	m_rightLegParams = m_rightLegWatcher->future().result();
+#endif
 	//qDebug() << "Final params for right leg =" << m_rightLegParams;
 	
 	if (hasModelInformation())
@@ -141,23 +215,53 @@ QList<MapReduceOperation> FrameInfo::update()
 	if (m_distanceCache == NULL)
 		initDistanceCache();
 	
+#ifndef USE_MULTIRESOLUTION
+	m_results.clear();
+#endif
 	m_leftLegParams.invalidate();
 	m_rightLegParams.invalidate();
 	
 	QList<MapReduceOperation> ret;
-	QFuture<Params<float> > future;
 	
-	future = QtConcurrent::run(this, &FrameInfo::multiResolutionSearch, LeftLeg);
-	m_leftLegWatcher->setFuture(future);
-	ret << MapReduceOperation("Left leg", future);
+#ifndef USE_MULTIRESOLUTION
+	// Construct list of potential parameters
+	QList<MapType> params;
+	for (int ta=-ALPHA_RESOLUTION ; ta<=ALPHA_RESOLUTION ; ta++)
+		for (int tt=-THETA_RESOLUTION ; tt<=THETA_RESOLUTION ; tt++)
+			for (int la=-ALPHA_RESOLUTION ; la<=ALPHA_RESOLUTION ; la++)
+				for (int lt=-THETA_RESOLUTION ; lt<=THETA_RESOLUTION ; lt++)
+					params << MapType(Params<int>(ta, tt, la, lt),
+					                  Params<float>(ta*ALPHA_STEP, tt*THETA_STEP, la*ALPHA_STEP, lt*THETA_STEP),
+					                  this, LeftLeg);
 	
-	future = QtConcurrent::run(this, &FrameInfo::multiResolutionSearch, RightLeg);
-	m_rightLegWatcher->setFuture(future);
-	ret << MapReduceOperation("Right leg", future);
+	// Start the mapreduce
+	QFuture<ReduceType> leftLegFuture = QtConcurrent::mappedReduced(params, correlateMap, correlateReduce);
+	
+	params.clear();
+	for (int ta=-ALPHA_RESOLUTION ; ta<=ALPHA_RESOLUTION ; ta++)
+		for (int tt=-THETA_RESOLUTION ; tt<=THETA_RESOLUTION ; tt++)
+			for (int la=-ALPHA_RESOLUTION ; la<=ALPHA_RESOLUTION ; la++)
+				for (int lt=-THETA_RESOLUTION ; lt<=THETA_RESOLUTION ; lt++)
+					params << MapType(Params<int>(ta, tt, la, lt),
+					                  Params<float>(ta*ALPHA_STEP, tt*THETA_STEP, la*ALPHA_STEP, lt*THETA_STEP),
+					                  this, RightLeg);
+	
+	// Start the mapreduce
+	QFuture<ReduceType> rightLegFuture = QtConcurrent::mappedReduced(params, correlateMap, correlateReduce);
+#else
+	QFuture<Params<float> > leftLegFuture = QtConcurrent::run(this, &FrameInfo::multiResolutionSearch, LeftLeg);
+	QFuture<Params<float> > rightLegFuture = QtConcurrent::run(this, &FrameInfo::multiResolutionSearch, RightLeg);
+#endif
+	
+	m_leftLegWatcher->setFuture(leftLegFuture);
+	ret << MapReduceOperation("Left leg", leftLegFuture);
+	m_rightLegWatcher->setFuture(rightLegFuture);
+	ret << MapReduceOperation("Right leg", rightLegFuture);
 	
 	return ret;
 }
 
+#ifdef USE_MULTIRESOLUTION
 Params<float> FrameInfo::multiResolutionSearch(Part part)
 {
 	const int firstAlphaResolution = 5;
@@ -221,6 +325,31 @@ Params<float> FrameInfo::subSearch(Part part, const Params<float>& min, const Pa
 	
 	return retParams;
 }
+
+#else
+
+ReduceType correlateMap(const MapType& p)
+{
+	float energy = p.frame->energy(p.part, p.params);
+	
+	ReduceType ret(p.indices, p.params, energy);
+	p.frame->addResult(p.indices, p.part, energy);
+	
+	return ret;
+}
+
+void correlateReduce(ReduceType& result, const ReduceType& intermediate)
+{
+	if (!result.params.valid || intermediate.energy < result.energy)
+		result = intermediate;
+}
+
+void FrameInfo::addResult(const Params<int>& indices, Part part, float energy)
+{
+	QMutexLocker locker(&m_resultMutex);
+	m_results[QPair<Params<int>, Part>(indices, part)] = energy;
+}
+#endif
 
 float FrameInfo::energy(Part part, const Params<float>& params) const
 {
