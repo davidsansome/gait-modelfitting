@@ -1,7 +1,42 @@
 \section{Accuracy of classification}
 
+\begin{enumerate}
+	\item \textbf{Which distance function is most suitable?}
+		Section \ref{ClassificationMethods} described some of the possible \emph{distance functions} that could be implemented to find how closely related two samples are to each other.
+		These functions take the results of the DFT as applied to both of the samples and compare each of the frequency components.
+		Table \ref{ClassificationResults} over the page shows the performance of each of these functions.
+		
+		First we test the basic distance functions.
+		Four such functions are tested - one that compares only the magnitudes of the frequency components, one that compares the phase weighted magnitudes, and two that take the polar and euclidean distances between two frequency components in the complex plane.
+		From the results we can see that the highest performers are the polar and euclidean distance functions.
+		The low performance of the phase-weighted magnitude function can be explained by the fact that it does not take into account the modular nature of the phase.
+		As explained in Section \ref{ClassificationMethods} a comparison of two phase values $+\frac{5}{6}\pi$ and $-\frac{5}{6}\pi$ would incorrectly produce an answer of $\frac{10}{6}\pi$.
+		
+		Next all the functions are retested with the first frequency component of each sample being excluded.
+		The results show that this actually lowers the performance of all the functions - suggesting that the first frequency component might contain useful identifying information.
+		
+		The euclidean distance function is then modified to normalise the mean of the samples' DFT results.
+		This does indeed improve the performance - increasing the correct classification rate by 5\%.
+	
+	\item \textbf{Which of the search algorithms are best?}
+		
+\end{enumerate}
+
+
+Questions:
+1) Which limbs are important.
+2) Which of the search algorithms are best
+2a) What resolutions are suitable.
+3) Which distanceTo function is the best
+ a) Is it good to remove the dc?
+ b) Is it good to normalize?
+
+Two samples from each subject were manually classified, and the classification algorithm run on the remaining two samples (\emph{a} and \emph{b}).
+The numbers in the cells show how close the algorithm was to correctly identifying the subject.
+A value of 0 represents a correct classification.
+
 \begin{landscape}
-	\begin{table}[ht]
+	\begin{table}[p]
 		\centering
 		\begin{tabular}{|l|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c|}
 			\hline
@@ -9,38 +44,56 @@
 			& 1a & 1b & 2a & 2b & 3a & 3b & 4a & 4b & 5a & 5b & 6a & 6b & 7a & 7b & 8a & 8b & 9a & 9b & 10a & 10b & \\
 			
 			\hline
-			\multicolumn{22}{|l|}{\textbf{Using left thigh $\theta$ only.}} \\
 			Magnitude                  & 1 & 2 & 1 & 0 & 0 & 1 & 6 & 11 & 4 & 0 & 3 & 0 & 0 & 2 & 0 & 0 & 1 & 2 & 2 & 0 & 40\% \\
 			Phase-mag                  & 0 & 2 & 0 & 6 & 0 & 1 & 12 & 10 & 3 & 3 & 0 & 4 & 1 & 0 & 0 & 2 & 10 & 16 & 1 & 5 & 30\% \\
+			Polar dist                 & 0 & 3 & 0 & 0 & 0 & 0 & 0 & 11 & 0 & 3 & 2 & 0 & 0 & 0 & 0 & 0 & 7 & 0 & 0 & 16 & 70\% \\
 			Eucl dist                  & 0 & 3 & 0 & 0 & 0 & 0 & 0 & 11 & 0 & 3 & 2 & 0 & 0 & 0 & 0 & 0 & 7 & 0 & 0 & 16 & 70\% \\
+			
+			\hline
 			Mag excl first             & 2 & 1 & 1 & 6 & 1 & 1 & 0 & 2 & 14 & 2 & 3 & 0 & 1 & 8 & 0 & 7 & 1 & 2 & 4 & 1 & 15\% \\
 			Phase-mag excl first       & 0 & 2 & 0 & 6 & 0 & 1 & 12 & 12 & 3 & 3 & 0 & 2 & 1 & 0 & 0 & 2 & 10 & 2 & 1 & 15 & 30\% \\
+			Polar dist excl first      & 0 & 2 & 0 & 2 & 0 & 0 & 0 & 11 & 0 & 5 & 3 & 0 & 0 & 0 & 0 & 2 & 9 & 0 & 2 & 16 & 55\% \\
 			Eucl dist excl first       & 0 & 2 & 0 & 2 & 0 & 0 & 0 & 11 & 0 & 5 & 3 & 0 & 0 & 0 & 0 & 2 & 9 & 0 & 2 & 16 & 55\% \\
+			
+			\hline
 			Eucl dist norm             & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 11 & 0 & 0 & 4 & 0 & 0 & 0 & 0 & 0 & 7 & 0 & 0 & 16 & 75\% \\
 			
 			\hline
+		\end{tabular}
+		\caption{Comparison of different implementations of the distanceTo() function.}
+		\label{ClassificationResults}
+	\end{table}
+	
+	\begin{table}[p]
+		\centering
+		\begin{tabular}{|l|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c|}
+			\hline
+			& \multicolumn{20}{|c|}{Sample} & Success rate \\
+			& 1a & 1b & 2a & 2b & 3a & 3b & 4a & 4b & 5a & 5b & 6a & 6b & 7a & 7b & 8a & 8b & 9a & 9b & 10a & 10b & \\
+			
+			\hline
 			\multicolumn{22}{|l|}{\textbf{Using both thigh $\theta$ values.}} \\
-			Eucl dist norm             & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 12 & 0 & 0 & 1 & 0 & 0 & 0 & 5 & 0 & 5 & 0 & 0 & 18 & 75\% \\
-			High res search            & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 4 & 0 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 6 & 0 & 0 & 18 & 80\% \\
-			Multires search            & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 2 & 0 & 3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 18 & 75\% \\
+			Low res search             & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 4 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 18 & 80\% \\
+			High res search            & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 5 & 0 & 1 & 2 & 0 & 0 & 0 & 0 & 0 & 8 & 0 & 0 & 18 & 65\% \\
+			Multi res search           & 0 & 1 & 0 & 0 & 0 & 0 & 2 & 2 & 0 & 1 & 2 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 18 & 60\% \\
 			
 			\hline
 			\multicolumn{22}{|l|}{\textbf{Using both lower leg $\theta$ values.}} \\
-			Multires search            & 1 & 2 & 0 & 0 & 1 & 0 & 0 & 8 & 4 & 3 & 3 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 3 & 2 & 50\% \\
+			Low res search             & 0 & 0 & 0 & 2 & 0 & 1 & 2 & 0 & 1 & 5 & 0 & 1 & 0 & 0 & 0 & 4 & 0 & 0 & 0 & 18 & 60\% \\
+			High res search            & 0 & 0 & 0 & 0 & 0 & 0 & 2 & 2 & 1 & 5 & 1 & 2 & 0 & 0 & 1 & 3 & 4 & 1 & 0 & 17 & 45\% \\
+			Multi res search           & 0 & 2 & 0 & 0 & 0 & 0 & 4 & 4 & 2 & 5 & 1 & 1 & 0 & 0 & 0 & 0 & 4 & 2 & 0 & 17 & 50\% \\
 			
 			\hline
-			\multicolumn{22}{|l|}{\textbf{Using thigh and lower leg $\theta$ values.}} \\
-			Multires search            & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 7 & 2 & 2 & 2 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 2 & 18 & 65\% \\
+			\multicolumn{22}{|l|}{\textbf{Using both thigh and lower leg $\theta$ values.}} \\
+			Low res search             & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 2 & 0 & 3 & 0 & 1 & 0 & 0 & 0 & 0 & 3 & 0 & 0 & 18 & 65\% \\
+			High res search            & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 & 0 & 4 & 2 & 1 & 0 & 0 & 0 & 0 & 4 & 0 & 0 & 18 & 65\% \\
+			Multi res search           & 0 & 1 & 0 & 0 & 0 & 0 & 3 & 3 & 0 & 4 & 0 & 0 & 0 & 0 & 0 & 0 & 3 & 1 & 0 & 18 & 65\% \\
 			
 			\hline
 		\end{tabular}
-		\caption{Classification results.
-			Two samples from each subject were manually classified, and the classification algorithm run on the remaining two samples (\emph{a} and \emph{b}).
-			The numbers in the cells show how close the algorithm was to correctly identifying the subject.
-			A value of 0 represents a correct classification.}
-		\label{ClassificationResults}
+		\caption{Comparison of different modelfitting algorithms and parameters.
+			These tests all use the mean-normalising euclidean distance function from the previous page.}
+		\label{ClassificationResults2}
 	\end{table}
 \end{landscape}
 
-Show results of all approaches.
-How does adding more limbs help?
