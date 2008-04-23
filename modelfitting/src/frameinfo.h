@@ -17,7 +17,7 @@ class FrameInfo;
 class FrameModel;
 class Mesh;
 
-#define USE_MULTIRESOLUTION
+//#define USE_MULTIRESOLUTION
 
 #define MAXX 38.0
 #define MINX (-MAXX)
@@ -35,7 +35,7 @@ class Mesh;
 #define THETA_RESOLUTION 40
 #else
 #define ALPHA_RESOLUTION 5
-#define THETA_RESOLUTION 20
+#define THETA_RESOLUTION 10
 #endif
 
 #define ALPHA_RANGE (M_PI/32.0)
