@@ -1,0 +1,17 @@
+[%General]
+Highest=151
+CenterX=32.38499555753
+CenterY=279.865633792389
+XWidth=54
+
+[LeftLeg]
+ThighAlpha=0
+ThighTheta=-0.392699092626572
+LowerLegAlpha=0
+LowerLegTheta=-0.706858336925507
+
+[RightLeg]
+ThighAlpha=-0.0392699092626572
+ThighTheta=0.667588412761688
+LowerLegAlpha=0
+LowerLegTheta=0.117809727787971
