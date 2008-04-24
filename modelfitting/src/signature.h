@@ -22,12 +22,15 @@ public:
 	void clear();
 	double operator -(const Signature& other) const;
 	
+	float height;
 	ComplexList leftThighTheta;
 	ComplexList rightThighTheta;
 	ComplexList leftLowerTheta;
 	ComplexList rightLowerTheta;
 
 private:
+	void init();
+	
 	static ComplexList readList(QSettings& s, const QString& name);
 	static void saveList(QSettings& s, const QString& name, const ComplexList& list);
 	static double diff(ComplexList one, ComplexList two);

@@ -33,6 +33,10 @@ public:
 	
 	int resultSize() const { return m_dataSize/2+1; }
 	const std::complex<double>* result() const { return m_results; }
+	
+	int dataMin() const { return m_dataMin; }
+	int dataMax() const { return m_dataMax; }
+	FrameModelFilter* filter() const { return m_filter; }
 
 private:
 	QModelIndex m_index;

@@ -2,6 +2,7 @@
 #include "listmodels.h"
 #include "fft.h"
 #include "types.h"
+#include "frameinfo.h"
 
 #include <QSettings>
 #include <QModelIndex>
@@ -11,6 +12,7 @@ Signature::Signature(QSettings& s)
 {
 	s.beginGroup("Signature");
 	
+	height = s.value("Height").toDouble();
 	leftThighTheta = readList(s, "LeftThighTheta");
 	rightThighTheta = readList(s, "RightThighTheta");
 	leftLowerTheta = readList(s, "LeftLowerTheta");
@@ -40,6 +42,7 @@ void Signature::update(FrameModel* model, const QModelIndex& index)
 {
 	clear();
 	
+	// Do DFT stuff
 	Fft fft(model);
 	fft.setFrameSet(index);
 	fft.init();
@@ -59,12 +62,30 @@ void Signature::update(FrameModel* model, const QModelIndex& index)
 	fft.run(Fft::RightLowerTheta);
 	for (int i=0 ; i<fft.resultSize() ; ++i)
 		rightLowerTheta << fft.result()[i];
+	
+	// Get the mean height over one gait cycle
+	int i = fft.dataMin();
+	height = 0.0;
+	for (int i=fft.dataMin() ; i<fft.dataMax() ; ++i)
+	{
+		QModelIndex itemIndex(fft.filter()->mapToSource(fft.filter()->mapFromSource(index).child(i, 0)));
+		if (!model->hasModelInformation(itemIndex))
+			continue;
+		
+		FrameInfo* info = model->loadFrame(itemIndex, true);
+		
+		height += info->highestPoint();
+		
+		delete info;
+	}
+	height /= fft.dataMax() - fft.dataMin();
 }
 
 void Signature::save(QSettings& s) const
 {
 	s.beginGroup("Signature");
 	
+	s.setValue("Height", height);
 	saveList(s, "LeftThighTheta", leftThighTheta);
 	saveList(s, "RightThighTheta", rightThighTheta);
 	saveList(s, "LeftLowerTheta", leftLowerTheta);
@@ -87,7 +108,8 @@ void Signature::saveList(QSettings& s, const QString& name, const ComplexList& l
 
 double Signature::operator -(const Signature& other) const
 {
-	return diff(leftThighTheta, other.leftThighTheta) +
+	return std::pow(height - other.height, 2) +
+	       diff(leftThighTheta, other.leftThighTheta) +
 	       diff(rightThighTheta, other.rightThighTheta)// +
 	       /*diff(leftLowerTheta, other.leftLowerTheta) +
 	       diff(rightLowerTheta, other.rightLowerTheta)*/;
