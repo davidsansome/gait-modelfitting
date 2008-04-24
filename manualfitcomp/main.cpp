@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <cmath>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -30,39 +32,38 @@ void readFile(QIODevice& file, QList<float>& leftThigh, QList<float>& leftLower,
 		rightThigh << values[6].toFloat(&ok);   Q_ASSERT(ok == true);
 		rightLower << values[8].toFloat(&ok);   Q_ASSERT(ok == true);
 	}
+	qDebug() << "Read" << leftThigh.count() << "values";
 }
 
-void compare(const QString& label, const QList<float>& a, const QList<float>& m, float& diffTot, float& diffSquaredTot)
+float compare(const QList<float>& a, const QList<float>& m)
 {
 	Q_ASSERT(a.count() == m.count());
 	
 	float diff = 0.0;
-	float diffSquared = 0.0;
+	//float diffSquared = 0.0;
 	
 	for (int i=0 ; i<a.count() ; ++i)
 	{
 		float d = qAbs(a[i] - m[i]);
 		
 		diff += d;
-		diffSquared += pow(d, 2);
+		//diffSquared += pow(d, 2);
 	}
 	
-	cout << qPrintable(label) << " & " << diff << " & " << diff/a.count() << " & " << diffSquared << " & " << diffSquared/a.count() << " \\\\" << endl;
+	//cout << qPrintable(label) << " & " << diff << " & " << diff/a.count() << " & " << diffSquared << " & " << diffSquared/a.count() << " \\\\" << endl;
 	
-	diffTot += diff;
-	diffSquaredTot += diffSquared;
+	//diffTot += diff;
+	//diffSquaredTot += diffSquared;
+	
+	return diff / a.count();
 }
 
-int main(int argc, char** argv)
+QList<float> doSample(const QString& autoFilename, const QString& manualFilename)
 {
-	QApplication app(argc, argv, false);
+	qDebug() << "Doing" << autoFilename << manualFilename;
 	
-	// Check our arguments
-	if (argc != 3)
-		qFatal("Usage: %s autofit.dat manualfit.dat\n", argv[0]);
-	
-	QFile autoFile(argv[1]);
-	QFile manualFile(argv[2]);
+	QFile autoFile(autoFilename);
+	QFile manualFile(manualFilename);
 	
 	if (!autoFile.exists())
 		qFatal("%s does not exist\n", qPrintable(autoFile.fileName()));
@@ -81,24 +82,76 @@ int main(int argc, char** argv)
 	QList<float> manualRightThigh;
 	QList<float> manualRightLower;
 	
-	autoFile.open(QIODevice::ReadOnly);
-	manualFile.open(QIODevice::ReadOnly);
+	Q_ASSERT(autoFile.open(QIODevice::ReadOnly));
+	Q_ASSERT(manualFile.open(QIODevice::ReadOnly));
 	
 	readFile(autoFile, autoLeftThigh, autoLeftLower, autoRightThigh, autoRightLower);
 	readFile(manualFile, manualLeftThigh, manualLeftLower, manualRightThigh, manualRightLower);
 	
 	// Compare the values
-	float diff = 0.0;
-	float diffSquared = 0.0;
+	QList<float> ret;
 	
-	compare("Left thigh", autoLeftThigh, manualLeftThigh, diff, diffSquared);
-	compare("Right thigh", autoRightThigh, manualRightThigh, diff, diffSquared);
-	compare("Left lower", autoLeftLower, manualLeftLower, diff, diffSquared);
-	compare("Right lower", autoRightLower, manualRightLower, diff, diffSquared);
+	ret << compare(autoLeftThigh, manualLeftThigh);
+	ret << compare(autoRightThigh, manualRightThigh);
+	ret << compare(autoLeftLower, manualLeftLower);
+	ret << compare(autoRightLower, manualRightLower);
+	ret << (ret[0] + ret[1] + ret[2] + ret[3]) / 4.0;
+	
+	return ret;
+}
+
+string toPercent(float in)
+{
+	const float totalRange = M_PI / 2.0;
+	
+	ostringstream os;
+	os << fixed << setprecision(2) << (in / totalRange) * 100.0;
+	
+	return os.str() + "\\%";
+}
+
+int main(int argc, char** argv)
+{
+	QApplication app(argc, argv, false);
+	
+	QList<QList<float> > table;
+	
+	table << doSample("set81-res10.dat", "set81-manual.dat");
+	table << doSample("set96-res10.dat", "set96-manual.dat");
+	table << doSample("set81-res20.dat", "set81-manual.dat");
+	table << doSample("set96-res20.dat", "set96-manual.dat");
+	table << doSample("set81-multires.dat", "set81-manual.dat");
+	table << doSample("set96-multires.dat", "set96-manual.dat");
+	
+	cout << "Left thigh & " <<
+		toPercent(table[0][0]) << " & " << toPercent(table[1][0]) << " & " <<
+		toPercent(table[2][0]) << " & " << toPercent(table[3][0]) << " & " <<
+		toPercent(table[4][0]) << " & " << toPercent(table[5][0]) << " \\\\" << endl;
+	
+	cout << "Right thigh & " <<
+		toPercent(table[0][1]) << " & " << toPercent(table[1][1]) << " & " <<
+		toPercent(table[2][1]) << " & " << toPercent(table[3][1]) << " & " <<
+		toPercent(table[4][1]) << " & " << toPercent(table[5][1]) << " \\\\" << endl;
+	
+	cout << "Left lower leg & " <<
+		toPercent(table[0][2]) << " & " << toPercent(table[1][2]) << " & " <<
+		toPercent(table[2][2]) << " & " << toPercent(table[3][2]) << " & " <<
+		toPercent(table[4][2]) << " & " << toPercent(table[5][2]) << " \\\\" << endl;
+	
+	cout << "Right lower leg & " << toPercent(table[0][3]) << " & " <<
+		toPercent(table[1][3]) << " & " << toPercent(table[2][3]) << " & " <<
+		toPercent(table[3][3]) << " & " << toPercent(table[4][3]) << " & " <<
+		toPercent(table[5][3]) << " \\\\" << endl;
 	
 	cout << "\\hline" << endl;
-	cout << "Total & " << diff << " & " << diff/autoLeftThigh.count() << " & " << diffSquared << " & " << diffSquared/autoLeftThigh.count() << " \\\\" << endl;
+	cout << "Overall & " <<
+		toPercent(table[0][4]) << " & " << toPercent(table[1][4]) << " & " <<
+		toPercent(table[2][4]) << " & " << toPercent(table[3][4]) << " & " <<
+		toPercent(table[4][4]) << " & " << toPercent(table[5][4]) << " \\\\" << endl;
 	
-	return 0;
+	cout << "& " <<
+		"\\multicolumn{2}{|c|}{" << toPercent((table[0][4] + table[1][4]) / 2.0) << "} & " <<
+		"\\multicolumn{2}{|c|}{" << toPercent((table[2][4] + table[3][4]) / 2.0) << "} & " <<
+		"\\multicolumn{2}{|c}{" << toPercent((table[4][4] + table[5][4]) / 2.0) << "} \\\\" << endl;
 }
 

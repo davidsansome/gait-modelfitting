@@ -1,3 +1,6 @@
+\newcommand{\graphwidth}{6.2cm}
+
+
 \section{Accuracy of modelfitting}
 
 \subsection{Ranges and resolutions}
@@ -11,17 +14,17 @@ Some of the problems encountered when selecting values for the variables are giv
 
 \begin{figure}[p]
 	\centering
-	\subfloat[Left thigh energy]{\label{Alpha:GoodLeftThigh}\includegraphics[width=6.2cm]{problems/good-leftthigh.png}}
+	\subfloat[Left thigh energy]{\label{Alpha:GoodLeftThigh}\includegraphics[width=\graphwidth]{problems/good-leftthigh.png}}
 	\qquad
-	\subfloat[Right thigh energy]{\label{Alpha:GoodRightThigh}\includegraphics[width=6.2cm]{problems/good-rightthigh.png}}
+	\subfloat[Right thigh energy]{\label{Alpha:GoodRightThigh}\includegraphics[width=\graphwidth]{problems/good-rightthigh.png}}
 	\\
-	\subfloat[Left lower leg energy]{\label{Alpha:GoodLeftLower}\includegraphics[width=6.2cm]{problems/good-leftlower.png}}
+	\subfloat[Left lower leg energy]{\label{Alpha:GoodLeftLower}\includegraphics[width=\graphwidth]{problems/good-leftlower.png}}
 	\qquad
-	\subfloat[Right lower leg energy]{\label{Alpha:GoodRightLower}\includegraphics[width=6.2cm]{problems/good-rightlower.png}}
+	\subfloat[Right lower leg energy]{\label{Alpha:GoodRightLower}\includegraphics[width=\graphwidth]{problems/good-rightlower.png}}
 	\\
-	\subfloat[Model and voxel data]{\label{Alpha:Good3D}\includegraphics[width=6.2cm]{problems/good-3d.png}}
+	\subfloat[Model and voxel data]{\label{Alpha:Good3D}\includegraphics[width=\graphwidth]{problems/good-3d.png}}
 	\qquad
-	\subfloat[Model]{\label{Alpha:GoodModel}\includegraphics[width=6.2cm]{problems/good-model.png}}
+	\subfloat[Model]{\label{Alpha:GoodModel}\includegraphics[width=\graphwidth]{problems/good-model.png}}
 	
 	\caption{Frame 76, a good fitting of the model to the data.
 		Notice in \ref{Alpha:GoodRightThigh} how there is a local minimum developing in the upper-right corner.
@@ -32,17 +35,17 @@ Some of the problems encountered when selecting values for the variables are giv
 
 \begin{figure}[p]
 	\centering
-	\subfloat[Left thigh energy]{\label{Alpha:BadLeftThigh}\includegraphics[width=6.2cm]{problems/badalpha-leftthigh.png}}
+	\subfloat[Left thigh energy]{\label{Alpha:BadLeftThigh}\includegraphics[width=\graphwidth]{problems/badalpha-leftthigh.png}}
 	\qquad
-	\subfloat[Right thigh energy]{\label{Alpha:BadRightThigh}\includegraphics[width=6.2cm]{problems/badalpha-rightthigh.png}}
+	\subfloat[Right thigh energy]{\label{Alpha:BadRightThigh}\includegraphics[width=\graphwidth]{problems/badalpha-rightthigh.png}}
 	\\
-	\subfloat[Left lower leg energy]{\label{Alpha:BadLeftLower}\includegraphics[width=6.2cm]{problems/badalpha-leftlower.png}}
+	\subfloat[Left lower leg energy]{\label{Alpha:BadLeftLower}\includegraphics[width=\graphwidth]{problems/badalpha-leftlower.png}}
 	\qquad
-	\subfloat[Right lower leg energy]{\label{Alpha:BadRightLower}\includegraphics[width=6.2cm]{problems/badalpha-rightlower.png}}
+	\subfloat[Right lower leg energy]{\label{Alpha:BadRightLower}\includegraphics[width=\graphwidth]{problems/badalpha-rightlower.png}}
 	\\
-	\subfloat[Model and voxel data]{\label{Alpha:Bad3D}\includegraphics[width=6.2cm]{problems/badalpha-3d.png}}
+	\subfloat[Model and voxel data]{\label{Alpha:Bad3D}\includegraphics[width=\graphwidth]{problems/badalpha-3d.png}}
 	\qquad
-	\subfloat[Model]{\label{Alpha:BadModel}\includegraphics[width=6.2cm]{problems/badalpha-model.png}}
+	\subfloat[Model]{\label{Alpha:BadModel}\includegraphics[width=\graphwidth]{problems/badalpha-model.png}}
 	
 	\caption{Frame 77, an erroneous fitting of the model to the data.
 		The local minimum in \ref{Alpha:GoodRightThigh} on the previous page must have had a much lower energy with $(\alpha_2, \theta_2) = (0, 0)$ (lower leg energy).
@@ -93,8 +96,8 @@ Some of the problems encountered when selecting values for the variables are giv
 		With the introduction of multi-resolution sampling however some high-resolution fittings were tested, and as expected
 		the noise resulting from the discrete nature of the data led to errors in the DFT and a lower classification rate.
 		
-		The ideal resolutions were discovered to be $resolution_\theta = 41$ and $resolution_\alpha = 11$ - meaning the
-		parameter space is 41x41x11x11 (odd numbers were chosen to ensure there is one sample taken at $(0, 0, 0, 0)$).
+		The ideal resolutions were discovered to be $resolution_\theta = 21$ and $resolution_\alpha = 11$ - meaning the
+		parameter space is 21x21x11x11 (odd numbers were chosen to ensure there is one sample taken at $(0, 0, 0, 0)$).
 \end{enumerate}
 
 
@@ -106,81 +109,125 @@ Samples 81 and 96 were chosen for this manual fitting process as they gave very 
 Sample 81 is one of the samples of Subject 1, who was classified correctly in most of the tests.
 Sample 96 is one of the samples of Subject 4, who was never classified correctly in any of the tests.
 
-Figures \ref{ManualFit81} and \ref{ManualFit96} show the differences between parameter values for automatic fitting and manual fitting,
-and Tables \ref{ManualFitTable81} and \ref{ManualFitTable96} summarise these results in tabular form.
+Figures \ref{ManualFit81:res10} to \ref{ManualFit96:multires} show the differences between parameter values for automatic fitting and manual fitting,
+and Table \ref{ManualFitTable} summarises this information in tabular form.
 Only the $\theta$ values were compared as their errors affect classification far more than those in the $\alpha$ values.
 
-In the tables below $a_t$ represents the value of $\theta$ that was determined automatically, and $m_t$ the value that was entered manually.
+The error between the manually entered result $m_t$ and the automatically determined result $a_t$ for a sample with $N$ frames was calculated as follows:
+
+\begin{equation}
+	E = \frac{1}{N} \sum_{t=1}^N \left| a_t - m_t \right|
+\end{equation}
+
+The values in the table below represent the average error per frame as a percentage of the possible range for $\theta$ ($\pm \frac{\pi}{4}$).
 
 \begin{table}[thb]
 	\centering
-	\begin{tabular}{l|c|c|c|c}
-		& $\sum_{t=1}^N \left| a_t - m_t \right|$ & $\frac{\sum_{t=1}^N \left| a_t - m_t \right|}{N}$ & $\sum_{t=1}^N \left( a_t - m_t \right)^2 $ & $\frac{\sum_{t=1}^N \left( a_t - m_t \right)^2}{N}$ \\
+	\begin{tabular}{l|cc|cc|cc}
+		& \multicolumn{2}{|c|}{Low fixed res} & \multicolumn{2}{|c|}{High fixed res} & \multicolumn{2}{|c}{Multi-resolution} \\
+		& 81 & 96 & 81 & 96 & 81 & 96 \\
 		\hline
-		Left thigh & 2.38639 & 0.0294616 & 0.371018 &0.00458047 \\
-		Right thigh & 1.76716 & 0.0218168 & 0.206641 &0.00255113 \\
-		Left lower & 4.33182 & 0.0534793 & 1.58659 &0.0195875 \\
-		Right lower & 2.56525 & 0.0316698 & 0.540861 &0.0066773 \\
+		Left thigh & 2.94\% & 1.83\% & 3.18\% & 1.97\% & 3.01\% & 1.48\% \\
+		Right thigh & 2.23\% & 2.45\% & 2.33\% & 2.39\% & 2.70\% & 1.98\% \\
+		Left lower leg & 6.37\% & 5.17\% & 6.02\% & 4.68\% & 5.34\% & 2.78\% \\
+		Right lower leg & 3.81\% & 5.21\% & 3.56\% & 4.86\% & 4.15\% & 3.98\% \\
 		\hline
-		Total & 11.0506 & 0.136427 & 2.70511 & 0.0333964 \\
+		Overall & 3.84\% & 3.66\% & 3.77\% & 3.48\% & 3.80\% & 2.56\% \\
+		& \multicolumn{2}{|c|}{3.75\%} & \multicolumn{2}{|c|}{3.62\%} & \multicolumn{2}{|c}{3.18\%} \\
 	\end{tabular}
-	\caption{Error between automatic and manual fittings for Sample 81.}
-	\label{ManualFitTable81}
-\end{table}
-
-\begin{table}[thb]
-	\centering
-	\begin{tabular}{l|c|c|c|c}
-		& $\sum_{t=1}^N \left| a_t - m_t \right|$ & $\frac{\sum_{t=1}^N \left| a_t - m_t \right|}{N}$ & $\sum_{t=1}^N \left( a_t - m_t \right)^2 $ & $\frac{\sum_{t=1}^N \left( a_ t- m_t \right)^2}{N}$ \\
-		\hline
-		Left thigh & 0.15711 & 0.00285655 & 0.0131091 &0.00023835 \\
-		Right thigh & 0.667605 & 0.0121383 & 0.0979246 &0.00178045 \\
-		Left lower & 0.137471 & 0.00249947 & 0.018892 &0.00034349 \\
-		Right lower & 1.64081 & 0.0298329 & 0.434485 &0.00789972 \\
-		\hline
-		Total & 2.603 & 0.0473272 & 0.56441 & 0.010262 \\
-	\end{tabular}
-	\caption{Error between automatic and manual fittings for Sample 96.}
-	\label{ManualFitTable96}
+	\caption{Overview of the average error per frame for different modelfitting algorithms.}
+	\label{ManualFitTable}
 \end{table}
 
 \begin{figure}[p]
-	\centering
-	\subfloat[Left thigh]{\label{ManualFit81:LeftThigh}\includegraphics[width=6.2cm]{manualfitting/81-leftthightheta.png}}
-	\quad
-	\subfloat[Right thigh]{\label{ManualFit81:RightThigh}\includegraphics[width=6.2cm]{manualfitting/81-rightthightheta.png}}
-	\\
-	\subfloat[Left lower leg]{\label{ManualFit81:LeftLower}\includegraphics[width=6.2cm]{manualfitting/81-leftlowertheta.png}}
-	\quad
-	\subfloat[Right lower leg]{\label{ManualFit81:RightLower}\includegraphics[width=6.2cm]{manualfitting/81-rightlowertheta.png}}
-	
-	\caption{Comparison between automatic and manual fittings for Sample 81.}
-	\label{ManualFit81}
-\end{figure}
+        \centering
+        \subfloat[Left thigh]{\label{ManualFit81:res10:LeftThigh}\includegraphics[width=\graphwidth]{manualfitting/81-res10-leftthigh.png}}
+        \quad
+        \subfloat[Right thigh]{\label{ManualFit81:res10:RightThigh}\includegraphics[width=\graphwidth]{manualfitting/81-res10-rightthigh.png}}
+        \
+        \subfloat[Left lower leg]{\label{ManualFit81:res10:LeftLower}\includegraphics[width=\graphwidth]{manualfitting/81-res10-leftlower.png}}
+        \quad
+        \subfloat[Right lower leg]{\label{ManualFit81:res10:RightLower}\includegraphics[width=\graphwidth]{manualfitting/81-res10-rightlower.png}}
 
+        \caption{Fitting error for Sample 81 using the low fixed resolution search.}
+        \label{ManualFit81:res10}
+\end{figure}
 \begin{figure}[p]
-	\centering
-	\subfloat[Left thigh]{\label{ManualFit96:LeftThigh}\includegraphics[width=6.2cm]{manualfitting/96-leftthightheta.png}}
-	\quad
-	\subfloat[Right thigh]{\label{ManualFit96:RightThigh}\includegraphics[width=6.2cm]{manualfitting/96-rightthightheta.png}}
-	\\
-	\subfloat[Left lower leg]{\label{ManualFit96:LeftLower}\includegraphics[width=6.2cm]{manualfitting/96-leftlowertheta.png}}
-	\quad
-	\subfloat[Right lower leg]{\label{ManualFit96:RightLower}\includegraphics[width=6.2cm]{manualfitting/96-rightlowertheta.png}}
-	
-	\caption{Comparison between automatic and manual fittings for Sample 96.}
-	\label{ManualFit96}
+        \centering
+        \subfloat[Left thigh]{\label{ManualFit96:res10:LeftThigh}\includegraphics[width=\graphwidth]{manualfitting/96-res10-leftthigh.png}}
+        \quad
+        \subfloat[Right thigh]{\label{ManualFit96:res10:RightThigh}\includegraphics[width=\graphwidth]{manualfitting/96-res10-rightthigh.png}}
+        \
+        \subfloat[Left lower leg]{\label{ManualFit96:res10:LeftLower}\includegraphics[width=\graphwidth]{manualfitting/96-res10-leftlower.png}}
+        \quad
+        \subfloat[Right lower leg]{\label{ManualFit96:res10:RightLower}\includegraphics[width=\graphwidth]{manualfitting/96-res10-rightlower.png}}
+
+        \caption{Fitting error for Sample 96 using the low fixed resolution search.}
+        \label{ManualFit96:res10}
+\end{figure}
+\begin{figure}[p]
+        \centering
+        \subfloat[Left thigh]{\label{ManualFit81:res20:LeftThigh}\includegraphics[width=\graphwidth]{manualfitting/81-res20-leftthigh.png}}
+        \quad
+        \subfloat[Right thigh]{\label{ManualFit81:res20:RightThigh}\includegraphics[width=\graphwidth]{manualfitting/81-res20-rightthigh.png}}
+        \
+        \subfloat[Left lower leg]{\label{ManualFit81:res20:LeftLower}\includegraphics[width=\graphwidth]{manualfitting/81-res20-leftlower.png}}
+        \quad
+        \subfloat[Right lower leg]{\label{ManualFit81:res20:RightLower}\includegraphics[width=\graphwidth]{manualfitting/81-res20-rightlower.png}}
+
+        \caption{Fitting error for Sample 81 using the high fixed resolution search.}
+        \label{ManualFit81:res20}
+\end{figure}
+\begin{figure}[p]
+        \centering
+        \subfloat[Left thigh]{\label{ManualFit96:res20:LeftThigh}\includegraphics[width=\graphwidth]{manualfitting/96-res20-leftthigh.png}}
+        \quad
+        \subfloat[Right thigh]{\label{ManualFit96:res20:RightThigh}\includegraphics[width=\graphwidth]{manualfitting/96-res20-rightthigh.png}}
+        \
+        \subfloat[Left lower leg]{\label{ManualFit96:res20:LeftLower}\includegraphics[width=\graphwidth]{manualfitting/96-res20-leftlower.png}}
+        \quad
+        \subfloat[Right lower leg]{\label{ManualFit96:res20:RightLower}\includegraphics[width=\graphwidth]{manualfitting/96-res20-rightlower.png}}
+
+        \caption{Fitting error for Sample 96 using the high fixed resolution search.}
+        \label{ManualFit96:res20}
+\end{figure}
+\begin{figure}[p]
+        \centering
+        \subfloat[Left thigh]{\label{ManualFit81:multires:LeftThigh}\includegraphics[width=\graphwidth]{manualfitting/81-multires-leftthigh.png}}
+        \quad
+        \subfloat[Right thigh]{\label{ManualFit81:multires:RightThigh}\includegraphics[width=\graphwidth]{manualfitting/81-multires-rightthigh.png}}
+        \
+        \subfloat[Left lower leg]{\label{ManualFit81:multires:LeftLower}\includegraphics[width=\graphwidth]{manualfitting/81-multires-leftlower.png}}
+        \quad
+        \subfloat[Right lower leg]{\label{ManualFit81:multires:RightLower}\includegraphics[width=\graphwidth]{manualfitting/81-multires-rightlower.png}}
+
+        \caption{Fitting error for Sample 81 using the multi-resolution search.}
+        \label{ManualFit81:multires}
+\end{figure}
+\begin{figure}[p]
+        \centering
+        \subfloat[Left thigh]{\label{ManualFit96:multires:LeftThigh}\includegraphics[width=\graphwidth]{manualfitting/96-multires-leftthigh.png}}
+        \quad
+        \subfloat[Right thigh]{\label{ManualFit96:multires:RightThigh}\includegraphics[width=\graphwidth]{manualfitting/96-multires-rightthigh.png}}
+        \
+        \subfloat[Left lower leg]{\label{ManualFit96:multires:LeftLower}\includegraphics[width=\graphwidth]{manualfitting/96-multires-leftlower.png}}
+        \quad
+        \subfloat[Right lower leg]{\label{ManualFit96:multires:RightLower}\includegraphics[width=\graphwidth]{manualfitting/96-multires-rightlower.png}}
+
+        \caption{Fitting error for Sample 96 using the multi-resolution search.}
+        \label{ManualFit96:multires}
 \end{figure}
 
-Our results here are suprising, since Sample 81 fared so much better in classification than Sample 96, but seems to have a higher error.
+The overall low error rate for the modelfitting is encouraging.
+As is to be expected, the lower resolution search is not quite as accurate as the high resolution search.
+The multi-resolution search seems to perform even better, as its second pass has twice the equivalent resolution of the high fixed resolution search.
+The low error rate for multi-resolution is particularly encouraging as it was a concern in section \ref{Design:MultiRes} that the algorithm might ``home in'' on some non-global minima and miss the true fitting.
+
+Comparing the error rates between the samples is suprising, since Sample 81 fared so much better in classification than Sample 96, but seems to have a higher error.
 One possible explanation for this relates to the way in which classification operates.
 Two of the four samples from each subject are classified manually and the remaining two undergo automatic classification.
 A success is recorded if the automatic classification matches either of the two manually labelled samples.
 It could be that the modelfitting algorithm fit Sample 96 well, but was less successful with the other three samples from the same subject.
-
-The low error rate for the modelfitting is encouraging however.
-On average, the difference between the automatically determined $\theta$ value and the ``correct'' manually set value was 0.03410675 for Sample 81 and 0.01183180 for Sample 96.
-The possible range for these $\theta$ values is $\pm \frac{\pi}{4} = \pm 0.785398163$, so our error in the $\theta$ value in each frame is $2.1\%$ for Sample 81 and $0.75\%$ for Sample 96 (to 2 significant figures).
 
 \bigskip
 \noindent So how might we account for this error?

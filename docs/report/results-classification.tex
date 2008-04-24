@@ -1,5 +1,21 @@
 \section{Accuracy of classification}
 
+In the previous chapters we have presented a selection of different algorithms and approaches to modelfitting and classification.
+This section attempts to discover which combination of these algorithms leads to the best performance in terms of recognising new subjects.
+
+The sample data used to test the algorithms contains 10 different subjects.
+Four recordings of each subject were taken, giving a total of 40 samples.
+Two of the four samples from each subject were manually classified and entered into a database for use as a training set,
+while the remaining two samples (labelled \emph{a} and \emph{b}) were put through automatic classification.
+
+The success rate of the system was determined by how many of the ``unknown'' samples \emph{a} and \emph{b} it was able to match to the correct class in the training set.
+In the tables below (\ref{ClassificationResults} and \ref{ClassificationResults2}) the numbers in each cell represent how close the algorithm was to correctly identifying the subject.
+A value of 3 would indicate that there were 3 other classes that were a better match than the correct one.
+A value of 0 would represent a correct classification.
+
+\bigskip
+\noindent There were three primary questions that guided the testing:
+
 \begin{enumerate}
 	\item \textbf{Which distance function is most suitable?}
 		Section \ref{ClassificationMethods} described some of the possible \emph{distance functions} that could be implemented to find how closely related two samples are to each other.
@@ -19,21 +35,31 @@
 		This does indeed improve the performance - increasing the correct classification rate by 5\%.
 	
 	\item \textbf{Which of the search algorithms are best?}
+		We started off by introducing a fixed resolution search in Listing TODO, and then later attempted to lower its execution time by splitting it into two passes.
+		It is important to evaluate both these fixed and multi-resolution search algorithms in order to ensure that we are not sacrificing performance for speed of execution.
 		
+		Three algorithms were tested - a fixed resolution search with a low resolution ($\text{res}_\alpha = 11, \text{res}_\theta = 21$),
+		a fixed resolution search with a high resolution ($\text{res}_\alpha = 11, \text{res}_\theta = 41$),
+		and a multi-resolution search (with equivalent $\text{res}_\alpha = 41, \text{res}_\theta = 81$).
+		The results from these tests are shown in Table \ref{ClassificationResults2}.
+		
+		Suprisingly, these tests show that the best performer is the low fixed-resolution search algorithm.
+		Using this algorithm we can correctly classify 80\% of all the test subjects.
+		Both the high resolution and multi resolution algorithms seem to have much lower performance - demonstrating a lower overall classification rate.
+		However if we look at the distances between our sample and the nearest sample of the correct class we can see that they are still very close - the higher resolution searches
+		have just moved a sample of another class a little bit closer, throwing off the classification.
+		
+		TODO: Were the algorithms right to do this?
+		
+	\item \textbf{Which limbs are important in classification?}
+		Our initial tests in Table \ref{ClassificationResults} were performed using only the signature data from the subject's left thigh.
+		In Table \ref{ClassificationResults2} we run additional tests to see if there is any improvement to be gained from including the right thigh and lower legs.
+		
+		Using both thighs in classification gives an improvement over just using the left thigh - one additional sample is classified correctly bringing the success rate up from 75\% to 80\%.
+		
+		Including the lower legs brings about a drop in performance of 10\%-20\% over all the search algorithms, so clearly these are less useful than the thighs for identification.
+		Using \emph{both} thighs and lower legs seems to bring us to a middle ground in classification performance - 65\% of the samples being classified correctly.
 \end{enumerate}
-
-
-Questions:
-1) Which limbs are important.
-2) Which of the search algorithms are best
-2a) What resolutions are suitable.
-3) Which distanceTo function is the best
- a) Is it good to remove the dc?
- b) Is it good to normalize?
-
-Two samples from each subject were manually classified, and the classification algorithm run on the remaining two samples (\emph{a} and \emph{b}).
-The numbers in the cells show how close the algorithm was to correctly identifying the subject.
-A value of 0 represents a correct classification.
 
 \begin{landscape}
 	\begin{table}[p]
