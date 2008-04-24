@@ -30,7 +30,10 @@ public:
 private:
 	static ComplexList readList(QSettings& s, const QString& name);
 	static void saveList(QSettings& s, const QString& name, const ComplexList& list);
-	static double diff(const ComplexList& one, const ComplexList& two);
+	static double diff(ComplexList one, ComplexList two);
+	
+	static void normalizeVariance(ComplexList& list);
+	static void normalizeMean(ComplexList& list);
 };
 
 #endif

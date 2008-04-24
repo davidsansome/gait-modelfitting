@@ -1,9 +1,11 @@
 #include "signature.h"
 #include "listmodels.h"
 #include "fft.h"
+#include "types.h"
 
 #include <QSettings>
 #include <QModelIndex>
+#include <QtDebug>
 
 Signature::Signature(QSettings& s)
 {
@@ -86,8 +88,8 @@ void Signature::saveList(QSettings& s, const QString& name, const ComplexList& l
 double Signature::operator -(const Signature& other) const
 {
 	return diff(leftThighTheta, other.leftThighTheta) +
-	       diff(rightThighTheta, other.rightThighTheta)/* +
-	       diff(leftLowerTheta, other.leftLowerTheta) +
+	       diff(rightThighTheta, other.rightThighTheta)// +
+	       /*diff(leftLowerTheta, other.leftLowerTheta) +
 	       diff(rightLowerTheta, other.rightLowerTheta)*/;
 }
 
@@ -99,30 +101,63 @@ void Signature::clear()
 	rightLowerTheta.clear();
 }
 
-double Signature::diff(const ComplexList& one, const ComplexList& two)
+void Signature::normalizeMean(ComplexList& list)
 {
-	int count = qMin(one.count(), two.count());
+	const int count = list.count();
 	
-	std::complex<double> meanOne = 0.0;
-	std::complex<double> meanTwo = 0.0;
+	// Calculate the mean
+	std::complex<double> mean = 0.0;
+	for (int i=0 ; i<count ; ++i)
+		mean += list[i];
+	mean /= count;
+	
+	// Subtract the mean from all the samples
+	for (int i=0 ; i<count ; ++i)
+		list[i] -= mean;
+}
+
+void Signature::normalizeVariance(ComplexList& list)
+{
+	const int count = list.count();
+	
+	// Calculate the variance
+	double real = 0.0;
+	double imag = 0.0;
 	for (int i=0 ; i<count ; ++i)
 	{
-		meanOne += one[i];
-		meanTwo += two[i];
+		// I don't trust std::complex's pow function
+		real += std::pow(list[i].real(), 2);
+		imag += std::pow(list[i].imag(), 2);
 	}
-	meanOne /= count;
-	meanTwo /= count;
+	real /= count;
+	imag /= count;
+	
+	// Divide all the samples by the variance
+	for (int i=0 ; i<count ; ++i)
+		list[i] = std::complex<double>(list[i].real() / real, list[i].imag() / imag);
+}
+
+double Signature::diff(ComplexList one, ComplexList two)
+{
+	int count = qMin(one.count(), two.count());
+	while (one.count() > count)
+		one.removeLast();
+	while (two.count() > count)
+		two.removeLast();
+	
+	normalizeMean(one);
+	normalizeMean(two);
+	
+	//normalizeVariance(one);
+	//normalizeVariance(two);
 	
 	double accum = 0.0;
 	for (int i=0 ; i<count ; ++i)
 	{
-		std::complex<double> dOne = one[i] - meanOne;
-		std::complex<double> dTwo = two[i] - meanTwo;
-		
-		accum += std::pow(dOne.real() - dTwo.real(), 2);
-		accum += std::pow(dOne.imag() - dTwo.imag(), 2);
+		accum += std::pow(one[i].real() - two[i].real(), 2);
+		accum += std::pow(one[i].imag() - two[i].imag(), 2);
 	}
 	
-	return accum;
+	return accum / count;
 }
 
