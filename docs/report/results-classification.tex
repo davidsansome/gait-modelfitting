@@ -9,12 +9,12 @@ Two of the four samples from each subject were manually classified and entered i
 while the remaining two samples (labelled \emph{a} and \emph{b}) were put through automatic classification.
 
 The success rate of the system was determined by how many of the ``unknown'' samples \emph{a} and \emph{b} it was able to match to the correct class in the training set.
-In the tables below (\ref{ClassificationResults} and \ref{ClassificationResults2}) the numbers in each cell represent how close the algorithm was to correctly identifying the subject.
-A value of 3 would indicate that there were 3 other classes that were a better match than the correct one.
-A value of 0 would represent a correct classification.
+In the tables below (\ref{ClassificationResults} and \ref{ClassificationResults2}) the numbers in each cell represent how close the algorithm came to correctly identifying the subject.
+A value of 3 would indicate that there were 3 other classes that were a better match than the correct one,
+while a value of 0 would represent a correct classification.
 
 \bigskip
-\noindent There were three primary questions that guided the testing:
+\noindent There were three primary questions that guided the testing process:
 
 \begin{enumerate}
 	\item \textbf{Which distance function is most suitable?}
@@ -48,8 +48,6 @@ A value of 0 would represent a correct classification.
 		Both the high resolution and multi resolution algorithms seem to have much lower performance - demonstrating a lower overall classification rate.
 		However if we look at the distances between our sample and the nearest sample of the correct class we can see that they are still very close - the higher resolution searches
 		have just moved a sample of another class a little bit closer, throwing off the classification.
-		
-		TODO: Were the algorithms right to do this?
 		
 	\item \textbf{Which limbs are important in classification?}
 		Our initial tests in Table \ref{ClassificationResults} were performed using only the signature data from the subject's left thigh.

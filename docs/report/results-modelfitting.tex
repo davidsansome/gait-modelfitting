@@ -10,7 +10,7 @@ In Listing \ref{leastsquarescode} there is a mention of four variables - $range_
 These variables control the size and resolution of the parameter space that is searched during the modelfitting.
 Care must be taken when adjusting these variables as they control both the accuracy of the results and the execution time of the algorithm.
 
-Some of the problems encountered when selecting values for the variables are given below.
+Some of the problems encountered when selecting values for the variables are discussed below.
 
 \begin{figure}[p]
 	\centering
@@ -230,7 +230,7 @@ A success is recorded if the automatic classification matches either of the two 
 It could be that the modelfitting algorithm fit Sample 96 well, but was less successful with the other three samples from the same subject.
 
 \bigskip
-\noindent So how might we account for this error?
+\noindent So how might we account for the errors in the fitting?
 There are several obvious possibilities - the first of which is noise in the 3D voxel data.
 The modelfitting algorithm seems to cope fairly well with noisy data - one of the worst samples is shown in Figure \ref{BadData}, but despite the holes in the subject's legs and spurious groups of surrounding voxels the algorithm still manages to correctly fit the model.
 
