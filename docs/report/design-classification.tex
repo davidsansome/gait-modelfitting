@@ -153,16 +153,10 @@ Details of each are given below, and quantitative comparisons of their performan
 		\end{equation}
 	
 	\item \textbf{Polar distance}.
-		TODO: description.
+		This is another measure that can be used to calculate the distance between two points on the complex plane.
 		\begin{equation}
 			d(a, b) = \sum_{i=1}^{N/2} \left|a_i\right|^2 + \left|b_i\right|^2 - 2 \left|a_i\right| \left|b_i\right|^2 \cos\left(\arg a_i - \arg b_i\right)
 		\end{equation}
-	
-	\item \textbf{Exclude first component}.
-		As can be seen in Figure \ref{FFTResults} the magnitude of the first frequency component is very large.
-		This is the case for every sample, so perhaps better classification can be performed by ignoring this first component.
-		TODO: DC offset?
-		This can be done by changing the sum on each of the previous equations to $\sum_{i=2}^{N/2}$.
 	
 	\item \textbf{Mean normalization}.
 		It may boost performance to normalize each of the samples so the mean of their frequency components is zero.
@@ -177,4 +171,11 @@ Details of each are given below, and quantitative comparisons of their performan
 			b_i' &= b_i - \mu_b
 		\end{align}
 		These new values $a_i'$ and $b_i'$ can then be used in the above difference functions in place of $a_i$ and $b_i$.
+	
+	\item \textbf{Exclude first component}.
+		Note that we take the first component to mean the first multiple of the fundamental frequency and assume that any DC offset has already been removed
+		by mean normalization.
+		As can be seen in Figure \ref{FFTResults} the magnitude of the first frequency component is very large.
+		This is the case for every sample, so perhaps better classification can be performed by ignoring this first component.
+		This can be done by changing the sum on each of the previous equations to $\sum_{i=2}^{N/2}$.
 \end{enumerate}
