@@ -1,7 +1,5 @@
 \section{Previous work and supporting literature}
 
-TODO: Move some of this background stuff to the overview.
-
 This project builds heavily on previous research and development work by members of the University of Southampton.
 The sample data used was obtained from test subjects walking through the Southampton Gait Tunnel.
 Their movements were recorded on a number of cameras and the images processed by various segmentation and 3D reconstruction algorithms.
@@ -14,7 +12,6 @@ In \cite{GaitBook} Nixon et al.\ summarise the general approach to model-based g
 The important angles between the limbs for consideration are shown to be those along the direction of movement.
 A Pose Evaluation Function (PEF) is described that can be used to improve and measure the error of a particular fitting of a model to an image.
 Both boundary and region matching errors are considered when calculating this function, reducing the chance that a model segment will be placed in the empty space between two limbs.
-%A technique building on this is proposed in \ref{ImprovedCC}.
 
 \bigskip
 \noindent In \cite{cardboardpeople} Michael et al.\ describe an approach to model fitting entitled ``Cardboard People''.
@@ -72,7 +69,20 @@ For matching a simple cylinder representing a thigh, the algorithm may be consid
 
 \subsection{Gait recognition}
 
-Cunado et al.\ present a detailed background to the various gait recognition approaches in \cite{GaitModels}.
+Research into gait recognition has typically been split into two areas - model-based analysis and model-free analysis.
+Model-free approaches use some form of statistical or spatiotemporal analysis on a sequence of frames - typically after segmentation and background subtraction.
+Model-based approaches first seek to develop a model for the motion of limbs, and then describe the subject using the values of the parameters for that model.
+
+One of the earliest works in model-free analysis was produced in 2004 by Niyogi and Adelson \cite{XYT}.
+They used the spatiotemporal patterns of the head and legs both for gait detection (determining whether there is a person walking in the field of view) and gait recognition (determining \emph{who} that person is).
+In \cite{EigenRecognition} Murase and Sakai present a method using Principal Components Analysis (PCA) and correlation in a parametric eigenspace representation.
+Shutler and Nixon \cite{ZernikeMoments} use statistical moments to gather information from velocity as well as shape.
+
+\bigskip
+\noindent TODO: Couple of model based approaches
+
+\bigskip
+\noindent Cunado et al.\ present a detailed background to the various gait recognition approaches in \cite{GaitModels}.
 The paper describes which of the limbs provide the most useful information for gait.
 The smaller and easily obscured body parts such as the ankle and pelvis tend to provide useful identifying information, however identifying these from noisy images can be very difficult.
 

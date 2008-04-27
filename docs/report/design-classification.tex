@@ -6,6 +6,7 @@ If we are successful, this series of numbers will be unique to each subject and 
 
 
 \subsection{Extracting a gait cycle}
+\label{ExtractingGaitCycle}
 
 Before we can perform any kind of analysis on a sample we need to identify and extract one gait cycle.
 This is important because we will be comparing different samples which might begin at different times during the subjects' gait cycle.
@@ -179,3 +180,13 @@ Details of each are given below, and quantitative comparisons of their performan
 		This is the case for every sample, so perhaps better classification can be performed by ignoring this first component.
 		This can be done by changing the sum on each of the previous equations to $\sum_{i=2}^{N/2}$.
 \end{enumerate}
+
+
+\subsection{Additional classification metrics}
+
+In \cite{StrideCadence} BenAbdelkader et al.\ show how four static parameters - namely the body height, torso length, leg length and step length - can be extracted from a video sequence and used to identify a subject.
+We already extract the body height in section \ref{LocatingCenter}, but in our model the torso length and leg length are both assumed to be half of the body height.
+
+The step length can be calculated from the gait period as determined in \ref{ExtractingGaitCycle}, but this is not necessairly a good identifying measure.
+The period of one gait cycle TODO 
+
