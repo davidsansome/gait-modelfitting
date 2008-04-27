@@ -118,3 +118,26 @@ This would lead to the second pass centering its search around the local minimum
 While this is a valid concern, in practice it was found to make very little difference to the results when tested over a large series of frames.
 
 \subsection{Quantifying the improvements}
+
+\begin{table}[thb]
+	\centering
+	\begin{tabular}{l|l}
+		\hline
+		Method & Execution time \\
+		\hline
+		High resolution search & 1 hour 55 minutes \\
+		Low resolution search & 1 hour \\
+		with mapreduce & 35 minutes \\
+		with cache & 1 minute 45 seconds \\
+		with pointer comparison & 44 seconds \\
+		with multiresolution & 7 seconds \\
+		\hline
+	\end{tabular}
+	\caption{Execution times of the modelfitting process after making each optimisation.
+		Optimisations are cumulative, so each row includes the optimisations of the rows above it.
+		The ``pointer comparison'' improvement was not noteworthy enough for a mention in the previous sections,
+		but involves using while loops instead of for loops.
+		All tests were run on an Intel Core 2 Duo 2.20GHz, and the binary was compiled without GCC optimisations (\texttt{-O0}).}
+	\label{QuantifyingOptimisations}
+\end{table}
+
