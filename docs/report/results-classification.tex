@@ -14,7 +14,7 @@ A value of 3 would indicate that there were 3 other classes that were a better m
 while a value of 0 would represent a correct classification.
 
 \bigskip
-\noindent There were three primary questions that guided the testing process:
+\noindent There were four primary questions that guided the testing process:
 
 \begin{enumerate}
 	\item \textbf{Which distance function is most suitable?}
@@ -57,6 +57,12 @@ while a value of 0 would represent a correct classification.
 		
 		Including the lower legs brings about a drop in performance of 10\%-20\% over all the search algorithms, so clearly these are less useful than the thighs for identification.
 		Using \emph{both} thighs and lower legs seems to bring us to a middle ground in classification performance - 65\% of the samples being classified correctly.
+	
+	\item \textbf{Can the subject's height be used for classification?}
+		The final test performed was to find out whether including the subject's height as an additional classifier would boost performance.
+		
+		Figure \ref{ClassificationResults2} shows that including the height provides a huge boost in performance, bringing the overall success rate up to 90\%.
+		Interestingly this was the only test that correctly classified Sample 10b.
 \end{enumerate}
 
 \begin{landscape}
@@ -112,6 +118,10 @@ while a value of 0 would represent a correct classification.
 			Low res search             & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 2 & 0 & 3 & 0 & 1 & 0 & 0 & 0 & 0 & 3 & 0 & 0 & 18 & 65\% \\
 			High res search            & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 & 0 & 4 & 2 & 1 & 0 & 0 & 0 & 0 & 4 & 0 & 0 & 18 & 65\% \\
 			Multi res search           & 0 & 1 & 0 & 0 & 0 & 0 & 3 & 3 & 0 & 4 & 0 & 0 & 0 & 0 & 0 & 0 & 3 & 1 & 0 & 18 & 65\% \\
+			
+			\hline
+			\multicolumn{22}{|l|}{\textbf{Including the subject's height as an additional classifier}} \\
+			Low res search             & 0 & 0 & 0 & 0 & 0 & 0 & 2 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 90\% \\
 			
 			\hline
 		\end{tabular}
