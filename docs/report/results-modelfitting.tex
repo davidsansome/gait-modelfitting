@@ -102,6 +102,7 @@ Some of the problems encountered when selecting values for the variables are dis
 
 
 \subsection{Quantitative error analysis}
+\label{Modelfitting:ErrorAnalysis}
 
 A manual fitting was produced for selected samples to provide a means of evaluating the error of the modelfitting algorithm.
 Each frame was examined in the modelfitting application, and the parameters of the model tweaked to visually fit the model to the image of the subject.
@@ -109,7 +110,7 @@ Samples 81 and 96 were chosen for this manual fitting process as they gave very 
 Sample 81 is one of the samples of Subject 1, who was classified correctly in most of the tests.
 Sample 96 is one of the samples of Subject 4, who was never classified correctly in any of the tests.
 
-Figures \ref{ManualFit81:res10} to \ref{ManualFit96:multires} show the differences between parameter values for automatic fitting and manual fitting,
+Figures \ref{ManualFit81:res10}, \ref{ManualFit96:res10}, \ref{ManualFit81:res20}, \ref{ManualFit96:res20}, \ref{ManualFit81:multires}, \ref{ManualFit96:multires} show the differences between parameter values for automatic fitting and manual fitting,
 and Table \ref{ManualFitTable} summarises this information in tabular form.
 Only the $\theta$ values were compared as their errors affect classification far more than those in the $\alpha$ values.
 
@@ -152,71 +153,7 @@ The values in the table below represent the average error per frame as a percent
         \caption{Fitting error for Sample 81 using the low fixed resolution search.}
         \label{ManualFit81:res10}
 \end{figure}
-\begin{figure}[p]
-        \centering
-        \subfloat[Left thigh]{\label{ManualFit96:res10:LeftThigh}\includegraphics[width=\graphwidth]{manualfitting/96-res10-leftthigh.png}}
-        \quad
-        \subfloat[Right thigh]{\label{ManualFit96:res10:RightThigh}\includegraphics[width=\graphwidth]{manualfitting/96-res10-rightthigh.png}}
-        \
-        \subfloat[Left lower leg]{\label{ManualFit96:res10:LeftLower}\includegraphics[width=\graphwidth]{manualfitting/96-res10-leftlower.png}}
-        \quad
-        \subfloat[Right lower leg]{\label{ManualFit96:res10:RightLower}\includegraphics[width=\graphwidth]{manualfitting/96-res10-rightlower.png}}
 
-        \caption{Fitting error for Sample 96 using the low fixed resolution search.}
-        \label{ManualFit96:res10}
-\end{figure}
-\begin{figure}[p]
-        \centering
-        \subfloat[Left thigh]{\label{ManualFit81:res20:LeftThigh}\includegraphics[width=\graphwidth]{manualfitting/81-res20-leftthigh.png}}
-        \quad
-        \subfloat[Right thigh]{\label{ManualFit81:res20:RightThigh}\includegraphics[width=\graphwidth]{manualfitting/81-res20-rightthigh.png}}
-        \
-        \subfloat[Left lower leg]{\label{ManualFit81:res20:LeftLower}\includegraphics[width=\graphwidth]{manualfitting/81-res20-leftlower.png}}
-        \quad
-        \subfloat[Right lower leg]{\label{ManualFit81:res20:RightLower}\includegraphics[width=\graphwidth]{manualfitting/81-res20-rightlower.png}}
-
-        \caption{Fitting error for Sample 81 using the high fixed resolution search.}
-        \label{ManualFit81:res20}
-\end{figure}
-\begin{figure}[p]
-        \centering
-        \subfloat[Left thigh]{\label{ManualFit96:res20:LeftThigh}\includegraphics[width=\graphwidth]{manualfitting/96-res20-leftthigh.png}}
-        \quad
-        \subfloat[Right thigh]{\label{ManualFit96:res20:RightThigh}\includegraphics[width=\graphwidth]{manualfitting/96-res20-rightthigh.png}}
-        \
-        \subfloat[Left lower leg]{\label{ManualFit96:res20:LeftLower}\includegraphics[width=\graphwidth]{manualfitting/96-res20-leftlower.png}}
-        \quad
-        \subfloat[Right lower leg]{\label{ManualFit96:res20:RightLower}\includegraphics[width=\graphwidth]{manualfitting/96-res20-rightlower.png}}
-
-        \caption{Fitting error for Sample 96 using the high fixed resolution search.}
-        \label{ManualFit96:res20}
-\end{figure}
-\begin{figure}[p]
-        \centering
-        \subfloat[Left thigh]{\label{ManualFit81:multires:LeftThigh}\includegraphics[width=\graphwidth]{manualfitting/81-multires-leftthigh.png}}
-        \quad
-        \subfloat[Right thigh]{\label{ManualFit81:multires:RightThigh}\includegraphics[width=\graphwidth]{manualfitting/81-multires-rightthigh.png}}
-        \
-        \subfloat[Left lower leg]{\label{ManualFit81:multires:LeftLower}\includegraphics[width=\graphwidth]{manualfitting/81-multires-leftlower.png}}
-        \quad
-        \subfloat[Right lower leg]{\label{ManualFit81:multires:RightLower}\includegraphics[width=\graphwidth]{manualfitting/81-multires-rightlower.png}}
-
-        \caption{Fitting error for Sample 81 using the multi-resolution search.}
-        \label{ManualFit81:multires}
-\end{figure}
-\begin{figure}[p]
-        \centering
-        \subfloat[Left thigh]{\label{ManualFit96:multires:LeftThigh}\includegraphics[width=\graphwidth]{manualfitting/96-multires-leftthigh.png}}
-        \quad
-        \subfloat[Right thigh]{\label{ManualFit96:multires:RightThigh}\includegraphics[width=\graphwidth]{manualfitting/96-multires-rightthigh.png}}
-        \
-        \subfloat[Left lower leg]{\label{ManualFit96:multires:LeftLower}\includegraphics[width=\graphwidth]{manualfitting/96-multires-leftlower.png}}
-        \quad
-        \subfloat[Right lower leg]{\label{ManualFit96:multires:RightLower}\includegraphics[width=\graphwidth]{manualfitting/96-multires-rightlower.png}}
-
-        \caption{Fitting error for Sample 96 using the multi-resolution search.}
-        \label{ManualFit96:multires}
-\end{figure}
 
 The overall low error rate for the modelfitting is encouraging.
 As is to be expected, the lower resolution search is not quite as accurate as the high resolution search.
