@@ -1,9 +1,51 @@
-Feet.
-Arms.
-Rotation of torso.
+\section{Extending our model}
 
-Did we find the ideal resolution?
+The human model that we present in Section \ref{Design:Model} is very straightforward.
+It is infact the ``simplest form'' that we proposed in the introduction (Section \ref{Goals:ModelFitting}).
 
+Although the model fitting accuracy is very high already, it could no doubt be improved by enhancing our model.
+There are numerous frames in the sample data where the presence of a foot has confused the algorithm, and it has mistakenly matched the lower leg to some voxels in the foot.
+Introducing a foot to our human model would help solve these situations, as the algorithm would then find higher energy fittings in the correct places where the model's foot can match voxels as well.
+
+Adding more parameters to control the length of the thighs would solve the issues raised in Figure \ref{FittingErrors}.
+Like the $\alpha$ parameters, these would not be used in classification, but could be varied to help the algorithm acheive a more accurate fitting thereby improving the accuracy of the other parameters.
+
+Previous research has suggested that the rotation of the torso can contain information important to gait.
+The model could be extended with additional parameters that describe this rotation.
+
+The way in which our arms move while we walk may also hold identifying information.
+Arms could be added to the model and their motion could be analysed in a similar way to the legs.
+
+An important question to ask is whether we have found the ideal search resolution for the model fitting algorithm.
+We found the best classification results came from searches that were run at the lowest resolution, and hypothisized that this might be due to smoothing of high frequency noise.
+Some investigation into even lower search resolutions may reveal an even more suitable set of values.
+
+
+\section{The baggy trousers problem}
 \label{FutureWork:BaggyTrousers}
-Leading edge would reduce problems related to clothing, as the leading edge is the one where the leg is.
+
+It is suggested that baggy or loose clothing will obscure the true position of the leg.
+Our model fitting algorithm will tend to place a part of the model in the centre of a group of voxels, however if the subject is wearing baggy trousers, his/her leg will not necessarily be in the centre.
+
+When we walk, our legs push against the fronts of our trousers as we move forward, so it might be better to assume that the leg's position is at the leading edge of a group of voxels.
+To implement this assumption in our model, we would need to remove (or lower the weighting of) the edge points towards the rear of the mesh.
+This would lead to lower energy fittings in configurations where the front of the leg was placed at the front edge of a group of voxels.
+
+
+\section{Anthropometry in classification}
+
+Our tests saw a huge boost by including the subject's height in classification (increasing the success rate from 80\% to 90\%).
+Further increases in performance can no doubt be obtained by using additional such measures.
+Some measurements might include:
+
+\begin{enumerate}
+	\item Length of the arms
+	\item Length of the legs
+	\item Size of the head
+	\item Breadth of the shoulders
+	\item Ratio of thigh length to lower leg length
+\end{enumerate}
+
+All these measures would be easily obtainable from our voxel data, however some might be readily obscured by clothing or hair.
+
 
