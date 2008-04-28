@@ -29,12 +29,14 @@
 \maketitle
 
 \begin{abstract}
-	Investigates various approaches to 3D modelfitting and their use in gait recognition.
+	Investigates various approaches to 3D modelfitting and its use in gait recognition.
 	3D template convolution, active contours and template matching with a 3D mesh are presented as methods of fitting models to frames in a 3D video sequence.
 	Optimisations including GPU stream-processing, multi-resolution search, lookup caching and MapReduce are used to reduce the execution time to around 7 seconds per frame.
+	
 	The discrete fourier transform is employed to produce various feature vectors from each video sequence.
 	The effects of a variety of factors on classification performance are analysed including choice of search algorithm, normalisation and distance metric (magnitude, phase-weighted magnitude or euclidean/polar distances in the complex plane).
 	The differences in performance from including different measures and limb motion signatures in the feature vector is considered.
+	
 	The most identifiable gait signature is found to consist of the motion of the thighs combined with a measure of the subject's height - giving a correct classification rate of 90\% in our sample size of 40.
 \end{abstract}
 
