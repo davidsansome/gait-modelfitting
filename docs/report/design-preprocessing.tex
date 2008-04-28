@@ -18,14 +18,13 @@ Several pieces of information are gathered:
 			\overline{x} &= \frac{1}{s_x s_y s_z} \sum_{x=1}^{s_x} \sum_{y=1}^{s_y} \sum_{z=1}^{s_z} x I(x,y,z) \\
 			\overline{y} &= \frac{1}{s_x s_y s_z} \sum_{x=1}^{s_x} \sum_{y=1}^{s_y} \sum_{z=1}^{s_z} y I(x,y,z)
 		\end{align}
+	\item The width, or x-extent, of the subject.
+		This is calculated simply by finding the largest and the smallest x coordinate.
 \end{enumerate}
-
-TODO: Say something about x extent.
 
 The key assumption made here is that a subject's legs ``start'' half way between his feet and the top of his head.
 Figure \ref{Preprocessing} demonstrates this by showing how the greatest z value for a filled voxel, $h$, is used to
 indicate the starting position of the legs.
-TODO: check if this is generally right.
 
 \begin{figure}[b]
 	\centering

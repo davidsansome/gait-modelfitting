@@ -1,4 +1,5 @@
 \section{Accuracy of classification}
+\label{Results:Classification}
 
 In the previous chapters we have presented a selection of different algorithms and approaches to modelfitting and classification.
 This section attempts to discover which combination of these algorithms leads to the best performance in terms of recognising new subjects.
@@ -35,7 +36,7 @@ while a value of 0 would represent a correct classification.
 		This does indeed improve the performance - increasing the correct classification rate by 5\%.
 	
 	\item \textbf{Which of the search algorithms are best?}
-		We started off by introducing a fixed resolution search in Listing TODO, and then later attempted to lower its execution time by splitting it into two passes.
+		We started off by introducing a fixed resolution search in Listing \ref{leastsquarescode}, and then later attempted to lower its execution time by splitting it into two passes.
 		It is important to evaluate both these fixed and multi-resolution search algorithms in order to ensure that we are not sacrificing performance for speed of execution.
 		
 		Three algorithms were tested - a fixed resolution search with a low resolution ($\text{res}_\alpha = 11, \text{res}_\theta = 21$),

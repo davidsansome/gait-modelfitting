@@ -20,7 +20,7 @@ This is important because we will be comparing different samples which might beg
 
 Figure \ref{CurveFitting1} shows a typical plot of the change in the value of $\theta_1$ over time.
 The graph resembles a sinosoid which we intuitavely know to be correct - when we walk our thighs swing forwards and backwards like a pendulum.
-A gait cycle is usually defined as beginning and ending with heel strikes of the same foot (TODO: citation), which in Figure \ref{CurveFitting1} would be two subsequent maximums of the sinosoid.
+A gait cycle is usually defined as beginning and ending with heel strikes of the same foot \cite{PIEEE}, which in Figure \ref{CurveFitting1} would be two subsequent maximums of the sinosoid.
 We however are going to begin our gait cycle when the thigh crosses the vertical, ie. when $\theta = 0$.
 
 We can find this point where the thigh crosses the vertical by fitting a function $f_1(t)$ to our data points and finding where $f_1(t) = 0$.
@@ -87,7 +87,7 @@ Once we have obtained values for $\xi$ and $\phi$ we can find the time $z$ of ea
 \subsection{Discrete fourier transforms}
 
 Now that we can extract a gait cycle from each sample we need to apply the DFT (Discrete Fourier Transform) to them to obtain information about the frequency components of the subject's gait.
-Previous work (TODO: citations) have suggested that these frequency components can be used to form an identifying signature for the subject.
+These frequency components can hopefully be used to form an identifying signature for the subject.
 
 The DFT is defined by Equation \ref{eqn:DFT}.
 A series $x$ of $N$ complex numbers is transformed into another series $X$ of $N$ complex numbers.
@@ -129,7 +129,7 @@ A distance function $d(a,b)$ was created to compare and evaluate the difference 
 Each sample consists of $\frac{N}{2}$ complex numbers - the output of the DFT.
 
 Several different implementations for this function were tested.
-Details of each are given below, and quantitative comparisons of their performance can be found in section TODO.
+Details of each are given below, and quantitative comparisons of their performance can be found in section \ref{Results:Classification}.
 
 \begin{enumerate}
 	\item \textbf{Magnitude}.

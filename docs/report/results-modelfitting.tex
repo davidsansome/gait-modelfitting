@@ -89,9 +89,9 @@ Some of the problems encountered when selecting values for the variables are dis
 		The size of the voxels in the data is $1\text{cm}^3$.
 		Comparing the fitting of two orientations of the model that differ by less than $1\text{cm}^3$ is meaningless,
 		as the coordinates of every distance lookup performed are clamped to integer values (not doing so would break
-		the lookup cache from section TODO).
+		the lookup cache from Section \ref{Optimisations:LookupCache}).
 		
-		Sampling at these high resolutions could not be considered before multi-resolution sampling (TODO) was implemented
+		Sampling at these high resolutions could not be considered before multi-resolution sampling was implemented
 		as the execution time would have been prohibitive.
 		With the introduction of multi-resolution sampling however some high-resolution fittings were tested, and as expected
 		the noise resulting from the discrete nature of the data led to errors in the DFT and a lower classification rate.

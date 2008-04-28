@@ -150,7 +150,7 @@ These equations give us a composite transformation that describes the lower legs
 
 \subsection{Fitting to the data}
 
-In our previous approach in section TODO, a program would iterate over all the pixels in the filter and sample the
+In our previous approach in section \ref{sec:CC}, a program would iterate over all the pixels in the filter and sample the
 voxel data in the corresponding location.
 The value of the filter (a real number between 0 and 1) would be multiplied by the value of the voxel (integer 0 or 1 - representing empty or filled) to produce a ``score''.
 The scores of all these samples would then be summed to produce the final fitting score for that orientation.
@@ -225,6 +225,4 @@ In order to visualise the data we have fixed the lower leg parameters ($\alpha_2
 \end{figure}
 
 We can see from the plot that there is a minimum around the centre - where $(\alpha_1, \theta_1) = (0, 0)$ and the thigh is pointing straight down.
-
-TODO: How do we search for the closest point
 

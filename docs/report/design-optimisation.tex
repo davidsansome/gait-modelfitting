@@ -5,11 +5,9 @@ Several tricks were employed that reduced execution time from several hours per 
 
 \subsection{MapReduce}
 
-TODO: Remove word overkill.
-
 MapReduce \cite{MapReduce} is a technique developed at Google to split up tasks and spread them across large computational clusters.
 It is suitable for big problems that can be split into small chunks and computed independently of each other.
-A computational cluster is slight overkill for this application, but MapReduce can be used effectively on multi-core systems - tasks are run in individual threads and each thread runs on its own processor.
+A computational cluster is unnecessary for this application, but MapReduce can be used effectively on multi-core systems - tasks are run in individual threads and each thread runs on its own processor.
 Theoretically, in a dual-core system this would bring about speed increase of a factor of two.
 
 The natural place to split our least-squares algorithm is the calling of the modelEnergy function.
@@ -30,6 +28,7 @@ An advantage of using MapReduce is that in the future, it becomes very easy to s
 \end{figure}
 
 \subsection{Lookup caching}
+\label{Optimisations:LookupCache}
 
 The most expensive functions in the modelfitting algorithm shown in Listing \ref{leastsquarescode} are those which search for nearby voxels of a given type.
 These lookups are repeated over and over again as the algorithm ``moves'' the mesh around the voxel-space.
