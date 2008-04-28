@@ -25,3 +25,25 @@ In fact the opposite occured - the best performers at classification were consis
 
 A tentative explanation for this is that as resolution of the search increases, the fitting process picks up more of the small high frequency variations and noise in the voxel data.
 This in turn provides the DFT with extra irrelevant information, corrupting the results.
+
+\bigskip
+\noindent Our best algorithm gives a 90\% success rate when applied to our dataset.
+The two samples that were classified incorrectly in this test (4a and 4b) were actually very close to receiving the correct classification - with only one or two other samples in between them and a sample of the correct class.
+
+Previous research into gait recognition has typically produced algorithms that have success rates between 90\% and 100\%.
+It is difficult to compare these figures directly however for a number of reasons:
+
+\begin{enumerate}
+	\item Other pieces of research sometimes use a larger number of training points.
+		In our tests we took two of the four samples for our training set, and used the remaining two to test the classifcation process.
+		However in \cite{GaitModels} Cunado et al.\ used three samples in the training set, and only one for classification.
+		Increasing the size of the training set in this way will obviously change the success rate.
+	\item The database is so small (10 subjects), that any differences in classification rate between algorithms below 10\% are probably meaningless anyway.
+\end{enumerate}
+
+The only definite conclusion we can take from our testing is that our results are at least as good as those in previous research.
+
+\bigskip
+\noindent An important question to ask is whether model fitting in 3D produces better results than model fitting in 2D.
+It is difficult to find quantitive analysis of the errors in previous 2D model fitting algorithms, however the low error rates presented in Table \ref{ManualFitTable} are very encouraging.
+TODO: Say more?
