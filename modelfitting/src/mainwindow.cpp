@@ -19,8 +19,6 @@
 
 MainWindow::MainWindow()
 	: QMainWindow(NULL),
-	  m_mesh(NULL),
-	  m_voxelSpace(NULL),
 	  m_frameInfo(NULL),
 	  m_paramUpdatesDisabled(false)
 {

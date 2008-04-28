@@ -57,8 +57,6 @@ private:
 	QString m_openDir;
 	QTimer* m_redrawTimer;
 	
-	Voxel_Space* m_voxelSpace;
-	Mesh* m_mesh;
 	FrameInfo* m_frameInfo;
 	
 	MapReduceProgress* m_progressDialog;
