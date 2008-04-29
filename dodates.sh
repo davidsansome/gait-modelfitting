@@ -47,3 +47,7 @@ domonth 2008 03
 domonth 2008 04
 
 echo
+
+# http://chart.apis.google.com/chart?cht=lc&chs=600x500&chd=t:29,17,7,5,0,0,0,1,0,1,2,8,8,10,10,13,29,25,16,16,11,13,23,23,-1&chds=0,30&chxl=0:|12am|2am|4am|6am|8am|10am|12pm|2pm|4pm|6pm|8pm|10pm||1:||10|20|30|&chtt=Subversion+commits+by+hour&chxt=x,y&chco=ff0000
+
+# http://chart.apis.google.com/chart?cht=lc&chs=600x500&chd=t:0.0,7.0,0.0,6.0,0.0,0.0,0.0,0.0,0.0,2.0,6.0,0.0,5.0,1.0,15.0,2.0,5.0,0.0,0.0,0.0,13.0,12.0,0.0,0.0,0.0,0.0,19.0,31.0,18.0,0.0,0.0,0.0,24.0,41.0,20.0,39.0&chds=0,50&chxl=0:|Aug|Sep|Oct|Nov|Dec|Jan|Feb|Mar|Apr|1:||10|20|30|40|50&chtt=Subversion+commits+by+month&chxt=x,y
