@@ -19,8 +19,8 @@ This is important because we will be comparing different samples which might beg
 \end{figure}
 
 Figure \ref{CurveFitting1} shows a typical plot of the change in the value of $\theta_1$ over time.
-The graph resembles a sinosoid which we intuitavely know to be correct - when we walk our thighs swing forwards and backwards like a pendulum.
-A gait cycle is usually defined as beginning and ending with heel strikes of the same foot \cite{PIEEE}, which in Figure \ref{CurveFitting1} would be two subsequent maximums of the sinosoid.
+The graph resembles a sinusoid which we intuitively know to be correct - when we walk our thighs swing forwards and backwards like a pendulum.
+A gait cycle is usually defined as beginning and ending with heel strikes of the same foot \cite{PIEEE}, which in Figure \ref{CurveFitting1} would be two subsequent maximums of the sinusoid.
 We however are going to begin our gait cycle when the thigh crosses the vertical, ie. when $\theta = 0$.
 
 We can find this point where the thigh crosses the vertical by fitting a function $f_1(t)$ to our data points and finding where $f_1(t) = 0$.
@@ -84,7 +84,7 @@ Once we have obtained values for $\xi$ and $\phi$ we can find the time $z$ of ea
 \end{equation}
 
 
-\subsection{Discrete fourier transforms}
+\subsection{Discrete Fourier transforms}
 
 Now that we can extract a gait cycle from each sample we need to apply the DFT (Discrete Fourier Transform) to them to obtain information about the frequency components of the subject's gait.
 These frequency components can hopefully be used to form an identifying signature for the subject.
@@ -159,8 +159,8 @@ Details of each are given below, and quantitative comparisons of their performan
 			d(a, b) = \sum_{i=1}^{N/2} \left|a_i\right|^2 + \left|b_i\right|^2 - 2 \left|a_i\right| \left|b_i\right| \cos\left(\arg a_i - \arg b_i\right)
 		\end{equation}
 	
-	\item \textbf{Mean normalization}.
-		It may boost performance to normalize each of the samples so the mean of their frequency components is zero.
+	\item \textbf{Mean normalisation}.
+		It may boost performance to normalise each of the samples so the mean of their frequency components is zero.
 		This can be done by first finding the mean:
 		\begin{align}
 			\mu_a &= \frac{2}{N} \sum_{i=1}^{N/2} a_i \\
@@ -175,7 +175,7 @@ Details of each are given below, and quantitative comparisons of their performan
 	
 	\item \textbf{Exclude first component}.
 		Note that we take the first component to mean the first multiple of the fundamental frequency and assume that any DC offset has already been removed
-		by mean normalization.
+		by mean normalisation.
 		As can be seen in Figure \ref{FFTResults} the magnitude of the first frequency component is very large.
 		This is the case for every sample, so perhaps better classification can be performed by ignoring this first component.
 		This can be done by changing the sum on each of the previous equations to $\sum_{i=2}^{N/2}$.
@@ -187,6 +187,6 @@ Details of each are given below, and quantitative comparisons of their performan
 In \cite{StrideCadence} BenAbdelkader et al.\ show how four static parameters - namely the body height, torso length, leg length and step length - can be extracted from a video sequence and used to identify a subject.
 We already extract the body height in section \ref{LocatingCenter}, but in our model the torso length and leg length are both assumed to be half of the body height.
 
-The step length can be calculated from the gait period as determined in \ref{ExtractingGaitCycle}, but this is not necessairly a good identifying measure.
+The step length can be calculated from the gait period as determined in \ref{ExtractingGaitCycle}, but this is not necessarily a good identifying measure.
 In preliminary analysis of our data set it was noted that, while the period of one gait cycle does vary between subjects, the overall spread and distance between classes is very small.
 

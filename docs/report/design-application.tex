@@ -5,7 +5,7 @@ The rationale behind doing this instead of using an existing solution such as Ma
 
 \begin{enumerate}
 	\item The sample dataset from the Southampton Gait Tunnel is stored in a custom binary format, the parsing and display of which is
-		undertaken by an C library, Vis4D, written by Richard Seely.
+		undertaken by a C library, Vis4D, written by Richard Seely.
 		The library is efficient and well-tested, therefore it would be beneficial to make as much use of it as possible.
 	\item One of the goals of the project is to investigate ways in which the algorithms can be made parallelizable and applicable to real-time processing.
 		As a prototyping language Matlab is generally less suitable for real-time or high-performance computing than a lower-level language such as C.
@@ -16,8 +16,6 @@ The rationale behind doing this instead of using an existing solution such as Ma
 It was decided to create an application that would load and process sequences of frames containing voxel data.
 The application would run image-processing and classification algorithms on the data, and would be capable of handling both
 the conventional and stream-processor implementations that are described throughout this chapter.
-
-%The algorithms would be implemented as pixel-shaders, using the stream-processor capabilities of the GPU to execute code on hundreds of pixels at once.
 
 Qt \cite{Qt} was chosen as the user-interface toolkit due to its excellent API and developer documentation.
 Another advantage of using Qt is for its cross-platform compatibility - applications written using the toolkit can be compiled
