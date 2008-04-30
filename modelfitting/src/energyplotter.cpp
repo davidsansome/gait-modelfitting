@@ -1,3 +1,7 @@
+#include "frameinfo.h"
+
+#ifndef USE_MULTIRESOLUTION
+
 #include "energyplotter.h"
 
 #include <QFileInfo>
@@ -91,3 +95,5 @@ QTextStream& EnergyPlotter::writeLowerLegData(Part part, const Params<float>& in
 	
 	return s;
 }
+
+#endif

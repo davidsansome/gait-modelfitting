@@ -1,6 +1,9 @@
 #ifndef ENERGYPLOTTER_H
 #define ENERGYPLOTTER_H
 
+#include "frameinfo.h"
+#ifndef USE_MULTIRESOLUTION
+
 #include "graphplotter.h"
 
 class EnergyPlotter : public GraphPlotter
@@ -20,6 +23,8 @@ private:
 	
 	int m_limb;
 };
+
+#endif
 
 #endif
 
