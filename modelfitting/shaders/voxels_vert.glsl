@@ -14,4 +14,6 @@ void main()
 	
 	gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 	gl_TexCoord[0] = vec4(lighting, 0.0, 0.0, 0.0);
+	
+	gl_ClipVertex = gl_ModelViewMatrix * gl_Vertex;
 }
