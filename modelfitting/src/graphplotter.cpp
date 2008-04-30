@@ -117,11 +117,19 @@ void GraphPlotter::saveGraph(const QString& filename)
 		gnuplot.setProcessChannelMode(QProcess::MergedChannels);
 		
 		gnuplot.start("gnuplot");
-		gnuplot.write(commands);
+		gnuplot.waitForStarted();
 		
-		gnuplot.waitForFinished();
-		
-		qDebug() << gnuplot.readAll();
+		if (gnuplot.state() != QProcess::Running)
+		{
+			QMessageBox::warning(this, "Error", "Gnuplot could not be started.  Make sure it is installed and in your path.");
+		}
+		else
+		{
+			gnuplot.write(commands);
+			gnuplot.waitForFinished();
+			
+			qDebug() << gnuplot.readAll();
+		}
 	}
 	
 	delete m_tempFile;
