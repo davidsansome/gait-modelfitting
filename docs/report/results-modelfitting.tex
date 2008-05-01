@@ -134,7 +134,7 @@ The values in the table below represent the average error per frame as a percent
 		Right lower leg & 3.81\% & 5.21\% & 3.56\% & 4.86\% & 4.15\% & 3.98\% \\
 		\hline
 		Overall & 3.84\% & 3.66\% & 3.77\% & 3.48\% & 3.80\% & 2.56\% \\
-		& \multicolumn{2}{|c|}{3.75\%} & \multicolumn{2}{|c|}{3.62\%} & \multicolumn{2}{|c}{3.18\%} \\
+		Mean error & \multicolumn{2}{|c|}{3.75\%} & \multicolumn{2}{|c|}{3.62\%} & \multicolumn{2}{|c}{3.18\%} \\
 	\end{tabular}
 	\caption{Overview of the average error per frame for different modelfitting algorithms.}
 	\label{ManualFitTable}
@@ -165,6 +165,8 @@ One possible explanation for this relates to the way in which classification ope
 Two of the four samples from each subject are classified manually and the remaining two undergo automatic classification.
 A success is recorded if the automatic classification matches either of the two manually labelled samples.
 It could be that the modelfitting algorithm fit Sample 96 well, but was less successful with the other three samples from the same subject.
+
+This suggests that classification might depend more on the structure of the feature space than the accuracy of modelfitting.
 
 \bigskip
 \noindent So how might we account for the errors in the fitting?
