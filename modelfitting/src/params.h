@@ -61,7 +61,7 @@ Params<T>::Params(const Params& other)
 	*this = other;
 }
 
-#ifndef Q_WS_X11
+#ifdef Q_WS_X11
 
 // This is specialized in params.cpp for Windows and mac, because they suck
 
