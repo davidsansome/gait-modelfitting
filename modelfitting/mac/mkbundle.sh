@@ -17,13 +17,16 @@ fixlibs() {
 EXEDIR="Modelfitting.app/Contents/MacOS"
 RESDIR="Modelfitting.app/Contents/Resources"
 FRMDIR="Modelfitting.app/Contents/Frameworks"
+PLGDIR="Modelfitting.app/Contents/Plugins"
 
-mkdir -vp $EXEDIR
-mkdir -v $RESDIR
-mkdir -v $FRMDIR
-cp -v bin/modelfitting $EXEDIR/Modelfitting
-cp -v Info.plist Modelfitting.app/Contents
-#cp Modelfitting.icns ${RESDIR}
+rm -rf Modelfitting.app
+mkdir -p $EXEDIR
+mkdir $RESDIR
+mkdir $FRMDIR
+mkdir -p $PLGDIR/imageformats
+cp ../bin/modelfitting $EXEDIR/Modelfitting
+cp Info.plist Modelfitting.app/Contents
+cp qt.conf $RESDIR
 
 
 # Copy Qt libraries
@@ -46,6 +49,9 @@ install_name_tool -change QtOpenGL.framework/Versions/4/QtOpenGL @executable_pat
 install_name_tool -change QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore $FRMDIR/QtGui.framework/Versions/4.0/QtGui
 install_name_tool -change QtCore.framework/Versions/4/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore $FRMDIR/QtOpenGL.framework/Versions/4.0/QtOpenGL
 install_name_tool -change QtGui.framework/Versions/4/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/4.0/QtGui $FRMDIR/QtOpenGL.framework/Versions/4.0/QtOpenGL
+
+# Copy Qt plugins
+cp /Developer/Applications/Qt/plugins/imageformats/libqgif.dylib /Developer/Applications/Qt/plugins/imageformats/libqsvg.dylib $PLGDIR/imageformats
 
 # Copy other libraries
 cp /opt/local/lib/libfftw3.3.dylib $FRMDIR
