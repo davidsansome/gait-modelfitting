@@ -83,6 +83,7 @@ TARGET_LINK_LIBRARIES(modelfitting
 	-lcommon
 	${OPENGL_LIBRARIES}
 	${FFTWD_LIB}
+	-mwindows
 )
 
 INSTALL(TARGETS modelfitting

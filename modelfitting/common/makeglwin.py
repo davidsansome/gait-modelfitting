@@ -3,22 +3,45 @@ functions = [
 	"glGenBuffers",
 	"glBufferData",
 	"glDeleteBuffers",
-	"glDrawRangeElements"
+	"glDrawRangeElements",
+	"glUseProgram",
+	"glAttachShader",
+	"glGetShaderInfoLog",
+	"glGetShaderiv",
+	"glCompileShader",
+	"glShaderSource",
+	"glIsShader",
+	"glLinkProgram",
+	"glCreateProgram",
+	"glDeleteShader",
+	"glIsProgram",
+	"glActiveTexture",
+	"glUniform1i",
+	"glUniform1f",
+	"glMultiTexCoord2f",
+	
 ]
 
-h = open("glwin.h", "w")
+h = open("opengl.h", "w")
 
 h.write("""#ifndef GLWIN_H
 #define GLWIN_H
 
+#define GL_GLEXT_PROTOTYPES
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glext.h>
+#include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/glu.h>
+#endif
+
 void setupWinGLFunctions();
 
 #ifdef _WIN32
-
-#define GL_GLEXT_PROTOTYPES 1
 #include <windows.h>
-#include <gl/gl.h>
-#include <gl/glext.h>
 
 """)
 
@@ -40,9 +63,9 @@ h.close()
 
 
 
-cpp = open("glwin.cpp", "w")
+cpp = open("opengl.cpp", "w")
 
-cpp.write("""#include "glwin.h"
+cpp.write("""#include "opengl.h"
 
 #ifndef _WIN32
 void setupWinGLFunctions()
