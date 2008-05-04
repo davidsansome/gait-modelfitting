@@ -13,8 +13,6 @@
 #include <QPointF>
 #include <QApplication>
 
-#include <GL/glu.h>
-
 #include <vspace.hh>
 #include <mesh.hh>
 
