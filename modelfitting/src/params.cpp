@@ -1,8 +1,8 @@
 #include "params.h"
 
-#ifdef Q_WS_WIN
+#ifndef Q_WS_X11
 
-// These constructors are specalized because QVariant::value<T> doesn't seem to work on Windows...
+// These constructors are specalized because QVariant::value<T> doesn't seem to work on Windows or Mac...
 
 template <>
 Params<float>::Params(QSettings& settings)
