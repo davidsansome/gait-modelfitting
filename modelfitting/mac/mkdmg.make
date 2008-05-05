@@ -18,11 +18,11 @@
 # Customizable variables
 ################################################################################
 
-NAME=Modelfitting
-VERSION=1.0
+NAME=Bequnge
+VERSION=0.2
 
 SOURCE_DIR=.
-SOURCE_FILES=Modelfitting.app
+SOURCE_FILES=Bequnge.app
 
 TEMPLATE_DMG=template.dmg
 
@@ -45,7 +45,7 @@ $(TEMPLATE_DMG).bz2:
 	@echo
 	@echo --------------------- Generating empty template --------------------
 	mkdir template
-	hdiutil create -size 40m "$(TEMPLATE_DMG)" -srcfolder template -format UDRW -volname "$(NAME)" -quiet
+	hdiutil create -size 50m "$(TEMPLATE_DMG)" -srcfolder template -format UDRW -volname "$(NAME)" -quiet
 	rmdir template
 	bzip2 "$(TEMPLATE_DMG)"
 	@echo
@@ -67,7 +67,7 @@ $(MASTER_DMG): $(WC_DMG) $(addprefix $(SOURCE_DIR)/,$(SOURCE_FILES))
 	hdiutil detach "$(WC_DIR)" -quiet -force
 	rm -f "$(MASTER_DMG)"
 	hdiutil convert -quiet -format UDZO -imagekey zlib-level=9 -o "$@" "$(WC_DMG)" 
-	#hdiutil internet-enable -yes "$@"
+	hdiutil internet-enable -yes "$@"
 	rm -rf $(WC_DIR)
 	@echo
 
