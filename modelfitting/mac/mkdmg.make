@@ -18,11 +18,11 @@
 # Customizable variables
 ################################################################################
 
-NAME=Bequnge
-VERSION=0.2
+NAME=Modelfitting
+VERSION=1.0
 
 SOURCE_DIR=.
-SOURCE_FILES=Bequnge.app
+SOURCE_FILES=Modelfitting.app
 
 TEMPLATE_DMG=template.dmg
 
