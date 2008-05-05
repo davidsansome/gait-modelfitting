@@ -34,6 +34,12 @@ int main(int argc, char** argv)
 	for (int i=1 ; i<argc ; ++i)
 	{
 		QString arg(argv[i]);
+
+		// Fix mac.
+#ifdef Q_OS_DARWIN
+		if (arg.startsWith("-psn_"))
+			continue;
+#endif
 		
 		if (arg == "-h" || arg == "--help")
 		{
