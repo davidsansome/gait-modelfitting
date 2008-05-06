@@ -48,7 +48,7 @@ If this is true then only the .info file associated with the frame will be loade
 Whenever MainWindow loads a new frame, it will call \emph{setFrameInfo} on all four of the GLViews and the graph plotting classes to inform them of the change.
 
 The model information is updated by a call to \emph{FrameInfo::update}.
-This starts a number of background threads which perform the actual work of modelfitting, and returns immediatly with a list of QFuture objects.
+This starts a number of background threads which perform the actual work of modelfitting, and returns immediately with a list of QFuture objects.
 A QFuture is part of the new QtConcurrent framework and holds the result of an asynchronous operation.
 MainWindow will open a modal dialog, MapReduceProgress, that monitors the progress of these QFuture objects and allows the user to cancel them.
 

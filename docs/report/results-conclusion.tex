@@ -21,7 +21,7 @@ This combination is summarised in Table \ref{ConclusionTable}.
 
 One interesting point regarding the results is that a higher search resolution, and correspondingly a closer fit to the manual fitting, did not result in a higher classification rate.
 Intuition would suggest that as the resolution of our search increased the ``quality'' of the result would improve and the algorithm would be able to identify the subject with more accuracy.
-In fact the opposite occured - the best performers at classification were consistently the ones with the lowest search resolution.
+In fact the opposite occurred - the best performers at classification were consistently the ones with the lowest search resolution.
 
 A tentative explanation for this is that as resolution of the search increases, the fitting process picks up more of the small high frequency variations and noise in the voxel data.
 This in turn provides the DFT with extra irrelevant information, corrupting the results.
@@ -35,7 +35,7 @@ It is difficult to compare these figures directly however for a number of reason
 
 \begin{enumerate}
 	\item Other pieces of research sometimes use a larger number of training points.
-		In our tests we took two of the four samples for our training set, and used the remaining two to test the classifcation process.
+		In our tests we took two of the four samples for our training set, and used the remaining two to test the classification process.
 		However in \cite{GaitModels} Cunado et al.\ used three samples in the training set, and only one for classification.
 		Increasing the size of the training set in this way will obviously change the success rate.
 	\item The database is so small (10 subjects), that any differences in classification rate between algorithms below 10\% are probably meaningless anyway.

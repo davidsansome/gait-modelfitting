@@ -1,14 +1,14 @@
 \section{Extending our model}
 
 The human model that we present in Section \ref{Design:Model} is very straightforward.
-It is infact the ``simplest form'' that we proposed in the introduction (Section \ref{Goals:ModelFitting}).
+It is in fact the ``simplest form'' that we proposed in the introduction (Section \ref{Goals:ModelFitting}).
 
 Although the model fitting accuracy is very high already, it could no doubt be improved by enhancing our model.
 There are numerous frames in the sample data where the presence of a foot has confused the algorithm, and it has mistakenly matched the lower leg to some voxels in the foot.
 Introducing a foot to our human model would help solve these situations, as the algorithm would then find higher energy fittings in the correct places where the model's foot can match voxels as well.
 
 Adding more parameters to control the length of the thighs would solve the issues raised in Figure \ref{FittingErrors}.
-Like the $\alpha$ parameters, these would not be used in classification, but could be varied to help the algorithm acheive a more accurate fitting thereby improving the accuracy of the other parameters.
+Like the $\alpha$ parameters, these would not be used in classification, but could be varied to help the algorithm achieve a more accurate fitting thereby improving the accuracy of the other parameters.
 
 Previous research has suggested that the rotation of the torso can contain information important to gait.
 The model could be extended with additional parameters that describe this rotation.

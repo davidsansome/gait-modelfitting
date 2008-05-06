@@ -24,15 +24,15 @@ while a value of 0 would represent a correct classification.
 		Table \ref{ClassificationResults} over the page shows the performance of each of these functions.
 		
 		First we test the basic distance functions.
-		Four such functions are tested - one that compares only the magnitudes of the frequency components, one that compares the phase weighted magnitudes, and two that take the polar and euclidean distances between two frequency components in the complex plane.
-		From the results we can see that the highest performers are the polar and euclidean distance functions.
+		Four such functions are tested - one that compares only the magnitudes of the frequency components, one that compares the phase weighted magnitudes, and two that take the polar and Euclidean distances between two frequency components in the complex plane.
+		From the results we can see that the highest performers are the polar and Euclidean distance functions.
 		The low performance of the phase-weighted magnitude function can be explained by the fact that it does not take into account the modular nature of the phase.
 		As explained in Section \ref{ClassificationMethods} a comparison of two phase values $+\frac{5}{6}\pi$ and $-\frac{5}{6}\pi$ would incorrectly produce an answer of $\frac{10}{6}\pi$.
 		
-		Next all the functions are retested with the first frequency component of each sample being excluded.
+		Next all the functions are re-tested with the first frequency component of each sample being excluded.
 		The results show that this actually lowers the performance of all the functions - suggesting that the first frequency component might contain useful identifying information.
 		
-		The euclidean distance function is then modified to normalise the mean of the samples' DFT results.
+		The Euclidean distance function is then modified to normalise the mean of the samples' DFT results.
 		This does indeed improve the performance - increasing the correct classification rate by 5\%.
 	
 	\item \textbf{Which of the search algorithms are best?}
@@ -44,7 +44,7 @@ while a value of 0 would represent a correct classification.
 		and a multi-resolution search (with equivalent $\text{res}_\alpha = 41, \text{res}_\theta = 81$).
 		The results from these tests are shown in Table \ref{ClassificationResults2}.
 		
-		Suprisingly, these tests show that the best performer is the low fixed-resolution search algorithm.
+		Surprisingly, these tests show that the best performer is the low fixed-resolution search algorithm.
 		Using this algorithm we can correctly classify 80\% of all the test subjects.
 		Both the high resolution and multi resolution algorithms seem to have much lower performance - demonstrating a lower overall classification rate.
 		However if we look at the distances between our sample and the nearest sample of the correct class we can see that they are still very close - the higher resolution searches
@@ -127,7 +127,7 @@ while a value of 0 would represent a correct classification.
 			\hline
 		\end{tabular}
 		\caption{Comparison of different modelfitting algorithms and parameters.
-			These tests all use the mean-normalising euclidean distance function from the previous page.}
+			These tests all use the mean-normalising Euclidean distance function from the previous page.}
 		\label{ClassificationResults2}
 	\end{table}
 \end{landscape}

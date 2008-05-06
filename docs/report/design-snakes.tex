@@ -4,7 +4,7 @@ Active contours are a useful tool in image processing as they allow a shape to b
 It is reasoned that active contours could be used to locate the thigh in a noisy 3D voxel-space reconstruction.
 An estimation of the likely position of the thigh is first formed by looking for a concentration of voxels below the hip
 (see \ref{LocatingCenter}) and either to the left or right side depending which leg is being located.
-Cross-sections of the leg are taken at various heights up the leg, centered around this concentration of voxels - see figure \ref{CrossSections}.
+Cross-sections of the leg are taken at various heights up the leg, centred around this concentration of voxels - see figure \ref{CrossSections}.
 An active contour (or snake) is then placed in the middle of each cross-section and allowed to grow to fill the space available.
 
 \begin{figure}[tb]
@@ -18,7 +18,7 @@ An active contour (or snake) is then placed in the middle of each cross-section 
 \end{figure}
 
 Hopefully each contour will match the interior area of the thigh at its corresponding height up the leg.
-The centers of these contours can then be joined together by a straight line to form the center of the model's cylinder.
+The centres of these contours can then be joined together by a straight line to form the centre of the model's cylinder.
 
 As described in section \ref{ContourBackground} an active contour is driven by internal energies and external energies.
 A trial-and-error approach was used to generate these energy functions - their effectiveness being tested on a series of artificial images.
@@ -104,7 +104,7 @@ The overall energy function is therefore given by:
 \noindent The implementation in C of the active contour was fairly straightforward and followed the algorithm given by Williams and Shah \cite{SnakeAlgorithm}.
 A \texttt{resetContour} function initialises the contour to a tiny circle at the given location,
 and an \texttt{advanceContour} function calculates and updates each snaxel with its next position.
-This works by evaluating the energy function at each point in a $k$x$k$ grid centered on the snaxel,
+This works by evaluating the energy function at each point in a $k$x$k$ grid centred on the snaxel,
 and selecting the one with the lowest value.
 The selected point in the grid where the energy function was lowest becomes the snaxel's new position.
 

@@ -23,7 +23,7 @@ An advantage of using MapReduce is that in the future, it becomes very easy to s
 \begin{figure}[tb]
 	\centering
 	\includegraphics[width=\textwidth]{mapreduce.png}
-	\caption{A diagram showing how MapReduce may be used to parallelize and speed up modelfitting.}
+	\caption{A diagram showing how MapReduce may be used to parallelise and speed up modelfitting.}
 	\label{MapReduceDiagram}
 \end{figure}
 
@@ -39,7 +39,7 @@ Clearly the result of these requests will always be the same for any given input
 The closest edge voxel to some arbitrary point in the space is not going to change depending on the model parameters, so recalculating it every time is unnecessary.
 Caching the results of these lookups could improve algorithm execution time dramatically.
 
-A 44MB cache is allocated and initalised at the start of the algorithm's execution.
+A 44MB cache is allocated and initialised at the start of the algorithm's execution.
 This cache is big enough to hold two 4-byte floats for every voxel in the space.
 The first float is used to store the distance from that voxel to any other filled voxel, and the second float is used to store the distance to an edge voxel.
 As the algorithm runs, the distanceToEdgeVoxel and distanceToVoxel functions add their results to the proper place in the cache.
@@ -94,9 +94,9 @@ Our initial algorithm in Listing \ref{leastsquarescode} searches over the whole 
 Because the parameter space is four-dimensional, this leads to the algorithm evaluating the energy function $41*41*11*11 = 203401$ times.
 
 We can improve on this by noticing that in the vast majority of the energy plots there is only one minimum.
-If we run one search over the whole parameter space at a low resolution, we can then run a second high resolution search centered on the minimum found by the first search.
+If we run one search over the whole parameter space at a low resolution, we can then run a second high resolution search centred on the minimum found by the first search.
 This will save us sampling the energy function in thousands of places where there can't possibly be a minimum.
-Figure \ref{MultiResImages} demonstrates the principle behind this idea - the second pass is centered on the minimum found in the first pass.
+Figure \ref{MultiResImages} demonstrates the principle behind this idea - the second pass is entered on the minimum found in the first pass.
 
 The visualisation presented in Figure \ref{MultiResImages} is perhaps slightly misleading.
 The large shaded areas do not represent an average of many samples within their bounds, but rather the result of a single sample in their centre.
@@ -113,7 +113,7 @@ This means that the dimensions of the area to be searched at high resolution are
 
 One concern about multi-resolution search is with the assumption that there is only one minimum in the parameter space.
 The low resolution samples in the first pass may fall either side of the global minimum but have higher energies than one that falls right on another local minimum.
-This would lead to the second pass centering its search around the local minimum and missing the true solution.
+This would lead to the second pass centreing its search around the local minimum and missing the true solution.
 While this is a valid concern, in practice it was found to make very little difference to the results when tested over a large series of frames.
 
 \subsection{Quantifying the improvements}

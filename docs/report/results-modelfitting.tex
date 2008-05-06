@@ -173,7 +173,7 @@ This suggests that classification might depend more on the structure of the feat
 There are several obvious possibilities - the first of which is noise in the 3D voxel data.
 The modelfitting algorithm seems to cope fairly well with noisy data - one of the worst samples is shown in Figure \ref{BadData}, but despite the holes in the subject's legs and spurious groups of surrounding voxels the algorithm still manages to correctly fit the model.
 
-Another possiblity is that the subject's clothing might interfere with correct fittings to the data.
+Another possibility is that the subject's clothing might interfere with correct fittings to the data.
 The modelfitting algorithm tries to place the cylinders in the model in the centre of groups of voxels - where the distance between the edges of the model and the edge voxels are equal on all sides.
 Baggy trousers that move around as the subject walks will confuse the algorithm, as it will try to place the cylinders in the centre of the trousers, which may not be the same as the centre of the leg.
 A possible solution to this problem is presented in Section \ref{FutureWork:BaggyTrousers}.
