@@ -30,12 +30,16 @@ FrameModel::FrameModel(QObject* parent)
 
 _FrameSet& FrameModel::frameSet(const QModelIndex& index) const
 {
-	if (!m_frameSets.contains(index))
+	QModelIndex i(index);
+	if (i.column() != 0)
+		i = i.sibling(i.row(), 0);
+	
+	if (!m_frameSets.contains(i))
 	{
-		QString path(filePath(index) + QDir::separator() + "frameset.info");
+		QString path(filePath(i) + QDir::separator() + "frameset.info");
 		
 		if (!QFile::exists(path))
-			const_cast<FrameModel*>(this)->m_frameSets[index] = _FrameSet();
+			const_cast<FrameModel*>(this)->m_frameSets[i] = _FrameSet();
 		else
 		{
 			QSettings s(path, QSettings::IniFormat);
@@ -43,10 +47,10 @@ _FrameSet& FrameModel::frameSet(const QModelIndex& index) const
 			
 			set.signature = Signature(s);
 			
-			const_cast<FrameModel*>(this)->m_frameSets[index] = set;
+			const_cast<FrameModel*>(this)->m_frameSets[i] = set;
 		}
 	}
-	return const_cast<FrameModel*>(this)->m_frameSets[index];
+	return const_cast<FrameModel*>(this)->m_frameSets[i];
 }
 
 void FrameModel::saveFrameSet(const QModelIndex& index)
