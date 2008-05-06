@@ -1,1 +1,35 @@
-Blah
+The DVD contains an exported copy of the Subversion repository as well as precompiled binaries of the Modelfitting application for the three supported platforms.
+
+Important directories and descriptions of their contents are listed below in Figure \ref{dvdlisting}.
+
+\begin{table}[thb]
+	\centering
+	\begin{tabular}{|l|p{8cm}|}
+		\hline
+		Directory & Description \\
+		\hline
+		/binaries & Binaries for the main modelfitting application.
+			The packages provided are: an Ubuntu Hardy Heron .deb, a Mac OS X disk image and a Windows .zip. \\
+		/contourtest & Application to test active contours.
+			Use qmake to compile, and press spacebar to advance the contour. \\
+		/docs & The \LaTeX source files for the brief, interim and final reports.
+			Also contains some of the referenced papers. \\
+		/gaitdata & The voxel data used throughout the project.
+			The different subdirectories contain fitted model data from different algorithms. \\
+		/imgprocessingtest & Inital investigation into image processing on the GPU.
+			Use CMake to compile.
+			Requires NVIDIA Cg toolkit. \\
+		/lookupgenerator & Utility to generate the lookup table for mesh searching.
+			This table is found in /modelfitting/data/meshsearch.lut.
+			Use qmake to compile. \\
+		/manualfittingcomp & Utility that compares the results of a fitting algorithm to manually labelled data.
+			Uses the .dat files produced by the \emph{Plot params over time} tool and outputs a \LaTeX table.
+			Use CMake to compile. \\
+		/modelfitting & The source code for the main modelfitting application.
+			This directory also contains the source for the Vis4D library written by Richard Seely.
+			Compilation instructions are provided in Section \ref{devdocs} \\
+		\hline
+	\end{tabular}
+	\caption{DVD listing.}
+	\label{dvdlisting}
+\end{table}
