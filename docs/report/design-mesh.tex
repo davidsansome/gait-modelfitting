@@ -93,7 +93,7 @@ First the size of the filter is normalised - scaling all the vertices so they li
 It is assumed that the origin of the model's coordinate system is already in the centre of its top face.
 
 \begin{equation}
-	\mathbf{M}_{1} = \mathbf{M}_{scale}(\frac{1}{\max \{\text{modelSize}_{x}, \text{modelSize}_{y}, \text{modelSize}_{z} \}})
+	\mathbf{M}_{1} = \mathbf{M}_{scale}\left( \frac{1}{\max \{\text{modelSize}_{x}, \text{modelSize}_{y}, \text{modelSize}_{z} \}}\right)
 \end{equation}
 
 Then the filter is scaled up to voxel-space.
@@ -119,9 +119,9 @@ As determined in Section \ref{LocatingCenter} $w$ is the width, or extent along 
 and $\mathbf{V}_{mean}$ is the mean filled voxel position.
 
 \begin{align}
-	\label{eqn:TransToHip}      \mathbf{M}_{6}  &= \mathbf{M}_{trans}(\mathbf{V}_{mean_{x}}, \mathbf{V}_{mean_{y}}, \frac{h}{2}) \\
-	\label{eqn:TransToRightLeg} \mathbf{M}_{7r} &= \mathbf{M}_{trans}(+\frac{w}{6}, 0, 0) \\
-	\label{eqn:TransToLeftLeg}  \mathbf{M}_{7l} &= \mathbf{M}_{trans}(-\frac{w}{6}, 0, 0)
+	\label{eqn:TransToHip}      \mathbf{M}_{6}  &= \mathbf{M}_{trans}\left( \mathbf{V}_{mean_{x}}, \mathbf{V}_{mean_{y}}, \frac{h}{2}\right) \\
+	\label{eqn:TransToRightLeg} \mathbf{M}_{7r} &= \mathbf{M}_{trans}\left( +\frac{w}{6}, 0, 0\right) \\
+	\label{eqn:TransToLeftLeg}  \mathbf{M}_{7l} &= \mathbf{M}_{trans}\left( -\frac{w}{6}, 0, 0\right)
 \end{align}
 
 Now armed with the above set of transformations, we are able to move the points in our mesh into the correct location in the voxel-space:
@@ -136,7 +136,7 @@ An additional two matrix transformations can be introduced to account for the lo
 
 \begin{align}
 	\mathbf{M}_{3} &= \mathbf{M}_{rotx}(\theta_{2}) * \mathbf{M}_{roty}(\alpha_{2}) \\
-	\mathbf{M}_{4} &= \mathbf{M}_{trans}(0, 0, -\frac{h}{4})
+	\mathbf{M}_{4} &= \mathbf{M}_{trans}\left( 0, 0, -\frac{h}{4}\right)
 \end{align}
 
 Again we are using $\alpha$ and $\theta$ to refer to the angles the lower legs make with the vertical.

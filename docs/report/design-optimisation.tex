@@ -96,11 +96,11 @@ Because the parameter space is four-dimensional, this leads to the algorithm eva
 We can improve on this by noticing that in the vast majority of the energy plots there is only one minimum.
 If we run one search over the whole parameter space at a low resolution, we can then run a second high resolution search centred on the minimum found by the first search.
 This will save us sampling the energy function in thousands of places where there can't possibly be a minimum.
-Figure \ref{MultiResImages} demonstrates the principle behind this idea - the second pass is entered on the minimum found in the first pass.
+Figure \ref{MultiResImages} demonstrates the principle behind this idea - the second pass is centered on the minimum found in the first pass.
 
 The visualisation presented in Figure \ref{MultiResImages} is perhaps slightly misleading.
 The large shaded areas do not represent an average of many samples within their bounds, but rather the result of a single sample in their centre.
-It is important to consider the size of area around a first-pass minimum that would need to be sampled at a higher resolution to ensure we find the correct result.
+It is important to consider the size of the area around a first-pass minimum that would need to be sampled at a higher resolution to ensure we find the correct result.
 
 We can define this error as such:
 
