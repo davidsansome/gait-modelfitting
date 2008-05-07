@@ -1,0 +1,11 @@
+Source: modelfitting
+Section: x11
+Priority: extra
+Maintainer: David Sansome <me@davidsansome.com>
+Build-Depends: debhelper (>= 5), svl (>= 1.5), cmake (>= 2.4.0), libfftw3-dev (>= 3.1.2)
+Standards-Version: 3.7.2
+
+Package: modelfitting
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, svl (>= 1.5), libfftw3-3 (>= 3.1.2)
+Description: Modelfitting
