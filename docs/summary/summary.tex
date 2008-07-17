@@ -27,6 +27,7 @@
    \renewcommand{\headrulewidth}{0pt} % and the line
 }
 
+\newcommand{\graphwidth}{5.8cm}
 
 % From wikipedia
 \DeclareMathOperator*{\argmax}{arg\,max}
@@ -40,7 +41,7 @@
 	morecomment=[l]{//},
 	}
 
-\title{3D Model Fitting and its Use in Gait Recognition}
+\title{3D Model Fitting and its Use in Gait Recognition - a Summary}
 \author{David Sansome}
 
 \begin{document}
@@ -49,8 +50,8 @@
 \maketitle
 
 \begin{abstract}
-	Gait recognition is an area of biometrics that aims to identify people by the way they walk.
-	Gait recognition has the advantage over other biometrics, such as fingerprints or iris recognition, in that it can be used from a distance and without the subject's knowledge.
+	Gait recognition is an area of biometrics that focuses on identifying people by the way they walk.
+	Gait recognition has the advantage over other biometrics, such as fingerprint or iris recognition, in that it can be used from a distance and without the subject's knowledge.
 	
 	Previous attempts to tackle gait recognition through model-fitting have used 2D videos of subjects captured by a single camera.
 	This is the first work that uses a 3D representation of a person, constructed by combining images from multiple cameras.
@@ -84,7 +85,7 @@ This will give us a set of parameters that describe certain properties of the le
 By looking at how these parameters change over time, we can form a signature that uniquely describes the subject.
 Comparing the signature to a database of other signatures allows us to classify the subject and determine his identity.
 
-This project will only focus on the final two stages - the model fitting and classification.
+This project focuses on only the final two stages - the model fitting and classification.
 The data we use for testing has already undergone 3D reconstruction and is in the form of a series of frames containing voxelized images of the subject.
 
 
@@ -138,7 +139,7 @@ To correct this problem we created a new filter that was more intelligent about 
 	\label{ImprovedFilter}
 \end{figure}
 
-The filter shown in Figures \ref{ImprovedFilterCross} and \ref{ImprovedFilter} is a mesh that consists of two types of nodes - those that seek edge voxels and those that seek filled voxels.
+The improved filter shown in Figures \ref{ImprovedFilterCross} and \ref{ImprovedFilter} is a mesh that consists of two types of nodes - those that seek edge voxels and those that seek filled voxels.
 This is a similar approach to the one taken by Nixon et al.\ in \cite{GaitBook}.
 
 \clearpage
@@ -183,9 +184,8 @@ An exhaustive search such as this one takes a very long time to iterate over the
 Several tricks were employed that reduced execution time from several hours per frame to a couple of seconds.
 
 MapReduce \cite{MapReduce} was used to split the problem into a number of small tasks and distribute them between processors in a multi-core system.
-On the dual-core developement machine this brought about a speed increase of almost 2x, but the technique would also scale well to larger clusters.
+On the dual-core development machine this brought about a speed increase of almost 2x, but the technique would also scale well to larger clusters.
 
-TODO: Maybe remove this paragraph.
 A \emph{map} function is defined which takes a piece of input data (the parameters) and maps them to a result (the energy of the model with those parameters).
 The \emph{reduce} function then gathers up several of these results and reduces them down into one.
 Our implementation eliminates the one with the highest energy and keeps the one with the lowest energy.
@@ -209,12 +209,12 @@ A caching system was implemented that allows the algorithm to store the results 
 Introducing this cache reduced execution time of a typical frame from over two hours to under two minutes.
 
 \bigskip
-The inital algorithm searched over the parameter space at a fixed resolution.
+The initial algorithm searched over the parameter space at a fixed resolution.
 In the majority of energy plots there is only one minimum, so we can reduce processing time by sampling the parameter space more intelligently.
 
 If we run one search over the whole parameter space at a low resolution, we can then run a second high resolution search centred on the minimum found by the first search.
 This will save us sampling the energy function in thousands of places where there can't possibly be a minimum.
-Figure \ref{MultiResImages} demonstrates the principle behind this idea - the second pass is centered on the minimum found in the first pass.
+Figure \ref{MultiResImages} demonstrates the principle behind this idea - the second pass is centred on the minimum found in the first pass.
 
 \begin{figure}[bt]
 	\centering
@@ -229,16 +229,212 @@ Figure \ref{MultiResImages} demonstrates the principle behind this idea - the se
 Implementing multi-resolution search reduced execution time by more than a factor of four.
 
 
-
 \subsection{Producing a Gait Signature}
 
+After every frame in a sample has been through the modelfitting process, we can analyse the sequence as a whole
+and produce a series of numbers (a \emph{signature}) which describe the subject's gait.
+If we are successful, this signature will be unique to each subject and can be used as the basis for classifying any new samples.
+
+\begin{figure}[p]
+	\centering
+	\includegraphics[width=\textwidth]{../report/curvefitting.png}
+	\caption{The change in $\theta_1$ over time for Sample 81.}
+	\label{CurveFitting1}
+\end{figure}
+
+Figure \ref{CurveFitting1} shows how a subject's left thigh moves over time.
+We can intuitively see that this is correct - as we walk our legs swing backwards and forwards in a sinusoidal fashion.
+From the graph it can be seen that the forwards motion of the leg is slightly faster (or steeper) than the backwards motion of the leg.
+It is subtle features like these that can be used to uniquely identify a subject.
+
+\begin{figure}[p]
+	\centering
+	\subfloat[Magnitude]{\includegraphics[width=6cm]{../report/dft-leftthightheta-magnitude.png}}
+	\quad
+	\subfloat[Phase]{\includegraphics[width=6cm]{../report/dft-leftthightheta-phase.png}}
+	\caption{Results of taking the DFT of $\theta_1$ from one gait cycle of Sample 81.}
+	\label{FFTResults}
+\end{figure}
+
+To extract these features from the graph we take the \emph{discrete Fourier transform} (DFT).
+Figure \ref{FFTResults} shows the phase and magnitude plots of one cycle of one subject's gait.
+The real and imaginary components of the Fourier transform are used to build a feature vector, or \emph{signature}, for a subject.
+
+BenAbdelkader et al.\ \cite{StrideCadence} showed how static parameters - height, torso length, leg length and step length - can also be used to classify subjects.
+Including the body height in our feature vector greatly improved the classification rate.
+
 \subsection{Classifying an Individual}
+
+To correctly classify a new sample, we need some way of comparing it to the other samples already in the database.
+The k-nearest neighbour algorithm with $k=1$ was chosen as it is straightforward to implement while providing good results.
+
+A distance function $d(a,b)$ was created to compare and evaluate the difference between two samples $a$ and $b$.
+Several implementations of this distance functions were created and tested against the dataset to see which one provided the best results.
+
+Those tested include:
+
+\begin{enumerate}
+	\item Straightforward comparison of magnitude components.
+	\item Magnitude-weighted phase.
+	\item Euclidean distance in the complex plane.
+	\item Polar distance.
+\end{enumerate}
+
+These distance functions were each tested before and after mean normalisation, and exclusion of the first frequency component.
+
 
 \newpage
 \section{Results}
 
-\newpage
-\section{Future Work}
+A manual fitting was produced for selected samples to provide a means of evaluating the error of the modelfitting algorithm.
+Each frame was examined in the modelfitting application, and the parameters of the model tweaked to visually fit the model to the image of the subject.
+
+The error between the manually entered result $m_t$ and the automatically determined result $a_t$ for a sample with $N$ frames was calculated as follows:
+
+\begin{equation}
+	E = \frac{1}{N} \sum_{t=1}^N \left| a_t - m_t \right|
+\end{equation}
+
+The values in the table below represent the average error per frame as a percentage of the possible range for $\theta$ ($\pm \frac{\pi}{4}$).
+
+\begin{table}[thb]
+	\centering
+	\begin{tabular}{l|cc|cc|cc}
+		& \multicolumn{2}{|c|}{Low fixed res} & \multicolumn{2}{|c|}{High fixed res} & \multicolumn{2}{|c}{Multi-resolution} \\
+		& 81 & 96 & 81 & 96 & 81 & 96 \\
+		\hline
+		Left thigh & 2.94\% & 1.83\% & 3.18\% & 1.97\% & 3.01\% & 1.48\% \\
+		Right thigh & 2.23\% & 2.45\% & 2.33\% & 2.39\% & 2.70\% & 1.98\% \\
+		Left lower leg & 6.37\% & 5.17\% & 6.02\% & 4.68\% & 5.34\% & 2.78\% \\
+		Right lower leg & 3.81\% & 5.21\% & 3.56\% & 4.86\% & 4.15\% & 3.98\% \\
+		\hline
+		Overall & 3.84\% & 3.66\% & 3.77\% & 3.48\% & 3.80\% & 2.56\% \\
+		Mean error & \multicolumn{2}{|c|}{3.75\%} & \multicolumn{2}{|c|}{3.62\%} & \multicolumn{2}{|c}{3.18\%} \\
+	\end{tabular}
+	\caption{Overview of the average error per frame for different modelfitting algorithms.}
+	\label{ManualFitTable}
+\end{table}
+
+\begin{figure}[p]
+        \centering
+        \subfloat[Left thigh]{\label{ManualFit81:res10:LeftThigh}\includegraphics[width=\graphwidth]{../report/manualfitting/81-res10-leftthigh.png}}
+        \quad
+        \subfloat[Right thigh]{\label{ManualFit81:res10:RightThigh}\includegraphics[width=\graphwidth]{../report/manualfitting/81-res10-rightthigh.png}}
+        \
+        \subfloat[Left lower leg]{\label{ManualFit81:res10:LeftLower}\includegraphics[width=\graphwidth]{../report/manualfitting/81-res10-leftlower.png}}
+        \quad
+        \subfloat[Right lower leg]{\label{ManualFit81:res10:RightLower}\includegraphics[width=\graphwidth]{../report/manualfitting/81-res10-rightlower.png}}
+
+        \caption{Fitting error for Sample 81 using the low fixed resolution search.}
+        \label{ManualFit81:res10}
+\end{figure}
+
+The overall low error rate for the modelfitting is encouraging.
+As is to be expected, the lower resolution search is not quite as accurate as the high resolution search.
+The multi-resolution search seems to perform even better, as its second pass has twice the equivalent resolution of the high fixed resolution search.
+
+\clearpage
+The sample data used to test the algorithms contains 10 different subjects.
+Four recordings of each subject were taken, giving a total of 40 samples.
+Two of the four samples from each subject were manually classified and entered into a database for use as a training set,
+while the remaining two samples (labelled \emph{a} and \emph{b}) were put through automatic classification.
+
+The success rate of the system was determined by how many of the ``unknown'' samples \emph{a} and \emph{b} it was able to match to the correct class in the training set.
+In the tables below (\ref{ClassificationResults} and \ref{ClassificationResults2}) the numbers in each cell represent how close the algorithm came to correctly identifying the subject.
+A value of 3 would indicate that there were 3 other classes that were a better match than the correct one,
+while a value of 0 would represent a correct classification.
+
+\bigskip
+From Table \ref{ClassificationResults2} we can see that there is one winning combination in terms of correct classification rates.
+This combination is summarised in Table \ref{ConclusionTable}.
+
+\begin{table}[hb]
+	\centering
+	\begin{tabular}{r|l}
+		Search resolution & res$_\theta$ = 21, res$_\alpha$ = 11 \\
+		Multiresolution search? & No \\
+		Parameters to include in the DFT & Both thigh $\theta$ values\\
+		Number of DFT components to use & All \\
+		Additional classifiers & Subject's height \\
+		Normalise for mean? & Yes \\
+		Normalise for variance? & No \\
+		Distance measure & Euclidean distance in complex plane
+	\end{tabular}
+	\caption{Summary of the winning algorithm.}
+	\label{ConclusionTable}
+\end{table}
+
+Our best algorithm gives a 90\% success rate when applied to our dataset.
+The two samples that were classified incorrectly in this test (4a and 4b) were actually very close to receiving the correct classification - with only one or two other samples in between them and a sample of the correct class.
+
+Previous research into gait recognition has typically produced algorithms that have success rates between 90\% and 100\%.
+From this we can conclude that our results in 3D are at least as good as those in previous works.
+
+\begin{landscape}
+	\begin{table}[p]
+		\centering
+		\begin{tabular}{|l|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c|}
+			\hline
+			& \multicolumn{20}{|c|}{Sample} & Success rate \\
+			& 1a & 1b & 2a & 2b & 3a & 3b & 4a & 4b & 5a & 5b & 6a & 6b & 7a & 7b & 8a & 8b & 9a & 9b & 10a & 10b & \\
+			
+			\hline
+			Magnitude                  & 1 & 2 & 1 & 0 & 0 & 1 & 6 & 11 & 4 & 0 & 3 & 0 & 0 & 2 & 0 & 0 & 1 & 2 & 2 & 0 & 40\% \\
+			Phase-mag                  & 0 & 2 & 0 & 6 & 0 & 1 & 12 & 10 & 3 & 3 & 0 & 4 & 1 & 0 & 0 & 2 & 10 & 16 & 1 & 5 & 30\% \\
+			Polar dist                 & 0 & 3 & 0 & 0 & 0 & 0 & 0 & 11 & 0 & 3 & 2 & 0 & 0 & 0 & 0 & 0 & 7 & 0 & 0 & 16 & 70\% \\
+			Eucl dist                  & 0 & 3 & 0 & 0 & 0 & 0 & 0 & 11 & 0 & 3 & 2 & 0 & 0 & 0 & 0 & 0 & 7 & 0 & 0 & 16 & 70\% \\
+			
+			\hline
+			Mag excl first             & 2 & 1 & 1 & 6 & 1 & 1 & 0 & 2 & 14 & 2 & 3 & 0 & 1 & 8 & 0 & 7 & 1 & 2 & 4 & 1 & 15\% \\
+			Phase-mag excl first       & 0 & 2 & 0 & 6 & 0 & 1 & 12 & 12 & 3 & 3 & 0 & 2 & 1 & 0 & 0 & 2 & 10 & 2 & 1 & 15 & 30\% \\
+			Polar dist excl first      & 0 & 2 & 0 & 2 & 0 & 0 & 0 & 11 & 0 & 5 & 3 & 0 & 0 & 0 & 0 & 2 & 9 & 0 & 2 & 16 & 55\% \\
+			Eucl dist excl first       & 0 & 2 & 0 & 2 & 0 & 0 & 0 & 11 & 0 & 5 & 3 & 0 & 0 & 0 & 0 & 2 & 9 & 0 & 2 & 16 & 55\% \\
+			
+			\hline
+			Eucl dist norm             & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 11 & 0 & 0 & 4 & 0 & 0 & 0 & 0 & 0 & 7 & 0 & 0 & 16 & 75\% \\
+			
+			\hline
+		\end{tabular}
+		\caption{Comparison of different implementations of the distanceTo() function.}
+		\label{ClassificationResults}
+	\end{table}
+	
+	\begin{table}[p]
+		\centering
+		\begin{tabular}{|l|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c@{ }c|c|}
+			\hline
+			& \multicolumn{20}{|c|}{Sample} & Success rate \\
+			& 1a & 1b & 2a & 2b & 3a & 3b & 4a & 4b & 5a & 5b & 6a & 6b & 7a & 7b & 8a & 8b & 9a & 9b & 10a & 10b & \\
+			
+			\hline
+			\multicolumn{22}{|l|}{\textbf{Using both thigh $\theta$ values.}} \\
+			Low res search             & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 4 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 18 & 80\% \\
+			High res search            & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 5 & 0 & 1 & 2 & 0 & 0 & 0 & 0 & 0 & 8 & 0 & 0 & 18 & 65\% \\
+			Multi res search           & 0 & 1 & 0 & 0 & 0 & 0 & 2 & 2 & 0 & 1 & 2 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 1 & 18 & 60\% \\
+			
+			\hline
+			\multicolumn{22}{|l|}{\textbf{Using both lower leg $\theta$ values.}} \\
+			Low res search             & 0 & 0 & 0 & 2 & 0 & 1 & 2 & 0 & 1 & 5 & 0 & 1 & 0 & 0 & 0 & 4 & 0 & 0 & 0 & 18 & 60\% \\
+			High res search            & 0 & 0 & 0 & 0 & 0 & 0 & 2 & 2 & 1 & 5 & 1 & 2 & 0 & 0 & 1 & 3 & 4 & 1 & 0 & 17 & 45\% \\
+			Multi res search           & 0 & 2 & 0 & 0 & 0 & 0 & 4 & 4 & 2 & 5 & 1 & 1 & 0 & 0 & 0 & 0 & 4 & 2 & 0 & 17 & 50\% \\
+			
+			\hline
+			\multicolumn{22}{|l|}{\textbf{Using both thigh and lower leg $\theta$ values.}} \\
+			Low res search             & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 2 & 0 & 3 & 0 & 1 & 0 & 0 & 0 & 0 & 3 & 0 & 0 & 18 & 65\% \\
+			High res search            & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 2 & 0 & 4 & 2 & 1 & 0 & 0 & 0 & 0 & 4 & 0 & 0 & 18 & 65\% \\
+			Multi res search           & 0 & 1 & 0 & 0 & 0 & 0 & 3 & 3 & 0 & 4 & 0 & 0 & 0 & 0 & 0 & 0 & 3 & 1 & 0 & 18 & 65\% \\
+			
+			\hline
+			\multicolumn{22}{|l|}{\textbf{Including the subject's height as an additional classifier}} \\
+			Low res search             & 0 & 0 & 0 & 0 & 0 & 0 & 2 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 90\% \\
+			
+			\hline
+		\end{tabular}
+		\caption{Comparison of different modelfitting algorithms and parameters.
+			These tests all use the mean-normalising Euclidean distance function from the previous page.}
+		\label{ClassificationResults2}
+	\end{table}
+\end{landscape}
 
 \newpage
 \bibliography{../../bibtex}
